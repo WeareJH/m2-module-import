@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" stopOnFailure="true">
     <testsuite name="wearejh/m2-module-import unit tests">
-        <directory suffix="Test.php">Test/Unit</directory>
+        <directory suffix="Test.php">test</directory>
     </testsuite>
 </phpunit>
