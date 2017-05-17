@@ -6,9 +6,13 @@
         "php": "^7.0",
         "tightenco/collect": "^5.4",
         "trash-panda/progress-bar-log": "^1.1",
-        "magento/framework": "^100.1"
+        "magento/framework": "^100",
+        "magento/module-catalog": "^100",
+        "magento/module-catalog-inventory": "^100"
     },
     "require-dev": {
+        "magento/module-bundle": "^100",
+        "magento/module-catalog-inventory": "^100",
         "phpunit/phpunit": "^6.1",
         "squizlabs/php_codesniffer": "^3.0"
     },
