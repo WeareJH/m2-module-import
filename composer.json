@@ -46,9 +46,14 @@
             "@unit-tests",
             "@cs"
         ],
+        "test-travis": [
+            "@unit-tests-coverage-clover",
+            "@cs"
+        ],
         "cs": "phpcs -s src --standard=PSR2 && phpcs -s test --standard=PSR2",
         "cs-fix": "phpcbf -s src --standard=PSR2 && phpcbf -s src --standard=PSR2",
         "unit-tests": "phpunit --colors=always -v",
-        "coverage" : "phpunit --colors=always -v --coverage-text"
+        "unit-tests-coverage" : "phpunit --colors=always -v --coverage-text",
+        "unit-tests-coverage-clover" : "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
     }
 }
