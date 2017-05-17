@@ -1,0 +1,39 @@
+{
+    "name": "wearejh/m2-module-import",
+    "description": "Import module for Magento 2 - provides commands, utilities and abstractions for building imports for Magento 2 projects",
+    "type": "magento2-module",
+    "require": {
+        "php": "^7.0",
+        "tightenco/collect": "^5.4",
+        "wearejh/m2-module-toolkit": "^1.2",
+        "wearejh/m2-module-brands": "^1.2",
+        "trash-panda/progress-bar-log": "^1.1",
+        "magento/framework": "^100.1"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:WeareJH/m2-module-jh-toolkit.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:WeareJH/m2-module-jh-brands.git"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Jh\\Import\\": ""
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1",
+        "squizlabs/php_codesniffer": "^3.0"
+    }
+}
