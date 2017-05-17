@@ -2,13 +2,16 @@
 
 namespace Jh\ImportTest\Asset;
 
+use Magento\Catalog\Api\Data\ProductExtensionInterface;
+use Magento\Framework\Api\AbstractSimpleObject;
+
 /**
  * THIS CLASS IS COPIED FROM var/generation for usage in unit tests
  *
  * @author Aydin Hassan <aydin@wearejh.com>
  * Extension class for @see \Magento\Catalog\Api\Data\ProductInterface
  */
-class ProductExtension extends \Magento\Framework\Api\AbstractSimpleObject implements \Magento\Catalog\Api\Data\ProductExtensionInterface
+class ProductExtension extends AbstractSimpleObject implements ProductExtensionInterface
 {
     /**
      * @return \Magento\Bundle\Api\Data\OptionInterface[]|null
