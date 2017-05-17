@@ -3,4 +3,9 @@
     <testsuite name="wearejh/m2-module-import unit tests">
         <directory suffix="Test.php">test</directory>
     </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
 </phpunit>
