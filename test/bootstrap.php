@@ -5,6 +5,8 @@ use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\ObjectManager\Code\Generator\Factory;
 use Magento\Framework\TestFramework\Unit\Autoloader\ExtensionGeneratorAutoloader;
 
+require_once __DIR__ . '/functions.php';
+
 $generatorIo = new Io(new File(), sys_get_temp_dir() . '/var/generation');
 
 spl_autoload_register(function ($className) use ($generatorIo) {
