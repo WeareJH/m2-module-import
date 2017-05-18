@@ -8,7 +8,8 @@
         "trash-panda/progress-bar-log": "^1.1",
         "magento/framework": "^100",
         "magento/module-catalog": "^100",
-        "magento/module-catalog-inventory": "^100"
+        "magento/module-catalog-inventory": "^100",
+        "zendframework/zendframework1": "^1.12"
     },
     "require-dev": {
         "magento/module-bundle": "^100",
