@@ -1,0 +1,80 @@
+<?php
+
+namespace Jh\ImportTest\Import;
+
+use Jh\Import\Config\Data;
+use Jh\Import\Config;
+use Jh\Import\Import\Manager;
+use Jh\Import\Type\Files;
+use Jh\Import\Type\Type;
+use Magento\Framework\ObjectManagerInterface;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @author Aydin Hassan <aydin@wearejh.com>
+ */
+class ManagerTest extends TestCase
+{
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Cannot find configuration for import with name: "not-valid-import"
+     */
+    public function testExceptionIsThrownIfImportWithNameDoesNotExist()
+    {
+        $config = $this->prophesize(Data::class);
+        $om     = $this->prophesize(ObjectManagerInterface::class);
+
+        $config->hasImport('not-valid-import')->willReturn(false);
+
+        (new Manager($config->reveal(), $om->reveal()))->executeImportByName('not-valid-import');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Import configuration specified invalid type: "not-a-valid-type". Valid types
+     * @expectedExceptionMessage are: "files"
+     */
+    public function testExceptionIsThrownIfInvalidType()
+    {
+        $config = $this->prophesize(Data::class);
+        $om     = $this->prophesize(ObjectManagerInterface::class);
+
+        $config->hasImport('some-import')->willReturn(true);
+        $config->getImportType('some-import')->willReturn('not-a-valid-type');
+
+        (new Manager($config->reveal(), $om->reveal()))->executeImportByName('some-import');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Import type: "stdClass" does not implement require interface: "Jh\Import\Type\Type"
+     */
+    public function testExceptionIsThrownIfTypeDoesNotImplementCorrectInterface()
+    {
+        $config = $this->prophesize(Data::class);
+        $om     = $this->prophesize(ObjectManagerInterface::class);
+
+        $config->hasImport('some-import')->willReturn(true);
+        $config->getImportType('some-import')->willReturn('files');
+        $om->get(Files::class)->willReturn(new \stdClass);
+
+        (new Manager($config->reveal(), $om->reveal()))->executeImportByName('some-import');
+    }
+
+    public function testImportTypeIsInvokedIfConfigCorrect()
+    {
+        $config = $this->prophesize(Data::class);
+        $om     = $this->prophesize(ObjectManagerInterface::class);
+        $type   = $this->prophesize(Type::class);
+
+        $importConfig = new Config('some-import', ['option1' => 'value1']);
+        $config->hasImport('some-import')->willReturn(true);
+        $config->getImportType('some-import')->willReturn('files');
+        $config->getImportConfigByName('some-import')->willReturn($importConfig);
+        $om->get(Files::class)->willReturn($type->reveal());
+
+        (new Manager($config->reveal(), $om->reveal()))->executeImportByName('some-import');
+
+        $type->run($importConfig)->shouldHaveBeenCalled();
+    }
+}
