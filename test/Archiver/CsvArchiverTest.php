@@ -1,6 +1,6 @@
 <?php
 
-namespace Fps\Import\Test\Unit\Archiver;
+namespace Jh\ImportTest\Archiver;
 
 use Jh\Import\Archiver\CsvArchiver;
 use Jh\Import\Source\Csv;

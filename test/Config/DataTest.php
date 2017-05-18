@@ -28,11 +28,11 @@ class DataTest extends TestCase
      */
     private static $testData = [
         'product' => [
-            'source' => 'Fps\Import\Source\Csv',
-            'incoming_directory' => 'fps_import/incoming',
+            'source' => 'Jh\Import\Source\Csv',
+            'incoming_directory' => 'jh_import/incoming',
             'match_files' => 'rdrive.csv',
-            'specification' => 'Fps\Import\Specification\Product',
-            'writer' => 'Fps\Import\Model\Product\ProductWriter',
+            'specification' => 'Jh\Import\Specification\Product',
+            'writer' => 'Jh\Import\Writer\Product',
             'type' => 'files'
         ]
     ];

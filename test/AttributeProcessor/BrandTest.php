@@ -1,6 +1,6 @@
 <?php
 
-namespace Fps\Import\Test\Unit\Archiver;
+namespace Jh\ImportTest\Archiver;
 
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Jh\Import\AttributeProcessor\Brand as BrandProcessor;

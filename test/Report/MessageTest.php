@@ -1,6 +1,6 @@
 <?php
 
-namespace Fps\ImportTest\Report;
+namespace Jh\ImportTest\Report;
 
 use Jh\Import\Report\Message;
 use PHPUnit\Framework\TestCase;

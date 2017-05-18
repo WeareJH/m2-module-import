@@ -16,11 +16,11 @@ class ConverterTest extends TestCase
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="imports.xsd">
     <files name="product">
-        <source>Fps\Import\Source\Csv</source>
-        <incoming_directory>fps_import/incoming</incoming_directory>
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</incoming_directory>
         <match_files>rdrive.csv</match_files>
-        <specification>Fps\Import\Specification\Product</specification>
-        <writer>Fps\Import\Model\Product\ProductWriter</writer>
+        <specification>Jh\Import\Specification\Product</specification>
+        <writer>Jh\Import\Writer\Product</writer>
         <id_field>sku</id_field>
     </files>
 </config>
@@ -32,11 +32,11 @@ END;
         self::assertEquals(
             [
                 'product' => [
-                    'source' => 'Fps\Import\Source\Csv',
-                    'incoming_directory' => 'fps_import/incoming',
+                    'source' => 'Jh\Import\Source\Csv',
+                    'incoming_directory' => 'jh_import/incoming',
                     'match_files' => 'rdrive.csv',
-                    'specification' => 'Fps\Import\Specification\Product',
-                    'writer' => 'Fps\Import\Model\Product\ProductWriter',
+                    'specification' => 'Jh\Import\Specification\Product',
+                    'writer' => 'Jh\Import\Writer\Product',
                     'type' => 'files',
                     'id_field' => 'sku',
                     'indexers' => []
@@ -52,11 +52,11 @@ END;
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="imports.xsd">
     <files name="product">
-        <source>Fps\Import\Source\Csv</source>
-        <incoming_directory>fps_import/incoming</incoming_directory>
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</incoming_directory>
         <match_files>rdrive.csv</match_files>
-        <specification>Fps\Import\Specification\Product</specification>
-        <writer>Fps\Import\Model\Product\ProductWriter</writer>
+        <specification>Jh\Import\Specification\Product</specification>
+        <writer>Jh\Import\Writer\Product</writer>
         <id_field>sku</id_field>
         <indexers>
             <indexer>My\Indexer</indexer>
@@ -72,11 +72,11 @@ END;
         self::assertEquals(
             [
                 'product' => [
-                    'source' => 'Fps\Import\Source\Csv',
-                    'incoming_directory' => 'fps_import/incoming',
+                    'source' => 'Jh\Import\Source\Csv',
+                    'incoming_directory' => 'jh_import/incoming',
                     'match_files' => 'rdrive.csv',
-                    'specification' => 'Fps\Import\Specification\Product',
-                    'writer' => 'Fps\Import\Model\Product\ProductWriter',
+                    'specification' => 'Jh\Import\Specification\Product',
+                    'writer' => 'Jh\Import\Writer\Product',
                     'type' => 'files',
                     'id_field' => 'sku',
                     'indexers' => [
