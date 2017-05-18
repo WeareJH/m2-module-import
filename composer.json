@@ -8,15 +8,16 @@
         "trash-panda/progress-bar-log": "^1.1",
         "magento/framework": "^100",
         "magento/module-catalog": "^100",
-        "magento/module-catalog-inventory": "^100",
-        "zendframework/zendframework1": "^1.12"
+        "magento/module-catalog-inventory": "^100"
     },
     "require-dev": {
         "magento/module-bundle": "^100",
         "magento/module-catalog-inventory": "^100",
         "phpunit/phpunit": "^6.1",
         "squizlabs/php_codesniffer": "^3.0",
-        "php-mock/php-mock": "^2.0"
+        "php-mock/php-mock": "^2.0",
+        "zendframework/zendframework1": "^1.12",
+        "symfony/filesystem": "^3.2"
     },
     "repositories": [
         {
