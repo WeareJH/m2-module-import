@@ -7,8 +7,9 @@
         "tightenco/collect": "^5.4",
         "trash-panda/progress-bar-log": "^1.1",
         "magento/framework": "^100",
-        "magento/module-catalog": "^100",
-        "magento/module-catalog-inventory": "^100"
+        "magento/module-catalog": "^101",
+        "magento/module-catalog-inventory": "^100.1",
+        "magento/module-configurable-product": "^100.1"
     },
     "require-dev": {
         "magento/module-bundle": "^100",
@@ -17,14 +18,20 @@
         "squizlabs/php_codesniffer": "^3.0",
         "php-mock/php-mock": "^2.0",
         "zendframework/zendframework1": "^1.12",
-        "symfony/filesystem": "^3.2"
+        "symfony/filesystem": "^3.2",
+        "wearejh/m2-unit-test-helpers": "^1.0",
+        "zendframework/zend-code": "^3.1"
     },
-    "repositories": [
-        {
+    "repositories": {
+        "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        "m2-unit-test-helpers": {
+            "type": "vcs",
+            "url": "git@github.com:WeareJH/m2-unit-test-helpers.git"
         }
-    ],
+    },
     "autoload": {
         "files": [
             "src/registration.php"
@@ -50,7 +57,7 @@
         "cs": "phpcs -s src --standard=PSR2 && phpcs -s test --standard=PSR2",
         "cs-fix": "phpcbf -s src --standard=PSR2 && phpcbf -s src --standard=PSR2",
         "unit-tests": "phpunit --colors=always -v",
-        "unit-tests-coverage" : "phpunit --colors=always -v --coverage-text",
-        "unit-tests-coverage-clover" : "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
+        "unit-tests-coverage": "phpunit --colors=always -v --coverage-text",
+        "unit-tests-coverage-clover": "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
     }
 }
