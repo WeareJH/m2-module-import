@@ -9,8 +9,8 @@
     <!--</type>-->
     <virtualType name="jh_import_reader" type="Magento\Framework\Config\Reader\Filesystem">
         <arguments>
-            <argument name="converter" xsi:type="object">Fps\Import\Config\Converter</argument>
-            <argument name="schemaLocator" xsi:type="object">Fps\Import\Config\SchemaLocator</argument>
+            <argument name="converter" xsi:type="object">Jh\Import\Config\Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Jh\Import\Config\SchemaLocator</argument>
             <argument name="fileName" xsi:type="string">imports.xml</argument>
         </arguments>
     </virtualType>
