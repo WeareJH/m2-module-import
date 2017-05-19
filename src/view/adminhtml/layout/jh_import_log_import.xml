@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="formkey"/>
+
+    <body>
+        <referenceContainer name="content">
+            <block template="Jh_Import::item_log_listing_header.phtml" name="item_log_listing_header" class="Magento\Framework\View\Element\Template"/>
+            <uiComponent name="import_history_item_log_listing"/>
+            <block template="Jh_Import::log_listing_header.phtml" name="log_listing_header" class="Magento\Framework\View\Element\Template"/>
+            <uiComponent name="import_history_log_listing"/>
+        </referenceContainer>
+    </body>
+</page>

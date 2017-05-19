@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <!--<type name="Fps\Import\AttributeProcessor\AttributeProcessor">-->
+    <!--<type name="Jh\Import\AttributeProcessor\AttributeProcessor">-->
         <!--<arguments>-->
             <!--<argument name="attributeProcessors" xsi:type="array">-->
-                <!--<item name="brand" xsi:type="object">Fps\Import\AttributeProcessor\Brand</item>-->
+                <!--<item name="brand" xsi:type="object">Jh\Import\AttributeProcessor\Brand</item>-->
             <!--</argument>-->
         <!--</arguments>-->
     <!--</type>-->
@@ -34,4 +34,33 @@
             </argument>
         </arguments>
     </type>
+
+    <!-- admin area -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="import_history_listing_data_source" xsi:type="string">import_history_grid_collection</item>
+                <item name="import_history_log_listing_data_source" xsi:type="string">import_history_log_grid_collection</item>
+                <item name="import_history_item_log_listing_data_source" xsi:type="string">import_history_item_log_grid_collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="import_history_grid_collection" type="\Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">jh_import_history</argument>
+            <argument name="resourceModel" xsi:type="string">Jh\Import\Entity\ImportHistoryResource</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="import_history_log_grid_collection" type="\Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">jh_import_history_log</argument>
+            <argument name="resourceModel" xsi:type="string">Jh\Import\Entity\ImportHistoryLogResource</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="import_history_item_log_grid_collection" type="\Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">jh_import_history_item_log</argument>
+            <argument name="resourceModel" xsi:type="string">Jh\Import\Entity\ImportHistoryItemLogResource</argument>
+        </arguments>
+    </virtualType>
 </config>

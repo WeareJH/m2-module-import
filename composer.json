@@ -20,7 +20,8 @@
         "zendframework/zendframework1": "^1.12",
         "symfony/filesystem": "^3.2",
         "wearejh/m2-unit-test-helpers": "^1.0",
-        "zendframework/zend-code": "^2.4.6"
+        "zendframework/zend-code": "^2.4.6",
+        "monolog/monolog": "^1.22"
     },
     "repositories": {
         "0": {

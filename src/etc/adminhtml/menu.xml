@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Jh_Import::jh_import"
+             title="Import Log"
+             module="Jh_Import"
+             parent="Magento_Backend::system"
+             resource="Magento_Backend::system"/>
+
+        <add id="Jh_Import::jh_import_log"
+             title="Import Log"
+             module="Jh_Import"
+             parent="Jh_Import::jh_import"
+             action="jh_import/log"
+             resource="Magento_Backend::system"/>
+    </menu>
+</config>
