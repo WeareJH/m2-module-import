@@ -38,7 +38,11 @@ class ViewLogsCommand extends Command
     {
         $this->setName('import:view-logs')
             ->setDescription('Show the logs for a recent import')
-            ->addArgument('import_name', InputArgument::REQUIRED, 'The import name to view logs for as defined in imports.xml')
+            ->addArgument(
+                'import_name',
+                InputArgument::REQUIRED,
+                'The import name to view logs for as defined in imports.xml'
+            )
             ->addArgument('num_logs', InputArgument::OPTIONAL, 'The number of import logs to show');
     }
 
@@ -68,7 +72,7 @@ class ViewLogsCommand extends Command
         (new Table($output))
             ->setHeaders(['ID', 'Started', 'Finished', 'Memory Usage'])
             ->setRows(array_map(function ($import) {
-                $started  = \DateTime::createFromFormat('Y-m-d H:i:s', $import->getData('started'))->format('d-m-Y H:i:s');
+                $started  = \DateTime::createFromFormat('Y-m-d H:i:s', $import->getData('started'));
                 $finished = $import->getData('finished')
                     ? \DateTime::createFromFormat('Y-m-d H:i:s', $import->getData('finished'))->format('d-m-Y H:i:s')
                     : 'N/A';
@@ -77,7 +81,7 @@ class ViewLogsCommand extends Command
                     ? $this->formatBytes($import->getData('memory_usage'))
                     : 'N/A';
 
-                return [$import->getId(), $started, $finished, $memory];
+                return [$import->getId(), $started->format('d-m-Y H:i:s'), $finished, $memory];
             }, $collection->getItems()))
             ->render();
 
