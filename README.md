@@ -27,20 +27,8 @@ $ php bin/magento setup:upgrade
 
 ## Table of Contents
 
-- [Create a module](#create-a-module)
-- [Defining an import](#defining-an-import)
-- [Triggering an import](#triggering-an-import)
-  * [Running an import manually](#running-an-import-manually)
-  * [Where do the files go?](#where-do-the-files-go)
-- [Viewing import logs](#viewing-import-logs)
-  * [Item level logs](#item-level-logs)
-  * [Import level logs](#import-level-logs)
-- [Sequence detection](#sequence-detection)
-  * [Force running the same source again](#force-running-the-same-source-again)
-- [Import Locking](#import-locking)
-- [Archiving](#archiving)
-  * [What causes an import to be failed?](#what-causes-an-import-to-be-failed)
 - [Creating a new import](#creating-a-new-import)
+  * [Create a module](#create-a-module)
   * [Define the import configuration](#define-the-import-configuration)
     * [source](#source)
     * [incoming_directory](#incoming_directory)
@@ -53,8 +41,29 @@ $ php bin/magento setup:upgrade
     * [Filters](#filters)
   * [Create the writer](#create-the-writer)
     * [Indexing](#indexing)
+- [Triggering an import](#triggering-an-import)
+  * [Running an import manually](#running-an-import-manually)
+  * [Where do the files go?](#where-do-the-files-go)
+- [Viewing import logs](#viewing-import-logs)
+  * [Item level logs](#item-level-logs)
+  * [Import level logs](#import-level-logs)
+- [Sequence detection](#sequence-detection)
+  * [Force running the same source again](#force-running-the-same-source-again)
+- [Import Locking](#import-locking)
+- [Archiving](#archiving)
+  * [What causes an import to be failed?](#what-causes-an-import-to-be-failed)
 
-## Create a module
+## Creating a new Import
+ 
+An import consists of a bunch of components:
+ 
+ * A source - Responsible for reading the data
+ * A specification - Responsible for transforming and filtering the data
+ * A Writer - Responsible for saving the data
+ 
+In this section we will create an import named `price`.
+
+### Create a module
 
 The first step of using the import module is to create a new module in your project to contain the import configuration
 and any code you may have to write. Go ahead and create that - our convention is `Vendor/Import`. We will create an 
@@ -67,156 +76,6 @@ $ n98 dev:module:create MyVendor Import
 ```
 
 Delete the `events.xml` & `crontab.xml` files from the modules `etc` directory, we don't need those.
-
-## Defining an import
-
-An import is defined via configuration in an `imports.xml` file which should be placed in a modules `etc` directory. In 
-the case of our example the imports are defined at `app/code/MyVendor/Import/etc/imports.xml`
-
-## Triggering an import
-
-After an import is defined it can be retrieved from the import manager which is an instance of `\Jh\Import\Import\Manager`
-So anywhere you have an instance of `\Jh\Import\Import\Manager` you can execute an import by its name.
-
-For example:
-
-```php
-<?php
-
-$objectManager->get(Jh\Import\Import\Manager::class)->executeImportByName($myImportName);
-```
-
-Where `$myImportName` is the name given to the import in `app/code/MyVendor/Import/etc/imports.xml`
-
-You may want to execute an import on a regular basis and for this you will want to create a cron job. Simply create a
-cron job that is injected with `Jh\Import\Import\Manager` and executes the correct import. Set the cron schedule via
-configuration. An example cron class might be:
-
-```php
-<?php
-
-namespace MyVendor\Import\Cron;
-
-use Jh\Import\Import\Manager;
-
-class Product
-{
-
-    /**
-     * @var Manager
-     */
-    private $importManager;
-
-    public function __construct(Manager $importManager)
-    {
-        $this->importManager = $importManager;
-    }
-
-    public function execute()
-    {
-        $this->importManager->executeImportByName('product');
-    }
-}
-```
-
-The cron is just a dumb object, the Import Manager does the real work.
-
-### Running an import manually
-
-The import module provides a console command which allows to manually run an import, useful for testing and on-demand imports. To use it simply run
-`php bin/magento import:run <import-name>` substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`.
-
-You will get real time progress updates and live scrolling log including eta's and memory usage.
-
-For reference the console command exists here: [src/Command/RunImportCommand.php](src/Command/RunImportCommand.php).
-
-### Where do the files go?
-
-The import files should be placed in the folders specified in `app/code/MyVendor/Import/etc/imports.xml` for your import.
-The `match_files` config can support a regex, `*` (for everything in the dir) or a single file name for the files to process. If using a regex it should start and end with `/`.
-
-See [src/Type/Files.php](src/Type/Files.php) for how the `match_files` config is parsed.
-
-For example on a client project we use the regex `/RDrive_Export_\d{8}.txt/` to look for files. So it will pick up:
-
-* `RDrive_Export_13022017.txt`
-* `RDrive_Export_05042017.txt`
-
-So before you run an import, you will need to make sure the file name matches the configuration file and it is placed in the correct folder. When working locally
-you can place a file in `var/jh_import/incoming` in PHP Storm and use `workflow push var/jh_import/incoming/<file-name>` to get it in to the docker container.
-
-## Viewing Import Logs
-
-Import logs can be viewed in the admin area. Simply navigate to: Admin -> System -> Import Log.
-
-The listing will show the previous imports. Filter by import type and date to find the import you wish to view the logs for, then select
-`View Logs`. The view is split in to two listings:
-
-### Item level logs
-
-Issues which occurred at the item level, missing images, incorrect data etc. You should also find a reference to the line number which the error occurred on and also the
- primary key of the row so you can search the source for it. Note the line number may not always be completely accurate, it is an estimation. The primary key field is defined in `app/code/MyVendor/Import/etc/imports.xml`
-for each import.
-
-### Import level logs
-
-Issues which occurred at the import level, for example: duplicate source detected, importer already running etc.
-
-## Sequence detection
-
-The importer has sequence detection built in - in that you cannot import the same source twice. For example if your import uses
-the csv source, the file will be hashed and stored. If you attempt to import the same file again the import will fail.
-
-### Force running the same source again
-
-You can force running the import again by deleting the logs and history. Use the following SQL queries to remove the logs and import history:
-
-```sql
-DELETE FROM jh_import_history_log;
-DELETE FROM jh_import_history_item_log;
-DELETE FROM jh_import_history;
-DELETE FROM jh_import_lock;
-```
-
-## Import Locking
-
-When an import is running it will be locked. This prevents the same import running again while the first has not finished. This is useful in the case that you need files
-to be imported sequentially but the first is taking a longer time than expected and the second is due to start. The locking mechanism will cause the new import to be skipped until
-the first is finished.
-
-Import locks are stored in the table `jh_import_lock`.
-
-## Archiving
- 
-After an import source has finished being processed it is passed to an archiver. Each source type is mapped to it's own archiver. See [src/Archiver/Factory.php](src/Archiver/Factory.php) for the mappings.
-
-Depending on whether the import is deemed successful or not it is moved to an archived folder or a failed folder respectively. These folders are figured out from your incoming directory
-import configuration at `app/code/MyVendor/Import/etc/imports.xml`. A  recommended incoming folder is `jh_import/incoming`. This folder will be created inside the Magento `var` folder.
-
-Therefore the importer will assume:
-
- * `var/jh_import/archived` as the archived folder
- * `var/jh_import/failed` as the failed folder
- 
-The file name will be changed to include the current timestamp (time of moving) to prevent race conditions.
-
-### What causes an import to be failed?
- 
-During the process of importing through the various components - a report object is passed around so the source/transformers/filters and writers can
-add debug information and errors. The report object is an instance of `\Jh\Import\Report\Report` - see: [src/Report/Report.php](src/Report/Report.php).
-
-Entries can be added with any of the Log Levels defined in [src/LogLevel.php](src/LogLevel.php). If you see the `$failedLogLevels` property in [src/Report/Report.php](src/Report/Report.php)
-you will see the error levels which it regards as failures. So any message added to the report with a level which exists in the `$failedLogLevels` array will cause the import to be failed.
-
-## Creating a new Import
- 
-An import consists of a bunch of components:
- 
- * A source - Responsible for reading the data
- * A specification - Responsible for transforming and filtering the data
- * A Writer - Responsible for saving the data
- 
-In this section we will create an import named `price`.
  
 ### Define the import configuration
  
@@ -516,3 +375,140 @@ class Price implements \Jh\Import\Writer\Writer
     }
 }
 ```
+
+## Triggering an import
+
+After an import is defined it can be retrieved from the import manager which is an instance of `\Jh\Import\Import\Manager`
+So anywhere you have an instance of `\Jh\Import\Import\Manager` you can execute an import by its name.
+
+For example:
+
+```php
+<?php
+
+$objectManager->get(Jh\Import\Import\Manager::class)->executeImportByName($myImportName);
+```
+
+Where `$myImportName` is the name given to the import in `app/code/MyVendor/Import/etc/imports.xml`. In the case of our example
+the import name would be `price`.
+
+You may want to execute an import on a regular basis and for this you will want to create a cron job. Simply create a
+cron job that is injected with `Jh\Import\Import\Manager` and executes the correct import. Set the cron schedule via
+configuration. An example cron class might be:
+
+```php
+<?php
+
+namespace MyVendor\Import\Cron;
+
+use Jh\Import\Import\Manager;
+
+class Price
+{
+
+    /**
+     * @var Manager
+     */
+    private $importManager;
+
+    public function __construct(Manager $importManager)
+    {
+        $this->importManager = $importManager;
+    }
+
+    public function execute()
+    {
+        $this->importManager->executeImportByName('price');
+    }
+}
+```
+
+The cron is just a dumb object, the Import Manager does the real work.
+
+### Running an import manually
+
+The import module provides a console command which allows to manually run an import, useful for testing and on-demand imports. To use it simply run
+`php bin/magento import:run <import-name>` substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`. Eg: `price
+.
+You will get real time progress updates and live scrolling log including eta's and memory usage.
+
+For reference the console command exists here: [src/Command/RunImportCommand.php](src/Command/RunImportCommand.php).
+
+### Where do the files go?
+
+The import files should be placed in the folders specified in `app/code/MyVendor/Import/etc/imports.xml` for your import.
+The `match_files` config can support a regex, `*` (for everything in the dir) or a single file name for the files to process. If using a regex it should start and end with `/`.
+
+See [src/Type/Files.php](src/Type/Files.php) for how the `match_files` config is parsed.
+
+For example on a client project we use the regex `/RDrive_Export_\d{8}.txt/` to look for files. So it will pick up:
+
+* `RDrive_Export_13022017.txt`
+* `RDrive_Export_05042017.txt`
+
+So before you run an import, you will need to make sure the file name matches the configuration file and it is placed in the correct folder. When working locally
+you can place a file in `var/jh_import/incoming` in PHP Storm and use `workflow push var/jh_import/incoming/<file-name>` to get it in to the docker container.
+
+## Viewing Import Logs
+
+Import logs can be viewed in the admin area. Simply navigate to: Admin -> System -> Import Log.
+
+The listing will show the previous imports. Filter by import type and date to find the import you wish to view the logs for, then select
+`View Logs`. The view is split in to two listings:
+
+### Item level logs
+
+Issues which occurred at the item level, missing images, incorrect data etc. You should also find a reference to the line number which the error occurred on and also the
+ primary key of the row so you can search the source for it. Note the line number may not always be completely accurate, it is an estimation. The primary key field is defined in `app/code/MyVendor/Import/etc/imports.xml`
+for each import.
+
+### Import level logs
+
+Issues which occurred at the import level, for example: duplicate source detected, importer already running etc.
+
+## Sequence detection
+
+The importer has sequence detection built in - in that you cannot import the same source twice. For example if your import uses
+the csv source, the file will be hashed and stored. If you attempt to import the same file again the import will fail.
+
+### Force running the same source again
+
+You can force running the import again by deleting the logs and history. Use the following SQL queries to remove the logs and import history:
+
+```sql
+DELETE FROM jh_import_history_log;
+DELETE FROM jh_import_history_item_log;
+DELETE FROM jh_import_history;
+DELETE FROM jh_import_lock;
+```
+
+## Import Locking
+
+When an import is running it will be locked. This prevents the same import running again while the first has not finished. This is useful in the case that you need files
+to be imported sequentially but the first is taking a longer time than expected and the second is due to start. The locking mechanism will cause the new import to be skipped until
+the first is finished.
+
+Import locks are stored in the table `jh_import_lock`.
+
+## Archiving
+ 
+After an import source has finished being processed it is passed to an archiver. Each source type is mapped to it's own archiver. See [src/Archiver/Factory.php](src/Archiver/Factory.php) for the mappings.
+
+Depending on whether the import is deemed successful or not it is moved to an archived folder or a failed folder respectively. These folders are figured out from your incoming directory
+import configuration at `app/code/MyVendor/Import/etc/imports.xml`. A  recommended incoming folder is `jh_import/incoming`. This folder will be created inside the Magento `var` folder.
+
+Therefore the importer will assume:
+
+ * `var/jh_import/archived` as the archived folder
+ * `var/jh_import/failed` as the failed folder
+ 
+The file name will be changed to include the current timestamp (time of moving) to prevent race conditions.
+
+### What causes an import to be failed?
+ 
+During the process of importing through the various components - a report object is passed around so the source/transformers/filters and writers can
+add debug information and errors. The report object is an instance of `\Jh\Import\Report\Report` - see: [src/Report/Report.php](src/Report/Report.php).
+
+Entries can be added with any of the Log Levels defined in [src/LogLevel.php](src/LogLevel.php). If you see the `$failedLogLevels` property in [src/Report/Report.php](src/Report/Report.php)
+you will see the error levels which it regards as failures. So any message added to the report with a level which exists in the `$failedLogLevels` array will cause the import to be failed.
+
