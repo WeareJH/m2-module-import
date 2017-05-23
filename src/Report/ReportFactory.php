@@ -2,12 +2,14 @@
 
 namespace Jh\Import\Report;
 
+use Jh\Import\Config;
 use Jh\Import\LogLevel;
-use Jh\Import\Progress\CliProgress;
 use Jh\Import\Report\Handler\ConsoleHandler;
 use Jh\Import\Report\Handler\DatabaseHandler;
+use Jh\Import\Report\Handler\Handler;
 use Jh\Import\Source\Source;
 use Magento\Framework\App\State;
+use Magento\Framework\ObjectManagerInterface;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -15,35 +17,39 @@ use Magento\Framework\App\State;
 class ReportFactory
 {
     /**
-     * @var State
+     * @var ObjectManagerInterface
      */
-    private $appState;
-    /**
-     * @var DatabaseHandler
-     */
-    private $databaseHandler;
-    /**
-     * @var CliProgress
-     */
-    private $cliProgress;
+    private $objectManager;
 
-    public function __construct(State $appState, DatabaseHandler $databaseHandler, CliProgress $cliProgress)
+    public function __construct(ObjectManagerInterface $objectManager)
     {
-        $this->appState = $appState;
-        $this->databaseHandler = $databaseHandler;
-        $this->cliProgress = $cliProgress;
+        $this->objectManager = $objectManager;
     }
 
-    public function createFromSourceAndName(Source $source, string $importName)
+    public function createFromSourceAndConfig(Source $source, Config $config)
     {
         $handlers = [
-            $this->databaseHandler
+            $this->objectManager->get(DatabaseHandler::class)
         ];
 
-        if ($this->appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
-            $handlers[] = new ConsoleHandler($this->cliProgress, LogLevel::WARNING);
+        $appState = $this->objectManager->get(State::class);
+
+        if ($appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
+            $handlers[] = $this->objectManager->create(ConsoleHandler::class, [
+                'minErrorLevel' => LogLevel::WARNING
+            ]);
         }
 
-        return new Report($handlers, $importName, $source->getSourceId());
+        foreach ($config->getReportHandlers() as $reportHandler) {
+            $reportHandler = $this->objectManager->get($reportHandler);
+
+            if (!$reportHandler instanceof Handler) {
+                throw new \RuntimeException(sprintf('Report handler must implement "%s"', Handler::class));
+            }
+
+            $handlers[] = $reportHandler;
+        }
+
+        return new Report($handlers, $config->getImportName(), $source->getSourceId());
     }
 }

@@ -53,6 +53,11 @@ class Config
         return $this->config['indexers'] ?? [];
     }
 
+    public function getReportHandlers() : array
+    {
+        return $this->config['report_handlers'] ?? [];
+    }
+
     /**
      * @param string $key
      * @return string|null

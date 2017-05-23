@@ -64,4 +64,6 @@
             <argument name="resourceModel" xsi:type="string">Jh\Import\Entity\ImportHistoryItemLogResource</argument>
         </arguments>
     </virtualType>
+    <virtualType name="my_email_handler" type="Jh\Import\Report\Handler\EmailHandler">
+    </virtualType>
 </config>

@@ -73,8 +73,20 @@ class Converter implements ConverterInterface
                 ->all();
         }
 
+        //parse report handlers
+        $reportHandlersElement = $import->getElementsByTagName('report_handlers');
+        $reportHandlers = [];
+        if ($reportHandlersElement->length > 0) {
+            $reportHandlers = collect($reportHandlersElement->item(0)->getElementsByTagName('report_handler'))
+                ->map(function (\DOMElement $reportHandler) {
+                    return $reportHandler->nodeValue;
+                })
+                ->all();
+        }
+
         return collect($requiredFields)
             ->combine($options)
-            ->put('indexers', $indexers);
+            ->put('indexers', $indexers)
+            ->put('report_handlers', $reportHandlers);
     }
 }

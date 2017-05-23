@@ -135,7 +135,7 @@ class Importer
      */
     public function process(Config $config)
     {
-        $report = $this->reportFactory->createFromSourceAndName($this->source, $config->getImportName());
+        $report = $this->reportFactory->createFromSourceAndConfig($this->source, $config);
         $report->start();
 
         $this->prepare($config);
