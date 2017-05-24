@@ -32,7 +32,6 @@ class FilterHandler implements Handler
         $this->wrappedHandler = $wrappedHandler;
     }
 
-
     public function start(Report $report, \DateTime $startTime)
     {
         $this->wrappedHandler->start($report, $startTime);
