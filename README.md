@@ -71,7 +71,7 @@ The first step of using the import module is to create a new module in your proj
 and any code you may have to write. Go ahead and create that - our convention is `Vendor/Import`. We will create an 
 example module in this documentation to help show the concepts.
 
-We will use [N98 magerun2](*__*https://github.com/netz98/n98-magerun2) to do this: 
+We will use [N98 magerun2](https://github.com/netz98/n98-magerun2) to do this: 
 
 ```sh
 $ n98 dev:module:create MyVendor Import
