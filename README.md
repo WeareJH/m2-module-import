@@ -39,7 +39,7 @@ $ php bin/magento setup:upgrade
   * [Create the writer](#create-the-writer)
     * [Indexing](#indexing)
 - [Report Handlers](#report-handlers)
-  * [Bundled Handlers](#bunled-handlers)
+  * [Bundled Handlers](#bundled-handlers)
     * [Usage](#bundled-handler-usage)
     * [Mail Handler](#mail-handler)
   * [Creating custom handlers](#custom-handlers)  
