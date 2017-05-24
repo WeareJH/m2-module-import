@@ -1,6 +1,6 @@
 <?php
 
-namespace Jh\ImportTest\Import;
+namespace Jh\ImportTest;
 
 use Jh\Import\Config;
 use PHPUnit\Framework\TestCase;
