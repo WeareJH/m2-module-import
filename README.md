@@ -41,7 +41,9 @@ $ php bin/magento setup:upgrade
 - [Report Handlers](#report-handlers)
   * [Bundled Handlers](#bundled-handlers)
     * [Usage](#bundled-handler-usage)
-    * [Mail Handler](#mail-handler)
+    * [Database Handler](#jhimportreporthandlerdatabasehandler)
+    * [Console Handler](#jhimportreporthandlerconsolehandler)
+    * [Mail Handler](#jhimportreporthandleremailhandler)
   * [Creating custom handlers](#custom-handlers)  
 - [Triggering an import](#triggering-an-import)
   * [Running an import manually](#running-an-import-manually)
@@ -391,9 +393,9 @@ This section details the existing report handlers and how to use them. It also d
 
 The following handlers are bundled with the library:
 
- * [Jh\Import\Report\Handler\DatabaseHandler](#Jh\Import\Report\Handler\DatabaseHandler)
- * [Jh\Import\Report\Handler\ConsoleHandler](#Jh\Import\Report\Handler\ConsoleHandler)
- * [Jh\Import\Report\Handler\EmailHandler](#Jh\Import\Report\Handler\EmailHandler)
+ * [Jh\Import\Report\Handler\DatabaseHandler](#jhimportreporthandlerdatabasehandler)
+ * [Jh\Import\Report\Handler\ConsoleHandler](#jhimportreporthandlerconsolehandler)
+ * [Jh\Import\Report\Handler\EmailHandler](#jhimportreporthandleremailhandler)
  
 #### Bundled Handler Usage
 
