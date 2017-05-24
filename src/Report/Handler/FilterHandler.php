@@ -12,12 +12,15 @@ use Jh\Import\Report\ReportItem;
  */
 class FilterHandler implements Handler
 {
-
-
     /**
      * @var Handler
      */
     private $wrappedHandler;
+
+    /**
+     * @var int
+     */
+    private $minimumLogLevel;
 
     public function __construct(string $logLevel, Handler $wrappedHandler)
     {
@@ -32,12 +35,12 @@ class FilterHandler implements Handler
 
     public function start(Report $report, \DateTime $startTime)
     {
-        // noop
+        $this->wrappedHandler->start($report, $startTime);
     }
 
     public function finish(Report $report, \DateTime $finishTime, int $memoryUsage)
     {
-        // noop
+        $this->wrappedHandler->finish($report, $finishTime, $memoryUsage);
     }
 
     public function handleMessage(Message $message)
