@@ -44,7 +44,7 @@ $ php bin/magento setup:upgrade
     * [Database Handler](#jhimportreporthandlerdatabasehandler)
     * [Console Handler](#jhimportreporthandlerconsolehandler)
     * [Mail Handler](#jhimportreporthandleremailhandler)
-  * [Creating custom handlers](#custom-handlers)  
+  * [Creating custom handlers](#creating-custom-handlers)  
 - [Triggering an import](#triggering-an-import)
   * [Running an import manually](#running-an-import-manually)
   * [Where do the files go?](#where-do-the-files-go)
