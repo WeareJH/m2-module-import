@@ -44,7 +44,10 @@
     "autoload-dev": {
         "psr-4": {
             "Jh\\ImportTest\\": "test"
-        }
+        },
+        "files" : [
+            "src/functions.php"
+        ]
     },
     "scripts": {
         "test": [
@@ -57,7 +60,7 @@
         ],
         "cs": "phpcs -s src --standard=PSR2 && phpcs -s test --standard=PSR2",
         "cs-fix": "phpcbf -s src --standard=PSR2 && phpcbf -s src --standard=PSR2",
-        "unit-tests": "phpunit --colors=always -v",
+        "unit-tests": "phpunit --colors=always",
         "unit-tests-coverage": "phpunit --colors=always -v --coverage-text",
         "unit-tests-coverage-clover": "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
     }

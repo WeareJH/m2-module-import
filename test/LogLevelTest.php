@@ -1,6 +1,6 @@
 <?php
 
-namespace Jh\ImportTest\Asset;
+namespace Jh\ImportTest;
 
 use Jh\Import\LogLevel;
 use PHPUnit\Framework\TestCase;

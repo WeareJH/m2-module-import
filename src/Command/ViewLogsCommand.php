@@ -78,7 +78,7 @@ class ViewLogsCommand extends Command
                     : 'N/A';
 
                 $memory = $import->getData('memory_usage')
-                    ? $this->formatBytes($import->getData('memory_usage'))
+                    ? format_bytes($import->getData('memory_usage'))
                     : 'N/A';
 
                 return [$import->getId(), $started->format('d-m-Y H:i:s'), $finished, $memory];
@@ -122,18 +122,5 @@ class ViewLogsCommand extends Command
                 ];
             }, $itemLogCollection->getItems()))
             ->render();
-    }
-
-    private function formatBytes(string $bytes) : string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-        $bytes = max($bytes, 0);
-        $pow   = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow   = min($pow, count($units) - 1);
-
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, 2) . ' ' . $units[$pow];
     }
 }
