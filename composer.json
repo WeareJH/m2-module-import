@@ -44,7 +44,10 @@
     "autoload-dev": {
         "psr-4": {
             "Jh\\ImportTest\\": "test"
-        }
+        },
+        "files" : [
+            "src/functions.php"
+        ]
     },
     "scripts": {
         "test": [
