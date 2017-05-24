@@ -6,24 +6,38 @@ use Jh\Import\LogLevel;
 use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
-use Magento\Framework\Mail\Transport;
-use Monolog\Formatter\HtmlFormatter;
+use Magento\Framework\Mail\Message as MailMessage;
+use Magento\Framework\Mail\TransportInterfaceFactory;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
 class EmailHandler implements Handler
 {
-
     /**
-     * @var \DateTime
+     * @var TransportInterfaceFactory
      */
-    private $startTime;
+    private $transportFactory;
 
     /**
      * @var int
      */
     private $minimumLogLevel;
+
+    /**
+     * @var array
+     */
+    private $recipients;
+
+    /**
+     * @var string
+     */
+    private $fromAddress;
+
+    /**
+     * @var \DateTime
+     */
+    private $startTime;
 
     /**
      * @var bool
@@ -54,9 +68,16 @@ class EmailHandler implements Handler
         LogLevel::EMERGENCY => '#000000',
     ];
 
-    public function __construct(string $logLevel = LogLevel::ERROR)
-    {
+    public function __construct(
+        TransportInterfaceFactory $transportFactory,
+        array $recipients,
+        string $fromAddress,
+        string $logLevel = LogLevel::ERROR
+    ) {
+        $this->transportFactory = $transportFactory;
         $this->minimumLogLevel =  LogLevel::$levels[$logLevel];
+        $this->recipients = $recipients;
+        $this->fromAddress = $fromAddress;
     }
 
     public function start(Report $report, \DateTime $startTime)
@@ -95,58 +116,73 @@ class EmailHandler implements Handler
 
     private function send(Report $report, \DateTime $finishTime, int $memoryUsage)
     {
-        $mailMessage = new \Magento\Framework\Mail\Message();
-        $mailMessage->addTo('aydin@wearejh.com');
-        $mailMessage->setFrom('import@fps.co.uk');
-        $mailMessage->setSubject(
-            sprintf(
-                'A problem occurred with import: "%s" started on: "%s" and finished on: "%s"',
-                $report->getImportName(),
-                $this->startTime->format('d-m-Y H:i:s'),
-                $finishTime->format('d-m-Y H:i:s')
-            )
+        $content = sprintf(
+            '%s%s%s%s%s%s',
+            $this->title(
+                sprintf(
+                    'An error occurred with a severity level of at least: "%s" so we sent the whole import log over',
+                    array_search($this->minimumLogLevel, LogLevel::$levels, true)
+                )
+            ),
+            $this->info($report, $finishTime, $memoryUsage),
+            $this->title('Item Level Logs', 2),
+            implode('', array_map(function ($item) {
+                return $this->itemLogEntry(...$item);
+            }, $this->itemMessages)),
+            $this->title('Import Level Logs', 2),
+            implode('', array_map(function (Message $message) {
+                return $this->logEntry($message);
+            }, $this->messages))
         );
 
-        $content  = $this->title(sprintf('An error occurred with a severity level of at least: "%s" so we send the whole import log over', array_search($this->minimumLogLevel, LogLevel::$levels)));
-        $content .= $this->info($report, $finishTime, $memoryUsage);
-        $content .= $this->title('Item Level Logs', 2);
+        $subject = sprintf(
+            'A problem occurred with import: "%s" started on: "%s" and finished on: "%s"',
+            $report->getImportName(),
+            $this->startTime->format('d-m-Y H:i:s'),
+            $finishTime->format('d-m-Y H:i:s')
+        );
 
-        foreach ($this->itemMessages as list($item, $message)) {
-            $content .= $this->itemLogEntry($item, $message);
-        }
+        $mailMessage = (new MailMessage)
+            ->addTo($this->recipients)
+            ->setFrom($this->fromAddress)
+            ->setSubject($subject)
+            ->setBodyHtml($content);
 
-        $content .= $this->title('Import Level Logs', 2);
-        foreach ($this->messages as $message) {
-            $content .= $this->logEntry($message);
-        }
-
-        $mailMessage->setBodyHtml($content);
-
-        (new Transport($mailMessage))->sendMessage();
+        $this->transportFactory->create(['message' => $mailMessage])->sendMessage();
     }
 
     private function title(string $title, $level = 1)
     {
         $title = htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8');
-        return '<h' . $level .' style="background: #000000;color: #ffffff;padding: 5px;" class="monolog-output">' . $title . '</h' . $level . '>';
+        return sprintf(
+            '<h%d style="background: #000000;color: #ffffff;padding: 5px;" class="monolog-output">%s</h%d>',
+            $level,
+            $title,
+            $level
+        );
     }
 
     private function info(Report $report, \DateTime $finishTime, int $memoryUsage)
     {
-        $output  = '<h2 style="background: #23F532;color: #ffffff;padding: 5px;" class="monolog-output">Import Information</h2>';
+        $output  = '<h2 style="background: #23F532;color: #ffffff;padding: 5px;"';
+        $output .= 'class="monolog-output">Import Information</h2>';
         $output .= '<table cellspacing="1" width="100%" class="monolog-output">';
         $output .= $this->tableRow('Import Name', $report->getImportName());
         $output .= $this->tableRow('Source ID', $report->getSourceId());
         $output .= $this->tableRow('Import Started', $this->startTime->format('d-m-Y H:i:s'));
         $output .= $this->tableRow('Import Finished', $finishTime->format('d-m-Y H:i:s'));
-        $output .= $this->tableRow('Peak Memory Usage', $this->formatBytes($memoryUsage));
+        $output .= $this->tableRow('Peak Memory Usage', format_bytes($memoryUsage));
         return $output.'</table>';
     }
 
     private function logTitle(string $logLevel)
     {
         $title = htmlspecialchars($logLevel, ENT_NOQUOTES, 'UTF-8');
-        return '<h3 style="background: ' . self::$logLevels[$logLevel] . ';color: #ffffff;padding: 5px;" class="monolog-output">' . $title . '</h1>';
+        return sprintf(
+            '<h3 style="background: %s;color: #ffffff;padding: 5px;" class="monolog-output">%s</h1>',
+            self::$logLevels[$logLevel],
+            $title
+        );
     }
 
     private function itemLogEntry(ReportItem $reportItem, Message $message)
@@ -179,19 +215,10 @@ class EmailHandler implements Handler
             $td = '<pre>'.htmlspecialchars($td, ENT_NOQUOTES, 'UTF-8').'</pre>';
         }
 
-        return "<tr style=\"padding: 4px;spacing: 0;text-align: left;\">\n<th style=\"background: #cccccc\" width=\"150px\">$th:</th>\n<td style=\"padding: 4px;spacing: 0;text-align: left;background: #eeeeee\">".$td."</td>\n</tr>";
-    }
+        $format  = "<tr style=\"padding: 4px;spacing: 0;text-align: left;\">\n<th style=\"background: #cccccc\"";
+        $format .= "width=\"150px\">%s:</th>\n<td style=\"padding: 4px;spacing: 0;text-align:";
+        $format .= "left;background: #eeeeee\">%s</td>\n</tr>";
 
-    private function formatBytes(string $bytes) : string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-        $bytes = max($bytes, 0);
-        $pow   = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow   = min($pow, count($units) - 1);
-
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, 2) . ' ' . $units[$pow];
+        return sprintf($format, $th, $td);
     }
 }
