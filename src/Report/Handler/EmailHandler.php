@@ -143,6 +143,7 @@ class EmailHandler implements Handler
         );
 
         $mailMessage = (new MailMessage)
+            ->setMessageType(MailMessage::TYPE_HTML)
             ->addTo($this->recipients)
             ->setFrom($this->fromAddress)
             ->setSubject($subject)
