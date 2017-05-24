@@ -466,6 +466,25 @@ for each import.
 
 Issues which occurred at the import level, for example: duplicate source detected, importer already running etc.
 
+## Viewing Import Logs on the CLI
+
+You can also get a summary of the logs on the CLI. Simply run the following command:
+
+```shell
+$ php bin/magento import:view-logs <import-name>
+```
+
+Substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`. Eg: `price`.
+
+There is an optional second parameter to limit the number of log entries displayed, eg:
+
+```shell
+$ php bin/magento import:view-logs price 20
+```
+
+You will be presented with a table describing all the imports with the import name you entered, from here you must
+enter the ID of the import you want to view the logs for.
+
 ## Sequence detection
 
 The importer has sequence detection built in - in that you cannot import the same source twice. For example if your import uses
