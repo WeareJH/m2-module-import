@@ -13,6 +13,7 @@ use Jh\Import\Locker\ImportLockedException;
 use Jh\Import\Locker\Locker;
 use Jh\Import\Progress\Progress;
 use Jh\Import\Report\Handler\CollectingHandler;
+use Jh\Import\Report\Handler\DatabaseHandler;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportFactory;
 use Jh\Import\Report\ReportPersister;
@@ -21,6 +22,7 @@ use Jh\Import\Source\Source;
 use Jh\Import\Writer\CollectingWriter;
 use Jh\Import\Writer\Writer;
 use Jh\UnitTestHelpers\ObjectHelper;
+use Magento\Framework\App\State;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Mview\View\StateInterface;
 use Magento\Framework\ObjectManagerInterface;
@@ -36,6 +38,7 @@ class ImporterTest extends TestCase
 
     public function testWriterIsPreparedAndFinished()
     {
+        $config  = new Config('product', []);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
@@ -47,7 +50,7 @@ class ImporterTest extends TestCase
                 yield [2];
                 yield [3];
             }),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer'  => $writer->reveal()
@@ -56,11 +59,12 @@ class ImporterTest extends TestCase
         $writer->prepare(Argument::type(Source::class))->shouldBeCalled();
         $writer->finish(Argument::type(Source::class))->willReturn(new Result([]))->shouldBeCalled();
 
-        $importer->process(new Config('product', []));
+        $importer->process($config);
     }
     
     public function testProgressIsAdvancedForEachRecordWithErrors()
     {
+        $config   = new Config('product', ['id_field' => 'sku']);
         $om       = $this->prophesize(ObjectManagerInterface::class);
         $progress = $this->prophesize(Progress::class);
         $history  = $this->prophesize(History::class);
@@ -72,14 +76,13 @@ class ImporterTest extends TestCase
                 yield [2];
                 yield [3];
             }),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'progress' => $progress->reveal(),
             'writer' => new CollectingWriter
         ]);
 
-        $config = new Config('product', ['id_field' => 'sku']);
         $progress->start($source, $config)->shouldBeCalled();
         $progress->advance()->shouldBeCalledTimes(3);
         $progress->finish($source)->shouldBeCalled();
@@ -89,6 +92,7 @@ class ImporterTest extends TestCase
 
     public function testWriterIsPassedEachRecordAndSourceIsArchived()
     {
+        $config         = new Config('product', ['id_field' => 'sku']);
         $archiveFactory = $this->prophesize(Factory::class);
         $history        = $this->prophesize(History::class);
         $archiver       = $this->prophesize(Archiver::class);
@@ -100,7 +104,7 @@ class ImporterTest extends TestCase
                 yield ['number' => 2];
                 yield ['number' => 3];
             }),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => $archiveFactory->reveal(),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter
@@ -108,7 +112,7 @@ class ImporterTest extends TestCase
 
         $archiveFactory->getArchiverForSource($source)->willReturn($archiver->reveal());
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
+        $importer->process($config);
 
         self::assertEquals(
             [
@@ -124,6 +128,7 @@ class ImporterTest extends TestCase
 
     public function testTransformersRunOnEveryRecord()
     {
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
@@ -134,7 +139,7 @@ class ImporterTest extends TestCase
                 yield ['number' => 2];
                 yield ['number' => 3];
             }),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter
@@ -146,7 +151,7 @@ class ImporterTest extends TestCase
             });
         });
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
+        $importer->process($config);
 
         self::assertEquals(
             [
@@ -160,6 +165,7 @@ class ImporterTest extends TestCase
 
     public function testFiltersRunOnEveryRecord()
     {
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
@@ -170,7 +176,7 @@ class ImporterTest extends TestCase
                 yield ['number' => 2];
                 yield ['number' => 3];
             }),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter
@@ -180,7 +186,7 @@ class ImporterTest extends TestCase
             return $record->getColumnValue('number') === 2;
         });
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
+        $importer->process($config);
 
         self::assertEquals(
             [
@@ -192,6 +198,7 @@ class ImporterTest extends TestCase
 
     public function testExceptionsAreAddedAsErrorsAndArchiveFailedIsInvoked()
     {
+        $config          = new Config('product', ['id_field' => 'sku']);
         $archiveFactory  = $this->prophesize(Factory::class);
         $archiver        = $this->prophesize(Archiver::class);
         $history = $this->prophesize(History::class);
@@ -213,9 +220,9 @@ class ImporterTest extends TestCase
 
         $archiveFactory->getArchiverForSource($source)->willReturn($archiver->reveal());
         $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
-        $reportFactory->createFromSourceAndName($source, 'product')->willReturn($report);
+        $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
+        $importer->process($config);
 
         $archiver->failed()->shouldHaveBeenCalled();
         self::assertEquals(
@@ -231,10 +238,11 @@ class ImporterTest extends TestCase
 
     public function testImporterIsSkippedIfItIsLocked()
     {
-        $reportFactory   = $this->prophesize(ReportFactory::class);
+        $config          = new Config('product', ['id_field' => 'sku']);
         $archiveFactory  = $this->prophesize(Factory::class);
         $locker          = $this->prophesize(Locker::class);
         $history         = $this->prophesize(History::class);
+        $reportFactory   = $this->prophesize(ReportFactory::class);
 
         $importer = $this->getObject(Importer::class, [
             'source' => $source = Iterator::fromCallable(function () {
@@ -252,10 +260,9 @@ class ImporterTest extends TestCase
         $locker->lock('product')->willThrow(ImportLockedException::fromName('product'));
 
         $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
-        $reportFactory->createFromSourceAndName($source, 'product')->willReturn($report);
+        $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
-
+        $importer->process($config);
 
         $archiveFactory->getArchiverForSource()->shouldNotHaveBeenCalled();
         self::assertEquals(
@@ -271,6 +278,7 @@ class ImporterTest extends TestCase
 
     public function testImportIsSkippedIfSourceAlreadyImported()
     {
+        $config          = new Config('product', ['id_field' => 'sku']);
         $reportFactory   = $this->prophesize(ReportFactory::class);
         $archiveFactory  = $this->prophesize(Factory::class);
         $locker          = $this->prophesize(Locker::class);
@@ -291,9 +299,9 @@ class ImporterTest extends TestCase
         $history->isImported($source)->willReturn(true);
 
         $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
-        $reportFactory->createFromSourceAndName($source, 'product')->willReturn($report);
+        $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
-        $importer->process(new Config('product', ['id_field' => 'sku']));
+        $importer->process($config);
 
         $archiveFactory->getArchiverForSource()->shouldNotHaveBeenCalled();
         self::assertEquals(
@@ -309,14 +317,15 @@ class ImporterTest extends TestCase
 
     public function testIndexersAreDisabledIfSpecifiedInConfig()
     {
+        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
         $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om = $this->prophesize(ObjectManagerInterface::class);
-        $history = $this->prophesize(History::class);
+        $om              = $this->prophesize(ObjectManagerInterface::class);
+        $history         = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
             'source' => $source = new Iterator(new \ArrayIterator),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter,
@@ -329,9 +338,7 @@ class ImporterTest extends TestCase
         $indexerRegistry->get('My\Indexer')->willReturn($indexer1);
         $indexerRegistry->get('My\OtherIndexer')->willReturn($indexer2);
 
-        $importer->process(
-            new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']])
-        );
+        $importer->process($config);
     }
 
     private function createDisableIndexerMock()
@@ -350,14 +357,15 @@ class ImporterTest extends TestCase
 
     public function testIndexersAreCalledWithAffectedIds()
     {
+        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
         $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om = $this->prophesize(ObjectManagerInterface::class);
-        $history = $this->prophesize(History::class);
+        $om              = $this->prophesize(ObjectManagerInterface::class);
+        $history         = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
             'source' => $source = new Iterator(new \ArrayIterator),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter,
@@ -375,21 +383,20 @@ class ImporterTest extends TestCase
 
         $writer->setAffectedIds([1, 2, 3, 4, 5]);
 
-        $importer->process(
-            new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']])
-        );
+        $importer->process($config);
     }
 
     public function testIndexersAreCalledWithChunkedAffectedIds()
     {
+        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
         $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om = $this->prophesize(ObjectManagerInterface::class);
-        $history = $this->prophesize(History::class);
+        $om              = $this->prophesize(ObjectManagerInterface::class);
+        $history         = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
             'source' => $source = new Iterator(new \ArrayIterator),
-            'reportFactory' => $this->getObject(ReportFactory::class),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer' => $writer = new CollectingWriter,
@@ -411,8 +418,19 @@ class ImporterTest extends TestCase
 
         $writer->setAffectedIds(range(0, 2000));
 
-        $importer->process(
-            new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']])
-        );
+        $importer->process($config);
+    }
+
+    private function reportFactory(Config $config)
+    {
+        $reportFactory = $this->prophesize(ReportFactory::class);
+        $reportFactory
+            ->createFromSourceAndConfig(
+                Argument::type(Source::class),
+                $config
+            )
+            ->willReturn(new Report([], 'product', 'some-source-id'));
+
+        return $reportFactory;
     }
 }
