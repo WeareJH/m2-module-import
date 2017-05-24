@@ -29,4 +29,20 @@ class ConfigTest extends TestCase
         self::assertEquals('some-value', $config->get('arbitrary_2'));
         self::assertEquals(['My\Indexer', 'My\OtherIndexer'], $config->get('indexers'));
     }
+
+    public function testReportHandlers()
+    {
+        $config = new Config('my-import', [
+            'report_handlers' => ['My\Handler', 'My\OtherHandler']
+        ]);
+
+        self::assertEquals(['My\Handler', 'My\OtherHandler'], $config->getReportHandlers());
+    }
+
+    public function testReportHandlersDefault()
+    {
+        $config = new Config('my-import', []);
+
+        self::assertEquals([], $config->getReportHandlers());
+    }
 }
