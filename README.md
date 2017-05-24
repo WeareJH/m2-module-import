@@ -6,10 +6,7 @@
     </a>
     <a href="https://codecov.io/github/WeareJH/m2-module-import" title="Coverage Status" target="_blank">
      <img src="https://img.shields.io/codecov/c/github/WeareJH/m2-module-import.svg?style=flat-square" />
-    </a>
-    <a href="https://scrutinizer-ci.com/g/WeareJH/m2-module-import/" title="Scrutinizer Code Quality" target="_blank">
-     <img src="https://img.shields.io/scrutinizer/g/WeareJH/m2-module-import.svg?style=flat-square" />
-    </a>
+     </a>
 </p>
 
 <p align="center">Import module for Magento 2 - provides commands, logs, reporting, utilities and abstractions for building imports for Magento 2 projects
