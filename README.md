@@ -38,6 +38,11 @@ $ php bin/magento setup:upgrade
     * [Filters](#filters)
   * [Create the writer](#create-the-writer)
     * [Indexing](#indexing)
+- [Report Handlers](#report-handlers)
+  * [Bundled Handlers](#bunled-handlers)
+    * [Usage](#bundled-handler-usage)
+    * [Mail Handler](#mail-handler)
+  * [Creating custom handlers](#custom-handlers)  
 - [Triggering an import](#triggering-an-import)
   * [Running an import manually](#running-an-import-manually)
   * [Where do the files go?](#where-do-the-files-go)
@@ -66,7 +71,7 @@ The first step of using the import module is to create a new module in your proj
 and any code you may have to write. Go ahead and create that - our convention is `Vendor/Import`. We will create an 
 example module in this documentation to help show the concepts.
 
-We will use [N98 magerun2](https://github.com/netz98/n98-magerun2) to do this: 
+We will use [N98 magerun2](*__*https://github.com/netz98/n98-magerun2) to do this: 
 
 ```sh
 $ n98 dev:module:create MyVendor Import
@@ -372,6 +377,90 @@ class Price implements \Jh\Import\Writer\Writer
     }
 }
 ```
+
+## Report Handlers
+
+Report handlers deal with debug information and errors that happen during the import process. By default the only report handler
+added to the import process is the database handler. This logs all messages to database tables which can be viewed
+in the admin. Another report handler is added automatically based on the environment. If the magento instance is in developer mode
+or the import is manually triggered from the CLI the console handler is added. This logs the messages directly to the CLI.
+
+This section details the existing report handlers and how to use them. It also details how to create your own report handlers.
+
+### Bundled Handlers
+
+The following handlers are bundled with the library:
+
+ * [Jh\Import\Report\Handler\DatabaseHandler](#Jh\Import\Report\Handler\DatabaseHandler)
+ * [Jh\Import\Report\Handler\ConsoleHandler](#Jh\Import\Report\Handler\ConsoleHandler)
+ * [Jh\Import\Report\Handler\EmailHandler](#Jh\Import\Report\Handler\EmailHandler)
+ 
+#### Bundled Handler Usage
+
+To use an additional report handler, you just add the class name or the name of a virtual type to the import configuration:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <files name="price">
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</source>
+        <match_files>/price_\d{8}.csv/</source>
+        <specification>MyVendor\Import\Specification\Price</specification>
+        <writer>MyVendor\Import\Writer\Price</specification>
+        <id_field>sku</id_field>
+        <report_handlers>
+            <report_handler>Jh\Import\Report\Handler\EmailHandler</indexer>
+            <report_handler>my_report_handler</indexer>
+        </indexers>
+    </files>
+</config>
+```
+
+#### Jh\Import\Report\Handler\DatabaseHandler
+
+This handler is always added to the import.
+
+#### Jh\Import\Report\Handler\ConsoleHandler
+
+This handler is automatically added based on the magento mode. It also automatically added if the import
+is triggered manually from the CLI.
+
+#### Jh\Import\Report\Handler\EmailHandler
+
+The mail handler will send an e-mail at the end of the import which contains every message which was recorded, including notices and debug
+if (and only if) a message was recorded which was equal to or above the minimum error level. The minimum error level is configurable, as are the
+recipients and from addresses. To reiterate, only one e-mail will be sent no matter how many critical messages occur.
+
+To configure the mail handler, you need to create a virtual type which specifies the constructor arguments:
+
+```xml
+<!-- in a di.xml file -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="my_email_handler" type="Jh\Import\Report\Handler\EmailHandler">
+        <arguments>
+            <argument name="recipients" xsi:type="array">
+                <item name="aydin" xsi:type="string">aydin@wearejh.com</item>            
+            </argument>
+            <argument name="fromAddress" xsi:type="string">import@wearejh.com</argument>
+            <argument name="logLevel" xsi:type="const">Jh\Import\LogLevel::ERROR</argument>
+        </arguments>
+    </virtualType>
+</config>
+```
+
+You would then use the name of this virtual type `my_email_handler` and add it to the `report_handlers` config of your import.
+
+So, in this example, if any message occurred with a log level greater than or equal to ERROR (ERROR, CRITICAL, ALERT & EMERGENCY) at the end
+of the import, the whole import log would be emailed to aydin@wearejh.com.
+
+### Creating custom handlers
+
+You may want to send messages to a third party logging system. In order to do that you just need to implement the interface
+`Jh\Import\Report\Handler\Handler`. See [src/Report/Handler](src/Report/Handler) for the existing implementations.
+
+If your handler if fairly generic, consider pull requesting it to this repository. If it is project specific, keep it in the 
+project repository. Using your custom report handler in an import is the same as the bundled handlers. Simply reference
+the class name or a virtual type referencing the class name in the import configuration.
 
 ## Triggering an import
 
