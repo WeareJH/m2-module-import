@@ -33,9 +33,30 @@ class Locker
         $this->dbAdapter->insert('jh_import_lock', ['import_name' => $importName]);
     }
 
+    /**
+     * Release the lock for a particular import.
+     *
+     * @param string $importName
+     */
     public function release(string $importName)
     {
         $this->dbAdapter->delete('jh_import_lock', ['import_name = ?' => $importName]);
+    }
+
+    /**
+     * Check if import is locked
+     *
+     * @param string $importName
+     * @return bool
+     */
+    public function locked(string $importName) : bool
+    {
+        try {
+            $this->checkAlreadyLocked($importName);
+            return false;
+        } catch (ImportLockedException $e) {
+            return true;
+        }
     }
 
     /**
