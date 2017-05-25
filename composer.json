@@ -35,7 +35,8 @@
     },
     "autoload": {
         "files": [
-            "src/registration.php"
+            "src/registration.php",
+            "src/functions.php"
         ],
         "psr-4": {
             "Jh\\Import\\": "src"
@@ -44,10 +45,7 @@
     "autoload-dev": {
         "psr-4": {
             "Jh\\ImportTest\\": "test"
-        },
-        "files" : [
-            "src/functions.php"
-        ]
+        }
     },
     "scripts": {
         "test": [
