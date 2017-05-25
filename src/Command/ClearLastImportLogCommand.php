@@ -77,6 +77,11 @@ class ClearLastImportLogCommand extends Command
         $this->dbAdapter->delete('jh_import_history_log', ['history_id = ?' => $id]);
         $this->dbAdapter->delete('jh_import_history', ['id = ?' => $id]);
 
-        $output->writeln(sprintf('<info>Removed the last set of logs for import: "%s". You can now reimport the same source.</info>', $importName));
+        $output->writeln(
+            sprintf(
+                '<info>Removed the last set of logs for import: "%s". You can now reimport the same source.</info>',
+                $importName
+            )
+        );
     }
 }
