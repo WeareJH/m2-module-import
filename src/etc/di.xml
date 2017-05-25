@@ -33,6 +33,7 @@
                 <item name="import_run" xsi:type="object">Jh\Import\Command\RunImportCommand</item>
                 <item name="import_view_log" xsi:type="object">Jh\Import\Command\ViewLogsCommand</item>
                 <item name="import_unlock" xsi:type="object">Jh\Import\Command\UnlockImportCommand</item>
+                <item name="import_clear_last_log" xsi:type="object">Jh\Import\Command\ClearLastImportLogCommand</item>
             </argument>
         </arguments>
     </type>
