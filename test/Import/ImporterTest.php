@@ -110,7 +110,7 @@ class ImporterTest extends TestCase
             'writer' => $writer = new CollectingWriter
         ]);
 
-        $archiveFactory->getArchiverForSource($source)->willReturn($archiver->reveal());
+        $archiveFactory->getArchiverForSource($source, $config)->willReturn($archiver->reveal());
 
         $importer->process($config);
 
@@ -218,7 +218,7 @@ class ImporterTest extends TestCase
             'writer' => new CollectingWriter
         ]);
 
-        $archiveFactory->getArchiverForSource($source)->willReturn($archiver->reveal());
+        $archiveFactory->getArchiverForSource($source, $config)->willReturn($archiver->reveal());
         $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
         $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 

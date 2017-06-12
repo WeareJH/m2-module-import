@@ -153,7 +153,7 @@ class Importer
 
         $this->finish($config);
 
-        $archiver = $this->archiverFactory->getArchiverForSource($this->source);
+        $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
         if ($report->isSuccessful()) {
             $archiver->successful();
         } else {

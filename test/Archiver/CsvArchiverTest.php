@@ -3,6 +3,7 @@
 namespace Jh\ImportTest\Archiver;
 
 use Jh\Import\Archiver\CsvArchiver;
+use Jh\Import\Config;
 use Jh\Import\Source\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
@@ -57,7 +58,16 @@ class CsvArchiverTest extends TestCase
         $this->source->getFile()->willReturn(new \SplFileObject($this->testFileLocation, 'r'));
 
         $this->date = new \DateTime('02-03-2017 10:15:00');
-        $this->archiver = new CsvArchiver($this->source->reveal(), $this->directoryList, new File, $this->date);
+        $this->archiver = new CsvArchiver(
+            $this->source->reveal(),
+            new Config('product', [
+                'archived_directory' => 'jh_import/archived',
+                'failed_directory'   => 'jh_import/failed',
+            ]),
+            $this->directoryList,
+            new File,
+            $this->date
+        );
     }
 
     public function tearDown()
