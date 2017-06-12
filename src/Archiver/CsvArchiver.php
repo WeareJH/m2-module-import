@@ -3,6 +3,7 @@
 namespace Jh\Import\Archiver;
 
 use DateTime;
+use Jh\Import\Config;
 use Jh\Import\Source\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
@@ -16,6 +17,11 @@ class CsvArchiver implements Archiver
      * @var Csv
      */
     private $source;
+
+    /**
+     * @var Config
+     */
+    private $config;
 
     /**
      * @var File
@@ -32,14 +38,15 @@ class CsvArchiver implements Archiver
      */
     private $date;
 
-    /**
-     * @var string
-     */
-    private static $importDirectory = 'jh_import';
-
-    public function __construct(Csv $source, DirectoryList $directoryList, File $filesystem, DateTime $date = null)
-    {
+    public function __construct(
+        Csv $source,
+        Config $config,
+        DirectoryList $directoryList,
+        File $filesystem,
+        DateTime $date = null
+    ) {
         $this->source = $source;
+        $this->config = $config;
         $this->filesystem = $filesystem;
         $this->directoryList = $directoryList;
         $this->date = $date;
@@ -47,19 +54,43 @@ class CsvArchiver implements Archiver
 
     public function failed()
     {
-        $this->ensureDirectoryExists(sprintf('%s/failed', $this->rootPath()));
+        $this->ensureDirectoryExists(
+            sprintf(
+                '%s/%s',
+                $this->directoryList->getPath(DirectoryList::VAR_DIR),
+                $this->config->get('failed_directory')
+            )
+        );
+
         $this->filesystem->rename(
             $this->source->getFile()->getRealPath(),
-            sprintf('%s/failed/%s', $this->rootPath(), $this->newName($this->source->getFile()))
+            sprintf(
+                '%s/%s/%s',
+                $this->directoryList->getPath(DirectoryList::VAR_DIR),
+                $this->config->get('failed_directory'),
+                $this->newName($this->source->getFile())
+            )
         );
     }
 
     public function successful()
     {
-        $this->ensureDirectoryExists(sprintf('%s/archived', $this->rootPath()));
+        $this->ensureDirectoryExists(
+            sprintf(
+                '%s/%s',
+                $this->directoryList->getPath(DirectoryList::VAR_DIR),
+                $this->config->get('archived_directory')
+            )
+        );
+
         $this->filesystem->rename(
             $this->source->getFile()->getRealPath(),
-            sprintf('%s/archived/%s', $this->rootPath(), $this->newName($this->source->getFile()))
+            sprintf(
+                '%s/%s/%s',
+                $this->directoryList->getPath(DirectoryList::VAR_DIR),
+                $this->config->get('archived_directory'),
+                $this->newName($this->source->getFile())
+            )
         );
     }
 
@@ -68,11 +99,6 @@ class CsvArchiver implements Archiver
         if (!$this->filesystem->isExists($directory)) {
             $this->filesystem->createDirectory($directory, 0777);
         }
-    }
-
-    private function rootPath() : string
-    {
-        return sprintf('%s/%s', $this->directoryList->getPath(DirectoryList::VAR_DIR), static::$importDirectory);
     }
 
     private function newName(\SplFileObject $file) : string

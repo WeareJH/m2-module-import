@@ -2,6 +2,7 @@
 
 namespace Jh\Import\Archiver;
 
+use Jh\Import\Config;
 use Jh\Import\Source\Csv;
 use Jh\Import\Source\Source;
 use Magento\Framework\ObjectManagerInterface;
@@ -28,7 +29,7 @@ class Factory
         $this->objectManager = $objectManager;
     }
 
-    public function getArchiverForSource(Source $source) : Archiver
+    public function getArchiverForSource(Source $source, Config $config) : Archiver
     {
         $class = get_class($source);
 
@@ -39,7 +40,8 @@ class Factory
         return $this->objectManager->create(
             self::$sourceToArchiverMap[$class],
             [
-                'source' => $source
+                'source' => $source,
+                'config' => $config
             ]
         );
     }
