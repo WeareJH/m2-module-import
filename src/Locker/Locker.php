@@ -24,7 +24,6 @@ class Locker
      * Lock the particular import so no others of the same type can run.
      *
      * @param string $importName
-     * @return void
      * @throws ImportLockedException
      */
     public function lock(string $importName)
@@ -63,7 +62,6 @@ class Locker
      * Check if a particular import is locked - eg it is already running
      *
      * @param string $importName
-     * @return void
      */
     private function checkAlreadyLocked(string $importName)
     {
