@@ -28,6 +28,11 @@ class Config
         return $this->name;
     }
 
+    public function getType() : string
+    {
+        return $this->config['type'];
+    }
+
     public function getSourceService() : string
     {
         return $this->config['source'];
@@ -58,6 +63,16 @@ class Config
         return $this->config['report_handlers'] ?? [];
     }
 
+    public function hasCron() : bool
+    {
+        return isset($this->config['cron']);
+    }
+
+    public function getCron() : string
+    {
+        return $this->config['cron'] ?? null;
+    }
+
     /**
      * @param string $key
      * @return string|null
@@ -65,5 +80,10 @@ class Config
     public function get(string $key)
     {
         return $this->config[$key] ?? null;
+    }
+
+    public function all() : array
+    {
+        return $this->config;
     }
 }
