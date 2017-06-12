@@ -34,16 +34,23 @@ class Files implements Type
      */
     private $importerFactory;
 
+    /**
+     * @var FileMatcher
+     */
+    private $filesMatcher;
+
     public function __construct(
         DirectoryList $directoryList,
         WriteFactory $writeFactory,
         ObjectManagerInterface $objectManager,
-        ImporterFactory $importerFactory
+        ImporterFactory $importerFactory,
+        FileMatcher $filesMatcher
     ) {
         $this->directoryList = $directoryList;
         $this->writeFactory = $writeFactory;
         $this->objectManager = $objectManager;
         $this->importerFactory = $importerFactory;
+        $this->filesMatcher = $filesMatcher;
     }
 
     public function run(Config $config)
@@ -77,25 +84,14 @@ class Files implements Type
         //ensure directory is created
         $directoryWriter->create();
 
-        $files = collect($directoryWriter->read())
-            ->map(function (string $file) use ($directoryWriter) {
-                return $directoryWriter->getAbsolutePath($file);
-            });
-
-        if ($config->get('match_files') === '*') {
-            return $files;
-        }
-
-        //treat as regex
-        if ($config->get('match_files')[0] === '/') {
-            return $files->filter(function ($file) use ($config) {
-                return preg_match($config->get('match_files'), pathinfo($file, PATHINFO_BASENAME));
-            });
-        }
-
-        //else treat as single file match
-        return $files->filter(function ($file) use ($config) {
-            return $config->get('match_files') === pathinfo($file, PATHINFO_BASENAME);
-        });
+        return $this->filesMatcher->matched(
+            $config->get('match_files'),
+            array_map(
+                function (string $file) use ($directoryWriter) {
+                    return $directoryWriter->getAbsolutePath($file);
+                },
+                $directoryWriter->read()
+            )
+        );
     }
 }
