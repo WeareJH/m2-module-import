@@ -1,0 +1,32 @@
+<div class="dashboard-container row">
+    <div class="dashboard-secondary col-m-3">
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Import Name') ?></div>
+            <?= $this->getImport()->getImportName() ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Import Type') ?></div>
+            <?= $this->getImport()->get('type') ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Indexers') ?></div>
+            <?= implode(",\n", $this->getImport()->get('indexers')) ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Report Handlers') ?></div>
+            <?= implode(",\n", $this->getImport()->get('report_handlers')) ?>
+        </div>
+        <?php if ($this->hasCron()): ?>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Cron Expression') ?></div>
+            <?php $expression = $this->getCronExpression() ?>
+            <span><?= $expression ?></span>
+            <small><a target="_blank" href="https://crontab.guru/#<?= str_replace(' ', '_', $expression) ?>">What does that mean?</a></small>
+        </div>
+        <?php endif ?>
+    </div>
+    <div class="dashboard-secondary col-m-9">
+        <?= $this->getChildHtml('type-info') ?>
+    </div>
+</div>
+
