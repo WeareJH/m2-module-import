@@ -63,7 +63,7 @@ class ViewLogsCommand extends Command
         $collection->addFieldToFilter('import_name', $importName);
 
         if ($collection->count() === 0) {
-            throw new \RuntimeException(sprintf('No imports with name: "%s" have completed yet', $importName));
+            throw new \RuntimeException(sprintf('No import with name: "%s" have completed yet', $importName));
         }
 
         $output->writeln(sprintf('<comment>Imports with name: "%s" listed below:</comment>', $importName));
