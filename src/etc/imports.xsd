@@ -13,13 +13,16 @@
                 An import who's source is local files
             </xs:documentation>
         </xs:annotation>
-        <xs:sequence>
+        <xs:all>
             <xs:element name="source" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="incoming_directory" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="archived_directory" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="failed_directory" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="match_files" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="specification" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="writer" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="id_field" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="indexers" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
@@ -34,7 +37,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-        </xs:sequence>
+        </xs:all>
         <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
 </xs:schema>

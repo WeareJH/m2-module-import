@@ -18,6 +18,8 @@ class ConverterTest extends TestCase
     <files name="product">
         <source>Jh\Import\Source\Csv</source>
         <incoming_directory>jh_import/incoming</incoming_directory>
+        <archived_directory>jh_import/archived</archived_directory>
+        <failed_directory>jh_import/failed</failed_directory>
         <match_files>rdrive.csv</match_files>
         <specification>Jh\Import\Specification\Product</specification>
         <writer>Jh\Import\Writer\Product</writer>
@@ -34,13 +36,16 @@ END;
                 'product' => [
                     'source' => 'Jh\Import\Source\Csv',
                     'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
                     'match_files' => 'rdrive.csv',
                     'specification' => 'Jh\Import\Specification\Product',
                     'writer' => 'Jh\Import\Writer\Product',
                     'type' => 'files',
                     'id_field' => 'sku',
                     'indexers' => [],
-                    'report_handlers' => []
+                    'report_handlers' => [],
+                    'cron' => null
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -55,6 +60,8 @@ END;
     <files name="product">
         <source>Jh\Import\Source\Csv</source>
         <incoming_directory>jh_import/incoming</incoming_directory>
+        <archived_directory>jh_import/archived</archived_directory>
+        <failed_directory>jh_import/failed</failed_directory>
         <match_files>rdrive.csv</match_files>
         <specification>Jh\Import\Specification\Product</specification>
         <writer>Jh\Import\Writer\Product</writer>
@@ -75,6 +82,8 @@ END;
                 'product' => [
                     'source' => 'Jh\Import\Source\Csv',
                     'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
                     'match_files' => 'rdrive.csv',
                     'specification' => 'Jh\Import\Specification\Product',
                     'writer' => 'Jh\Import\Writer\Product',
@@ -84,7 +93,8 @@ END;
                         'My\Indexer',
                         'My\OtherIndexer'
                     ],
-                    'report_handlers' => []
+                    'report_handlers' => [],
+                    'cron' => null
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -99,6 +109,8 @@ END;
     <files name="product">
         <source>Jh\Import\Source\Csv</source>
         <incoming_directory>jh_import/incoming</incoming_directory>
+        <archived_directory>jh_import/archived</archived_directory>
+        <failed_directory>jh_import/failed</failed_directory>
         <match_files>rdrive.csv</match_files>
         <specification>Jh\Import\Specification\Product</specification>
         <writer>Jh\Import\Writer\Product</writer>
@@ -115,13 +127,16 @@ END;
                 'product' => [
                     'source' => 'Jh\Import\Source\Csv',
                     'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
                     'match_files' => 'rdrive.csv',
                     'specification' => 'Jh\Import\Specification\Product',
                     'writer' => 'Jh\Import\Writer\Product',
                     'type' => 'files',
                     'id_field' => 'sku',
                     'indexers' => [],
-                    'report_handlers' => []
+                    'report_handlers' => [],
+                    'cron' => null
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -136,6 +151,8 @@ END;
     <files name="product">
         <source>Jh\Import\Source\Csv</source>
         <incoming_directory>jh_import/incoming</incoming_directory>
+        <archived_directory>jh_import/archived</archived_directory>
+        <failed_directory>jh_import/failed</failed_directory>
         <match_files>rdrive.csv</match_files>
         <specification>Jh\Import\Specification\Product</specification>
         <writer>Jh\Import\Writer\Product</writer>
@@ -156,6 +173,8 @@ END;
                 'product' => [
                     'source' => 'Jh\Import\Source\Csv',
                     'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
                     'match_files' => 'rdrive.csv',
                     'specification' => 'Jh\Import\Specification\Product',
                     'writer' => 'Jh\Import\Writer\Product',
@@ -166,6 +185,85 @@ END;
                         'My\ReportHandler',
                         'My\OtherReportHandler'
                     ],
+                    'cron' => null
+                ]
+            ],
+            (new Converter)->convert($domDocument)
+        );
+    }
+
+    public function testConvertNoDirectoriesUsesDefaults()
+    {
+        $xml = <<<'END'
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="imports.xsd">
+    <files name="product">
+        <source>Jh\Import\Source\Csv</source>
+        <match_files>rdrive.csv</match_files>
+        <specification>Jh\Import\Specification\Product</specification>
+        <writer>Jh\Import\Writer\Product</writer>
+        <id_field>sku</id_field>
+    </files>
+</config>
+END;
+
+        $domDocument = new \DOMDocument();
+        $domDocument->loadXML($xml);
+
+        self::assertEquals(
+            [
+                'product' => [
+                    'source'             => 'Jh\Import\Source\Csv',
+                    'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory'   => 'jh_import/failed',
+                    'match_files'        => 'rdrive.csv',
+                    'specification'      => 'Jh\Import\Specification\Product',
+                    'writer'             => 'Jh\Import\Writer\Product',
+                    'type'               => 'files',
+                    'id_field'           => 'sku',
+                    'indexers'           => [],
+                    'report_handlers'    => [],
+                    'cron'               => null
+                ]
+            ],
+            (new Converter)->convert($domDocument)
+        );
+    }
+
+    public function testConvertWithNoCron()
+    {
+        $xml = <<<'END'
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="imports.xsd">
+    <files name="product">
+        <source>Jh\Import\Source\Csv</source>
+        <match_files>rdrive.csv</match_files>
+        <specification>Jh\Import\Specification\Product</specification>
+        <writer>Jh\Import\Writer\Product</writer>
+        <id_field>sku</id_field>
+    </files>
+</config>
+END;
+
+        $domDocument = new \DOMDocument();
+        $domDocument->loadXML($xml);
+
+        self::assertEquals(
+            [
+                'product' => [
+                    'source' => 'Jh\Import\Source\Csv',
+                    'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
+                    'match_files' => 'rdrive.csv',
+                    'specification' => 'Jh\Import\Specification\Product',
+                    'writer' => 'Jh\Import\Writer\Product',
+                    'type' => 'files',
+                    'id_field' => 'sku',
+                    'indexers' => [],
+                    'report_handlers' => [],
+                    'cron' => null
                 ]
             ],
             (new Converter)->convert($domDocument)

@@ -10,6 +10,14 @@ use Magento\Framework\Config\ConverterInterface;
  */
 class Converter implements ConverterInterface
 {
+    private static $defaultValues = [
+        'files' => [
+            'incoming_directory' => 'jh_import/incoming',
+            'archived_directory' => 'jh_import/archived',
+            'failed_directory'   => 'jh_import/failed',
+        ]
+    ];
+
     /**
      * @var array
      */
@@ -17,14 +25,17 @@ class Converter implements ConverterInterface
         'files' => [
             'source',
             'incoming_directory',
+            'archived_directory',
+            'failed_directory',
             'match_files',
             'specification',
             'writer',
-            'id_field'
+            'id_field',
+            'cron'
         ]
     ];
 
-    public function convert($source)
+    public function convert($source) : array
     {
         $names = collect(static::$importTypesWithRequiredFields)
             ->keys()
@@ -45,7 +56,7 @@ class Converter implements ConverterInterface
 
                 return collect($imports)
                     ->map(function (\DOMElement $import) use ($importType, $requiredFields) {
-                        return $this->getOptions($import, $requiredFields)
+                        return $this->getOptions($import, $requiredFields, $importType)
                             ->put('type', $importType);
                     });
             });
@@ -53,13 +64,21 @@ class Converter implements ConverterInterface
         return $names->combine($importData)->toArray();
     }
 
-    private function getOptions(\DOMElement $import, array $requiredFields) : Collection
+    private function getOptions(\DOMElement $import, array $requiredFields, string $importType) : Collection
     {
         $options = collect($requiredFields)
-            ->map(function ($requiredField) use ($import) {
+            ->map(function ($requiredField) use ($import, $importType) {
                 /** @var \DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
-                return $elements->item(0)->nodeValue;
+
+                if ($elements->length > 0) {
+                    return $elements->item(0)->nodeValue;
+                }
+
+                if (isset(static::$defaultValues[$importType][$requiredField])) {
+                    return static::$defaultValues[$importType][$requiredField];
+                }
+                return null;
             });
 
         //parse required indexers
