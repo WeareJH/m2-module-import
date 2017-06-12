@@ -7,6 +7,7 @@ use Jh\Import\Import\Importer;
 use Jh\Import\Import\ImporterFactory;
 use Jh\Import\Source\Source;
 use Jh\Import\Specification\ImportSpecification;
+use Jh\Import\Type\FileMatcher;
 use Jh\Import\Type\Files;
 use Jh\Import\Writer\Writer;
 use Jh\UnitTestHelpers\ObjectHelper;
@@ -50,7 +51,7 @@ class FilesTest extends TestCase
         (new Filesystem)->remove($this->tempDirectory);
     }
 
-    public function testFilesImportWithAllFilesMatch()
+    public function testFilesTypeCreatesAndRunsImportForEachMatchesFileInIncomingDirectory()
     {
         $config = new Config('product', [
             'specification'      => 'MySpecification',
@@ -117,108 +118,9 @@ class FilesTest extends TestCase
             $directoryList,
             new WriteFactory(new DriverPool()),
             $objectManager->reveal(),
-            $importFactory->reveal()
+            $importFactory->reveal(),
+            new FileMatcher
         );
         $files->run($config);
-    }
-
-    public function testFilesImportWithRegexFolderMatch()
-    {
-        $config = new Config('product', [
-            'specification'      => 'MySpecification',
-            'writer'             => 'MyWriter',
-            'source'             => 'MySource',
-            'incoming_directory' => 'import',
-            'match_files'        => '/file\d.csv/',
-        ]);
-
-        $importFactory = $this->prophesize(ImporterFactory::class);
-        $specification = $this->prophesize(ImportSpecification::class);
-        $writer        = $this->prophesize(Writer::class);
-
-        $objectManager = $this->prophesize(ObjectManagerInterface::class);
-        $objectManager->get('MySpecification')->willReturn($specification);
-        $objectManager->get('MyWriter')->willReturn($writer);
-
-        //file1
-        $source1 = $this->prophesize(Source::class);
-        $import1 = $this->prophesize(Importer::class);
-        $objectManager->create('MySource', ['file' => $this->files[0]])->willReturn($source1);
-
-        $importFactory
-            ->create($source1->reveal(), $specification->reveal(), $writer->reveal())
-            ->willReturn($import1->reveal());
-
-        $import1->process($config)->shouldBeCalled();
-
-        //file2
-        $source2 = $this->prophesize(Source::class);
-        $import2 = $this->prophesize(Importer::class);
-        $objectManager->create('MySource', ['file' => $this->files[1]])->willReturn($source2);
-
-        $importFactory
-            ->create($source2->reveal(), $specification->reveal(), $writer->reveal())
-            ->willReturn($import2->reveal());
-
-        $import2->process($config)->shouldBeCalled();
-
-        //file3
-        $source3 = $this->prophesize(Source::class);
-        $import3 = $this->prophesize(Importer::class);
-        $objectManager->create('MySource', ['file' => $this->files[2]])->willReturn($source3);
-
-        $importFactory
-            ->create($source3->reveal(), $specification->reveal(), $writer->reveal())
-            ->willReturn($import3->reveal());
-
-        $import3->process($config)->shouldBeCalled();
-
-        $directoryList = new DirectoryList(dirname($this->tempDirectory, 2));
-        $files = new Files(
-            $directoryList,
-            new WriteFactory(new DriverPool()),
-            $objectManager->reveal(),
-            $importFactory->reveal()
-        );
-        $files->run($config);
-    }
-
-    public function testFilesImportWithSingleFileMatch()
-    {
-        $config = new Config('product', [
-            'specification'      => 'MySpecification',
-            'writer'             => 'MyWriter',
-            'source'             => 'MySource',
-            'incoming_directory' => 'import',
-            'match_files'        => 'other.txt',
-        ]);
-
-        $importFactory = $this->prophesize(ImporterFactory::class);
-        $specification = $this->prophesize(ImportSpecification::class);
-        $writer        = $this->prophesize(Writer::class);
-
-        $objectManager = $this->prophesize(ObjectManagerInterface::class);
-        $objectManager->get('MySpecification')->willReturn($specification);
-        $objectManager->get('MyWriter')->willReturn($writer);
-
-        //file1
-        $source1 = $this->prophesize(Source::class);
-        $import1 = $this->prophesize(Importer::class);
-        $objectManager->create('MySource', ['file' => $this->files[3]])->willReturn($source1);
-
-        $importFactory
-            ->create($source1->reveal(), $specification->reveal(), $writer->reveal())
-            ->willReturn($import1->reveal());
-
-        $import1->process($config)->shouldBeCalled();
-
-        $directoryList = new DirectoryList(dirname($this->tempDirectory, 2));
-        $files = new Files(
-            $directoryList,
-            new WriteFactory(new DriverPool()),
-            $objectManager->reveal(),
-            $importFactory->reveal()
-        );
-        $files->run($config, $config);
     }
 }
