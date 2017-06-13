@@ -56,14 +56,14 @@ class InfoTest extends TestCase
 
     public function testRedirectIsReturnedIfNameParamNotPreset()
     {
-        $this->retrieveDependency(Context::class, 'request')
+        $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn(false);
 
         $redirect = $this->prophesize(\Magento\Framework\Controller\Result\Redirect::class);
         $redirect->setPath('*/*/index')->willReturn($redirect);
 
-        $this->retrieveDependency(Context::class, 'resultRedirectFactory')
+        $this->retrieveChildMock(Context::class, 'resultRedirectFactory')
             ->create()
             ->willReturn($redirect->reveal());
 
@@ -72,14 +72,14 @@ class InfoTest extends TestCase
 
     public function testRedirectIsReturnedIfImportDoesNotExist()
     {
-        $this->retrieveDependency(Context::class, 'request')
+        $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn('image');
 
         $redirect = $this->prophesize(\Magento\Framework\Controller\Result\Redirect::class);
         $redirect->setPath('*/*/index')->willReturn($redirect);
 
-        $this->retrieveDependency(Context::class, 'resultRedirectFactory')
+        $this->retrieveChildMock(Context::class, 'resultRedirectFactory')
             ->create()
             ->willReturn($redirect->reveal());
 
@@ -88,7 +88,7 @@ class InfoTest extends TestCase
 
     public function testPageIsReturnedIfImportExists()
     {
-        $this->retrieveDependency(Context::class, 'request')
+        $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn('product');
 

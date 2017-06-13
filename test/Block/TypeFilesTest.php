@@ -93,7 +93,7 @@ class TypeFilesTest extends TestCase
 
     public function testGetDownloadUrl()
     {
-        $this->retrieveDependency(Context::class, 'urlBuilder')
+        $this->retrieveChildMock(Context::class, 'urlBuilder')
             ->getUrl('jh_import/files/download', [
                 'name'       => 'product',
                 'directory'  => 'import',
