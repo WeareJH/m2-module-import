@@ -76,8 +76,7 @@ class Delete extends Action
         $this->getMessageManager()->addSuccessMessage(
             sprintf(
                 'File "%s" was successfully deleted',
-                $directoryWriter->getAbsolutePath($this->getRequest()->getParam('file')
-                )
+                $directoryWriter->getAbsolutePath($this->getRequest()->getParam('file'))
             )
         );
 
