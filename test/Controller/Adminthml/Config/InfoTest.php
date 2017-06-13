@@ -3,7 +3,6 @@
 namespace Jh\ImportTest\Controller\Adminhtml\Config;
 
 use Jh\Import\Config\Data;
-use Jh\Import\Controller\Adminhtml\Config\Index;
 use Jh\Import\Controller\Adminhtml\Config\Info;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\App\Action\Context;
@@ -26,7 +25,7 @@ class InfoTest extends TestCase
     private $pageFactory;
 
     /**
-     * @var Index
+     * @var Info
      */
     private $controller;
 

@@ -21,22 +21,26 @@
         <div class="dashboard-item">
             <div class="dashboard-item-title">Incoming Files</div>
             <div class="dashboard-item-content">
-                <table class="admin__table-primary">
-                    <thead>
-                        <tr>
-                            <th class="data-grid-th"> File</th>
-                            <th style="text-align:right" class="data-grid-th"> Will be processed? </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($this->filesNew() as $file) : ?>
+                <?php if ($files = $this->filesArchived()) : ?>
+                    <table class="admin__table-primary">
+                        <thead>
                             <tr>
-                                <td style="width:70%"><?= $file->getRealPath() ?></td>
-                                <td style="text-align:right;color:<?= $this->fileWillBeProcessed($file) ? 'green' : 'red' ?>"class="last" ><?= $this->fileWillBeProcessed($file) ? '✔' : '✘' ?></td>
+                                <th class="data-grid-th"> File</th>
+                                <th style="text-align:right" class="data-grid-th"> Will be processed? </th>
                             </tr>
-                        <?php endforeach ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->filesNew() as $file) : ?>
+                                <tr>
+                                    <td style="width:70%"><?= $file->getRealPath() ?></td>
+                                    <td style="text-align:right;color:<?= $this->fileWillBeProcessed($file) ? 'green' : 'red' ?>"class="last" ><?= $this->fileWillBeProcessed($file) ? '✔' : '✘' ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else : ?>
+                    <p>No incoming files</p>
+                <?php endif ?>
             </div>
         </div>
         <div class="dashboard-item">
