@@ -5,8 +5,6 @@ namespace Jh\Import\Controller\Adminhtml\Files;
 use Jh\Import\Config\Data;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Filesystem\Directory\WriteFactory;

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="jh_import_delete_files" instance="Jh\Import\Cron\DeleteFiles" method="execute">
+            <schedule>0 1 * * *</schedule>
+        </job>
+        <job name="jh_import_archive_files" instance="Jh\Import\Cron\ArchiveFiles" method="execute">
+            <schedule>0 1 * * 0</schedule>
+        </job>
+    </group>
+</config>
