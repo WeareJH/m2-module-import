@@ -21,7 +21,7 @@
         <div class="dashboard-item">
             <div class="dashboard-item-title">Incoming Files</div>
             <div class="dashboard-item-content">
-                <?php if ($files = $this->filesArchived()) : ?>
+                <?php if ($files = $this->filesNew()) : ?>
                     <table class="admin__table-primary">
                         <thead>
                             <tr>
@@ -32,7 +32,10 @@
                         <tbody>
                             <?php foreach ($this->filesNew() as $file) : ?>
                                 <tr>
-                                    <td style="width:70%"><?= $file->getRealPath() ?></td>
+                                    <td style="width:70%">
+                                        <a href="<?= $this->getDeleteUrl($file, 'incoming_directory') ?>" class="action-delete"></a>
+                                        <a href="<?= $this->getDownloadUrl($file, 'incoming_directory') ?>"><?= $file->getRealPath() ?></a>
+                                    </td>
                                     <td style="text-align:right;color:<?= $this->fileWillBeProcessed($file) ? 'green' : 'red' ?>"class="last" ><?= $this->fileWillBeProcessed($file) ? '✔' : '✘' ?></td>
                                 </tr>
                             <?php endforeach ?>
@@ -57,7 +60,10 @@
                         <tbody>
                             <?php foreach ($files as $file) : ?>
                                 <tr>
-                                    <td style="width:70%"><?= $file->getRealPath() ?></td>
+                                    <td style="width:70%">
+                                        <a href="<?= $this->getDeleteUrl($file, 'archived_directory') ?>" class="action-delete"></a>
+                                        <a href="<?= $this->getDownloadUrl($file, 'archived_directory') ?>"><?= $file->getRealPath() ?></a>
+                                    </td>
                                     <td style="text-align:right" class="last"><?= $file->getCTime() ?></td>
                                 </tr>
                             <?php endforeach ?>
@@ -83,7 +89,10 @@
                             <?php foreach ($files as $file) : ?>
                                 <?php /** @var $file \SplFileInfo */ ?>
                                 <tr>
-                                    <td style="width:70%"><a href="<?= $this->getDownloadUrl($file, 'failed_directory') ?>"><?= $file->getRealPath() ?></a></td>
+                                    <td style="width:70%">
+                                        <a href="<?= $this->getDeleteUrl($file, 'failed_directory') ?>" class="action-delete"></a>
+                                        <a href="<?= $this->getDownloadUrl($file, 'failed_directory') ?>"><?= $file->getRealPath() ?></a>
+                                    </td>
                                     <td style="text-align:right" class="last"><?= $this->getChangeTime($file) ?></td>
                                 </tr>
                             <?php endforeach ?>

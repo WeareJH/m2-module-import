@@ -56,7 +56,7 @@
             "@unit-tests-coverage-clover",
             "@cs"
         ],
-        "cs": "phpcs -s src --standard=PSR2 && phpcs -s test --standard=PSR2",
+        "cs": "phpcs -s src --standard=PSR2 --extensions=php && phpcs -s test --standard=PSR2 --extensions=php",
         "cs-fix": "phpcbf -s src --standard=PSR2 && phpcbf -s src --standard=PSR2",
         "unit-tests": "phpunit --colors=always",
         "unit-tests-coverage": "phpunit --colors=always -v --coverage-text",

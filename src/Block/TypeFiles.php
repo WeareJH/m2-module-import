@@ -145,4 +145,16 @@ class TypeFiles extends Template
             ]
         );
     }
+
+    public function getDeleteUrl(\SplFileInfo $file, string $directory) : string
+    {
+        return $this->getUrl(
+            'jh_import/files/delete',
+            [
+                'name'      => $this->getImport()->getImportName(),
+                'directory' => urlencode($directory),
+                'file'      => urlencode($file->getFilename())
+            ]
+        );
+    }
 }
