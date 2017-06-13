@@ -45,9 +45,15 @@
                 <item name="import_history_listing_data_source" xsi:type="string">import_history_grid_collection</item>
                 <item name="import_history_log_listing_data_source" xsi:type="string">import_history_log_grid_collection</item>
                 <item name="import_history_item_log_listing_data_source" xsi:type="string">import_history_item_log_grid_collection</item>
+                <item name="import_listing_data_source" xsi:type="string">import_listing</item>
             </argument>
         </arguments>
     </type>
+
+
+    <virtualType name="import_listing" type="Jh\Import\Ui\Component\Listing\ImportSearchResult">
+    </virtualType>
+
     <virtualType name="import_history_grid_collection" type="\Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">jh_import_history</argument>

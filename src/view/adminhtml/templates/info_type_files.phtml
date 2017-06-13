@@ -1,0 +1,94 @@
+<div class="dashboard-container row">
+    <div class="dashboard-secondary col-m-3">
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Incoming directory') ?></div>
+            <?= $this->incomingDirectory() ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Archived directory') ?></div>
+            <?= $this->archivedDirectory() ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Failed directory: ') ?></div>
+            <?= $this->failedDirectory() ?>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Files Match') ?></div>
+            <?= $this->getImport()->get('match_files') ?>
+        </div>
+    </div>
+    <div class="dashboard-secondary col-m-7">
+        <div class="dashboard-item">
+            <div class="dashboard-item-title">Incoming Files</div>
+            <div class="dashboard-item-content">
+                <table class="admin__table-primary">
+                    <thead>
+                        <tr>
+                            <th class="data-grid-th"> File</th>
+                            <th style="text-align:right" class="data-grid-th"> Will be processed? </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->filesNew() as $file) : ?>
+                            <tr>
+                                <td style="width:70%"><?= $file->getRealPath() ?></td>
+                                <td style="text-align:right;color:<?= $this->fileWillBeProcessed($file) ? 'green' : 'red' ?>"class="last" ><?= $this->fileWillBeProcessed($file) ? '✔' : '✘' ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title">Archived Files <small>(most recent 15)</small></div>
+            <div class="dashboard-item-content">
+                <?php if ($files = $this->filesArchived()) : ?>
+                    <table class="admin__table-primary" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="data-grid-th"> File</th>
+                                <th style="text-align:right" class="data-grid-th"> Time Moved To Archived Folder</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($files as $file) : ?>
+                                <tr>
+                                    <td style="width:70%"><?= $file->getRealPath() ?></td>
+                                    <td style="text-align:right" class="last"><?= $file->getCTime() ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else : ?>
+                    <p>No archived files</p>
+                <?php endif ?>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <div class="dashboard-item-title">Failed Files <small>(most recent 15)</small></div>
+            <div class="dashboard-item-content">
+                <?php if ($files = $this->filesFailed()) : ?>
+                    <table class="admin__table-primary" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="data-grid-th"> File</th>
+                                <th style="text-align:right" class="data-grid-th"> Time Moved To Failed Folder</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($files as $file) : ?>
+                                <?php /** @var $file \SplFileInfo */ ?>
+                                <tr>
+                                    <td style="width:70%"><a href="<?= $this->getDownloadUrl($file, 'failed_directory') ?>"><?= $file->getRealPath() ?></a></td>
+                                    <td style="text-align:right" class="last"><?= $this->getChangeTime($file) ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else : ?>
+                    <p>No failed files</p>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>
