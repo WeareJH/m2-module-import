@@ -106,12 +106,19 @@ it `price`.
 The required configuration values for your import are:
 
  * source
- * incoming_directory
  * match_files
  * specification
  * writer
  * id_field
+
+Optional values are:
+
+ * incoming_directory  - default: `jh_import/incoming`
+ * archived_directory  - default: `jh_import/archived`
+ * failed_directory  - default: `jh_import/failed`
  
+The above directories will be created in the `var` directory of the magento instance if they do not already exist.
+
 #### source
 
 This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Source\Source`.
@@ -580,13 +587,10 @@ the csv source, the file will be hashed and stored. If you attempt to import the
 
 ### Force running the same source again
 
-You can force running the import again by deleting the logs and history. Use the following SQL queries to remove the logs and import history:
+You can force running the import again by deleting the logs and history. Use the following command to remove the log entries for the last import of a given name:
 
-```sql
-DELETE FROM jh_import_history_log;
-DELETE FROM jh_import_history_item_log;
-DELETE FROM jh_import_history;
-DELETE FROM jh_import_lock;
+```shell
+$ php bin/magento import:clear-last <import-name>
 ```
 
 ## Import Locking
@@ -595,19 +599,19 @@ When an import is running it will be locked. This prevents the same import runni
 to be imported sequentially but the first is taking a longer time than expected and the second is due to start. The locking mechanism will cause the new import to be skipped until
 the first is finished.
 
-Import locks are stored in the table `jh_import_lock`.
+Import locks are stored in the table `jh_import_lock`. If for some reason a lock is not released you can manually release it like so:
+
+```shell
+$ php bin/magento import:unlock <import-name>
+```
 
 ## Archiving
  
 After an import source has finished being processed it is passed to an archiver. Each source type is mapped to it's own archiver. See [src/Archiver/Factory.php](src/Archiver/Factory.php) for the mappings.
 
-Depending on whether the import is deemed successful or not it is moved to an archived folder or a failed folder respectively. These folders are figured out from your incoming directory
-import configuration at `app/code/MyVendor/Import/etc/imports.xml`. A  recommended incoming folder is `jh_import/incoming`. This folder will be created inside the Magento `var` folder.
+Depending on whether the import is deemed successful or not it is moved to an archived folder or a failed folder respectively. These folders come from your import configuration at `app/code/MyVendor/Import/etc/imports.xml`. 
 
-Therefore the importer will assume:
-
- * `var/jh_import/archived` as the archived folder
- * `var/jh_import/failed` as the failed folder
+If the folders are not specified in the config then the defaults will be used: `jh_import/incoming`, `jh_import/archived` & `jh_import/failed`. All these folders will be created inside the Magento `var` folder.
  
 The file name will be changed to include the current timestamp (time of moving) to prevent race conditions.
 
