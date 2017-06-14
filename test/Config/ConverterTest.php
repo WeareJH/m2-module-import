@@ -380,8 +380,8 @@ END;
                     'indexers' => [],
                     'report_handlers' => [],
                     'cron' => null,
-                    'archive_old_files' => true,
-                    'delete_old_files' => true,
+                    'archive_old_files' => false,
+                    'delete_old_files' => false,
                 ]
             ],
             (new Converter)->convert($domDocument)
