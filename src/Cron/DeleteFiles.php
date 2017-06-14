@@ -44,7 +44,7 @@ class DeleteFiles
                 return $this->config->getImportConfigByName($importName);
             })
             ->filter(function (Config $config) {
-                return $config->get('clean_up_dirs');
+                return $config->get('delete_old_files');
             })
             ->each(function (Config $config) {
                 $this->deleteOldFilesInDir($config->get('archived_directory'));
@@ -54,7 +54,7 @@ class DeleteFiles
 
     private function deleteOldFilesInDir(string $dir)
     {
-        $twoWeeksAgo = (new \DateTime)->modify('-14 days');
+        $twoWeeksAgo = \DateTime::createFromFormat('U', time())->modify('-14 days');
 
         $directoryWriter = $this->writeFactory->create(
             sprintf('%s/%s', $this->directoryList->getPath(DirectoryList::VAR_DIR), $dir)
@@ -66,7 +66,7 @@ class DeleteFiles
                 return new \SplFileInfo($directoryWriter->getAbsolutePath($filePath));
             })
             ->filter(function (\SplFileInfo $file) use ($twoWeeksAgo) {
-                return new \DateTime('@' . $file->getCTime()) < $twoWeeksAgo;
+                return new \DateTime('@' . filectime($file->getRealPath())) < $twoWeeksAgo;
             })
             ->each(function (\SplFileInfo $file) use ($directoryWriter) {
                 $directoryWriter->delete($file->getFilename());

@@ -6,7 +6,6 @@ use Jh\Import\Config\Data;
 use Jh\Import\Controller\Adminhtml\Files\Download;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;

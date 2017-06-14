@@ -54,7 +54,7 @@ class ArchiveFiles
 
     private function archiveOldFilesInDir(string $dir, string $type)
     {
-        $threeDaysAgo = (new \DateTime)->modify('-3 days');
+        $threeDaysAgo = \DateTime::createFromFormat('U', time())->modify('-3 days');
 
         $directoryWriter = $this->writeFactory->create(
             sprintf('%s/%s', $this->directoryList->getPath(DirectoryList::VAR_DIR), $dir)
@@ -66,7 +66,7 @@ class ArchiveFiles
                 return new \SplFileInfo($directoryWriter->getAbsolutePath($filePath));
             })
             ->filter(function (\SplFileInfo $file) use ($threeDaysAgo) {
-                return new \DateTime('@' . $file->getCTime()) < $threeDaysAgo;
+                return new \DateTime('@' . filectime($file->getRealPath())) < $threeDaysAgo;
             });
 
         if ($files->isEmpty()) {
@@ -79,7 +79,7 @@ class ArchiveFiles
                 '%s/%s-%s.zip',
                 $directoryWriter->getAbsolutePath(),
                 $type,
-                (new \DateTime)->format('d-m-Y-H-i')
+                \DateTime::createFromFormat('U', time())->format('d-m-Y-H-i')
             ),
             \ZipArchive::CREATE
         );
@@ -91,7 +91,7 @@ class ArchiveFiles
         $zip->close();
 
         $files->each(function (\SplFileInfo $file) use ($directoryWriter) {
-            $directoryWriter->delete($file->getRealPath());
+            $directoryWriter->delete($file->getFilename());
         });
     }
 }
