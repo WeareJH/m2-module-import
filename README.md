@@ -50,6 +50,12 @@ $ php bin/magento setup:upgrade
 - [Triggering an import](#triggering-an-import)
   * [Running an import manually](#running-an-import-manually)
   * [Where do the files go?](#where-do-the-files-go)
+- [Viewing Import Configuration](#viewing-import-configuration)
+  * [Listing Imports](#listing-imports)
+  * [Viewing an Import](#viewing-an-import)
+    * [Check Incoming Files](#check-incoming-files)
+    * [Downloading Files](#downloading-files)
+    * [Deleteing Files](#deleting-files)
 - [Viewing import logs](#viewing-import-logs)
   * [Item level logs](#item-level-logs)
   * [Import level logs](#import-level-logs)
@@ -537,7 +543,36 @@ class Price
 }
 ```
 
-The cron is just a dumb object, the Import Manager does the real work.
+The cron is just a dumb object, the Import Manager does the real work. 
+
+If you create a cron for your import you should add the cron job name (the one you specify in `crontab.xml`) to your import configuration defined in `app/code/MyVendor/Import/etc/imports.xml`. This will allow the import admin to display details about your cron configuration. See below for an example configuration:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <files name="price">
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</source>
+        <match_files>/price_\d{8}.csv/</source>
+        <specification>MyVendor\Import\Specification\Price</specification>
+        <writer>MyVendor\Import\Writer\Price</specification>
+        <id_field>sku</id_field>
+        <cron>vendor_import_product</cron>
+    </files>
+</config>
+```
+
+Where `vendor_import_product` is the cron job code specified in `crontab.xml`, for example:
+
+```xml
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="vendor_import_product" instance="Vendor\Import\Cron\Product" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+    </group>
+</config>
+```
 
 ### Running an import manually
 
@@ -563,9 +598,47 @@ For example on a client project we use the regex `/RDrive_Export_\d{8}.txt/` to 
 So before you run an import, you will need to make sure the file name matches the configuration file and it is placed in the correct folder. When working locally
 you can place a file in `var/jh_import/incoming` in PHP Storm and use `workflow push var/jh_import/incoming/<file-name>` to get it in to the docker container.
 
+## Viewing Import Configuration
+
+Import configuration can be viewein in the admin area. All of the information specified in `imports.xml` and more will be displayed there. Simply navigate to: Admin -> System -> JH Import -> Import Configuration. 
+
+![Admin Page](https://user-images.githubusercontent.com/2817002/27139908-831b6b88-5124-11e7-8b2d-a57660895827.png)
+
+### Listing Imports
+
+You will first be presented with a list of the configured imports in your system, loaded from your `imports.xml` file. There will be a summary of some of the information in the table. Click the `Info` link on the import you want to view.
+
+![Import Listing](https://user-images.githubusercontent.com/2817002/27139907-831a80ec-5124-11e7-99d6-3aa57c777804.png)
+
+### Viewing an Import
+
+After clicking the link you will be presented with a page which details the particular import, like the following:
+
+![Import View](https://user-images.githubusercontent.com/2817002/27139909-8320049a-5124-11e7-9f22-86672c0a0a66.png)
+
+From here you can view the name, type, indexers which will be refreshed on import completion and the extra report handlers used. You can see the directories and the files within them. You can also see the file match pattern.
+
+If you have specified a cron code for your import then the cron expression will also be shown here, with a link to a human readable decoded version, helpful for a client or PM to know when the import runs.
+
+You will also see a selection of files listed in the import folders. For the archived and failed folders you will see the last 15 files sorted by their changed time, eg when they were moved to that folder. For the incoming folder you will see all files present.
+
+#### Check Incoming Files
+
+On the right hand side you will see all the files currently in the incoming folder. These files are waiting to be processed. However, some of them will be ignored based on the `match_files` configuration. This sometimes causes confusion with client when they incorrectly named their files wrong. From this screen they can see which files will and will not be processed, a green tick indicates that the file name matches the `match_files` directive and a red cross indicates that it does not. All files with a red cross will not be processed by this import. 
+
+**Note** If multiple imports share the same incoming folder, you might see that some imports show they don't match a file that another import does, this is to be expected as different imports can have different `match_files` values.
+
+#### Downloading Files
+
+Any file from any of the folders can be download and viewed, simply click the file name.
+
+### Deleting Files
+
+Any file from any of the folders can be deleted on the server, simply click the trash can icon next to the file name.
+
 ## Viewing Import Logs
 
-Import logs can be viewed in the admin area. Simply navigate to: Admin -> System -> Import Log.
+Import logs can be viewed in the admin area. Simply navigate to: Admin -> System -> JH Import ->Import Log.
 
 The listing will show the previous imports. Filter by import type and date to find the import you wish to view the logs for, then select
 `View Logs`. The view is split in to two listings:
