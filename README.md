@@ -29,6 +29,8 @@ $ php bin/magento setup:upgrade
   * [Define the import configuration](#define-the-import-configuration)
     * [source](#source)
     * [incoming_directory](#incoming_directory)
+    * [archived_directory](#archived_directory)
+    * [failed_directory](#failed_directory)
     * [match_files](#match_files)
     * [specification](#specification)
     * [writer](#writer)
@@ -126,11 +128,28 @@ The only source type currently available is `Jh\Import\Source\Csv` for reading C
 arguments by using a virtual type.
 
 #### incoming_directory
- 
-This is where your files will be read from. This is directory will be prefixed with the absolute path of the Magento installations `var`
-directory.
 
-For example, you specify: `jh_import/incoming` translates to: `/var/www/magento/var/jh_import/incoming`
+If this value is left unspecified it will default to: `jh_import/incoming`
+ 
+This is where your files will be read from. This directory will be prefixed with the absolute path of the Magento installations `var` directory.
+
+For example, you specify: `vendor_import/incoming` translates to: `/var/www/magento/var/vendor_import/incoming`
+
+#### archived_directory
+
+If this value is left unspecified it will default to: `jh_import/archived`
+ 
+This is where your files will be moved to if they successfully import. This directory will be prefixed with the absolute path of the Magento installations `var` directory.
+
+For example, you specify: `vendor_import/archived` translates to: `/var/www/magento/var/vendor_import/archived`
+
+#### failed_directory
+
+If this value is left unspecified it will default to: `jh_import/failed`
+ 
+This is where your files will be moved to if they fail to import. This directory will be prefixed with the absolute path of the Magento installations `var` directory.
+
+For example, you specify: `vendor_import/failed` translates to: `/var/www/magento/var/vendor_import/failed`
 
 #### match_files
 
