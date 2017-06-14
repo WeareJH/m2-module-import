@@ -64,6 +64,9 @@ $ php bin/magento setup:upgrade
 - [Import Locking](#import-locking)
 - [Archiving](#archiving)
   * [What causes an import to be failed?](#what-causes-an-import-to-be-failed)
+- [File Cleanup](#file-cleanup)
+  * [Zip Cron](#zip-cron)
+  * [Delete Cron](#zip-cron)
 
 ## Creating a new Import
  
@@ -715,3 +718,52 @@ add debug information and errors. The report object is an instance of `\Jh\Impor
 Entries can be added with any of the Log Levels defined in [src/LogLevel.php](src/LogLevel.php). If you see the `$failedLogLevels` property in [src/Report/Report.php](src/Report/Report.php)
 you will see the error levels which it regards as failures. So any message added to the report with a level which exists in the `$failedLogLevels` array will cause the import to be failed.
 
+## File Cleanup
+
+The `archived` & `failed` directories will soon start to contain many files that take up a lot of space. In order for this to not get out of hand we offer
+two strategies for keeping the file numbers down. They are both opt-in so they will need to be enabled in your import configuration.
+
+### Zip Cron
+
+This cron job runs at 1AM every sunday. For each import that has it enabled it will scan each of the failed and archived directories looking for files older than 3 days. It will zip
+these files together and delete the original files. If there are no files older than 3 days in either of the folders then no zip will be created. A zip will be created in each of the folders
+name like `archived-d-m-Y-H-i.zip` where `d-m-Y-H-i` will be substituted with the date/time of the zip creation.
+
+To enable, set `archive_old_files` to `1` in your `app/code/MyVendor/Import/etc/imports.xml` file, like so:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <files name="price">
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</source>
+        <match_files>/price_\d{8}.csv/</source>
+        <specification>MyVendor\Import\Specification\Price</specification>
+        <writer>MyVendor\Import\Writer\Price</specification>
+        <id_field>sku</id_field>
+        <cron>vendor_import_product</cron>
+        <archive_old_files>1</archive_old_files>
+    </files>
+</config>
+```
+
+### Delete Cron
+
+This cron job runs at 1AM every day. For each import that has it enabled it will scan each of the failed and archived directories looking for files older than 2 weeks (14 days)/ It will delete
+all of those files.
+
+To enable, set `delete_old_files` to `1` in your `app/code/MyVendor/Import/etc/imports.xml` file, like so:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <files name="price">
+        <source>Jh\Import\Source\Csv</source>
+        <incoming_directory>jh_import/incoming</source>
+        <match_files>/price_\d{8}.csv/</source>
+        <specification>MyVendor\Import\Specification\Price</specification>
+        <writer>MyVendor\Import\Writer\Price</specification>
+        <id_field>sku</id_field>
+        <cron>vendor_import_product</cron>
+        <delete_old_files>1</archive_old_files>
+    </files>
+</config>
+```
