@@ -37,6 +37,8 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="archive_old_files" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="delete_old_files" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required" />
     </xs:complexType>
