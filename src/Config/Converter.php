@@ -10,28 +10,32 @@ use Magento\Framework\Config\ConverterInterface;
  */
 class Converter implements ConverterInterface
 {
-    private static $defaultValues = [
-        'files' => [
-            'incoming_directory' => 'jh_import/incoming',
-            'archived_directory' => 'jh_import/archived',
-            'failed_directory'   => 'jh_import/failed',
-        ]
-    ];
+//    private static $defaultValues = [
+//        'files' => [
+//            'incoming_directory' => 'jh_import/incoming',
+//            'archived_directory' => 'jh_import/archived',
+//            'failed_directory'   => 'jh_import/failed',
+//            'archive_old_files'  => false,
+//            'delete_old_files'   => false,
+//        ]
+//    ];
 
     /**
      * @var array
      */
     private static $importTypesWithRequiredFields = [
         'files' => [
-            'source',
-            'incoming_directory',
-            'archived_directory',
-            'failed_directory',
-            'match_files',
-            'specification',
-            'writer',
-            'id_field',
-            'cron'
+            'source' => ['type' => 'string'],
+            'incoming_directory' => ['type' => 'string', 'default' => 'jh_import/incoming'],
+            'archived_directory' => ['type' => 'string', 'default' => 'jh_import/archived'],
+            'failed_directory' => ['type' => 'string', 'default' => 'jh_import/failed'],
+            'match_files' => ['type' => 'string'],
+            'specification' => ['type' => 'string'],
+            'writer' => ['type' => 'string'],
+            'id_field' => ['type' => 'string'],
+            'cron' => ['type' => 'string'],
+            'archive_old_files' => ['type' => 'bool', 'default' => false],
+            'delete_old_files' => ['type' => 'bool', 'default' => false],
         ]
     ];
 
@@ -67,17 +71,27 @@ class Converter implements ConverterInterface
     private function getOptions(\DOMElement $import, array $requiredFields, string $importType) : Collection
     {
         $options = collect($requiredFields)
-            ->map(function ($requiredField) use ($import, $importType) {
+            ->map(function (array $spec, string $requiredField) use ($import, $importType) {
                 /** @var \DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
 
                 if ($elements->length > 0) {
-                    return $elements->item(0)->nodeValue;
+                    $value = $elements->item(0)->nodeValue;
+
+                    switch ($spec['type']) {
+                        case 'bool':
+                            return $this->castBool($value);
+                        case 'string':
+                            return $this->castString($value);
+                    }
+
+                    return $value;
                 }
 
-                if (isset(static::$defaultValues[$importType][$requiredField])) {
-                    return static::$defaultValues[$importType][$requiredField];
+                if (isset($spec['default'])) {
+                    return $spec['default'];
                 }
+
                 return null;
             });
 
@@ -104,8 +118,19 @@ class Converter implements ConverterInterface
         }
 
         return collect($requiredFields)
+            ->keys()
             ->combine($options)
             ->put('indexers', $indexers)
             ->put('report_handlers', $reportHandlers);
+    }
+
+    private function castString($value) : string
+    {
+        return (string) $value;
+    }
+
+    private function castBool($value) : bool
+    {
+        return $value === 'true' || $value === '1';
     }
 }
