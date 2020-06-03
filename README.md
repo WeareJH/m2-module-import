@@ -189,10 +189,10 @@ The finished config my look like:
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
     <files name="price">
         <source>Jh\Import\Source\Csv</source>
-        <incoming_directory>jh_import/incoming</source>
-        <match_files>/price_\d{8}.csv/</source>
+        <incoming_directory>jh_import/incoming</incoming_directory>
+        <match_files>/price_\d{8}.csv/</match_files>
         <specification>MyVendor\Import\Specification\Price</specification>
-        <writer>MyVendor\Import\Writer\Price</specification>
+        <writer>MyVendor\Import\Writer\Price</writer>
         <id_field>sku</id_field>
     </files>
 </config>
