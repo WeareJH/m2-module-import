@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24809f75468d918a9151d84dd6c22bad",
+    "content-hash": "c5d9dc5857c19658eadebc185dbae0ae",
     "packages": [
         {
             "name": "colinmollenhour/credis",
@@ -7539,16 +7539,16 @@
         },
         {
             "name": "wearejh/m2-unit-test-helpers",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WeareJH/m2-unit-test-helpers.git",
-                "reference": "b8a451eb40be21de67f92660bf9b48df2a71e15e"
+                "reference": "04bfbacebe76a93366b47206eb0f1a6a744021d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WeareJH/m2-unit-test-helpers/zipball/b8a451eb40be21de67f92660bf9b48df2a71e15e",
-                "reference": "b8a451eb40be21de67f92660bf9b48df2a71e15e",
+                "url": "https://api.github.com/repos/WeareJH/m2-unit-test-helpers/zipball/04bfbacebe76a93366b47206eb0f1a6a744021d8",
+                "reference": "04bfbacebe76a93366b47206eb0f1a6a744021d8",
                 "shasum": ""
             },
             "require": {
@@ -7571,10 +7571,10 @@
             ],
             "description": "Unit testing helpers for Magento 2 code bases",
             "support": {
-                "source": "https://github.com/WeareJH/m2-unit-test-helpers/tree/1.3.0",
+                "source": "https://github.com/WeareJH/m2-unit-test-helpers/tree/1.4.0",
                 "issues": "https://github.com/WeareJH/m2-unit-test-helpers/issues"
             },
-            "time": "2020-06-03T13:18:42+00:00"
+            "time": "2020-06-03T15:50:51+00:00"
         },
         {
             "name": "webmozart/assert",
