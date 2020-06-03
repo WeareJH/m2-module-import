@@ -36,7 +36,7 @@ class ViewLogsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('import:view-logs')
+        $this->setName('jh-import:view-logs')
             ->setDescription('Show the logs for a recent import')
             ->addArgument(
                 'import_name',

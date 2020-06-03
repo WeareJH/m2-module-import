@@ -39,7 +39,7 @@ class ClearLastImportLogCommand extends Command
 
     protected function configure()
     {
-        $this->setName('import:clear-last')
+        $this->setName('jh-import:clear-last')
             ->setDescription('Clear the logs for the last import')
             ->addArgument(
                 'import_name',
