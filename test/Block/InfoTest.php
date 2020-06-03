@@ -9,6 +9,7 @@ use Jh\Import\Config\Data;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\View\LayoutInterface;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\Config\CacheInterface;
@@ -21,7 +22,7 @@ class InfoTest extends TestCase
     public function testGetImportReturnsConfigFromRequest()
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $cache->load('cache-id')->willReturn(serialize(['product' => ['type' => 'files']]))->shouldBeCalled();
 
@@ -30,7 +31,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
 
@@ -65,7 +66,7 @@ class InfoTest extends TestCase
             'request' => $request->reveal(),
             'layout'  => $layout->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
 
@@ -79,12 +80,11 @@ class InfoTest extends TestCase
         self::assertSame($childBlock, $block->getChildBlock('type-info'));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Import has no cron code set
-     */
     public function testGetCronExpressionThrowsExceptionIfNoCronCodeSet()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Import has no cron code set');
+
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
 
@@ -98,7 +98,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -107,12 +107,11 @@ class InfoTest extends TestCase
         $block->getCronExpression();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Import's cron job does not exist
-     */
     public function testGetCronExpressionThrowsExceptionIfCronDoesNotExist()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Import's cron job does not exist");
+
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
 
@@ -126,7 +125,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -150,7 +149,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
@@ -175,7 +174,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -200,7 +199,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -225,7 +224,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);

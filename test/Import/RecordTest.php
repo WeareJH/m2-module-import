@@ -58,12 +58,11 @@ class RecordTest extends TestCase
         self::assertEquals([], $record->getColumnValue('column1', []));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Value of "column1" data type: "string" does not match expected: "array"
-     */
     public function testGetColumnValueThrowsExceptionIfGivenExpectedTypeDoesNotMatch()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Value of "column1" data type: "string" does not match expected: "array"');
+
         $record = new Record(10, ['column1' => 'some value'], 'array');
         $record->getColumnValue('column1', null, 'array');
     }

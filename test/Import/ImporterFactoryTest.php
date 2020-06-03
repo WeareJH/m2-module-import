@@ -52,7 +52,7 @@ class ImporterFactoryTest extends TestCase
         $importer = $importerFactory->create($source->reveal(), $importSpec->reveal(), $writer->reveal());
 
         self::assertInstanceOf(Importer::class, $importer);
-        self::assertInstanceOf(NullProgress::class, self::readAttribute($importer, 'progress'));
+        self::assertInstanceOf(NullProgress::class, $importer->getProgress());
 
         $mock->disable();
     }
@@ -73,7 +73,7 @@ class ImporterFactoryTest extends TestCase
         $importer = $importerFactory->create($source->reveal(), $importSpec->reveal(), $writer->reveal());
 
         self::assertInstanceOf(Importer::class, $importer);
-        self::assertInstanceOf(CliProgress::class, self::readAttribute($importer, 'progress'));
+        self::assertInstanceOf(CliProgress::class, $importer->getProgress());
     }
 
     /**
@@ -107,7 +107,7 @@ class ImporterFactoryTest extends TestCase
         $importer = $importerFactory->create($source->reveal(), $importSpec->reveal(), $writer->reveal());
 
         self::assertInstanceOf(Importer::class, $importer);
-        self::assertInstanceOf(CliProgress::class, self::readAttribute($importer, 'progress'));
+        self::assertInstanceOf(CliProgress::class, $importer->getProgress());
 
         $mock->disable();
     }

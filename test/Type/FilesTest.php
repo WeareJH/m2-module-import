@@ -35,7 +35,7 @@ class FilesTest extends TestCase
      */
     private $files = [];
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tempDirectory = sprintf('%s/%s/var/import', sys_get_temp_dir(), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -46,7 +46,7 @@ class FilesTest extends TestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Filesystem)->remove($this->tempDirectory);
     }

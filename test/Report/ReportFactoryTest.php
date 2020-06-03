@@ -58,7 +58,7 @@ class ReportFactoryTest extends TestCase
 
         $report = $factory->createFromSourceAndConfig(new Iterator(new \ArrayIterator([])), new Config('product', []));
         self::assertInstanceOf(Report::class, $report);
-        self::assertCount(1, self::readAttribute($report, 'handlers'));
+        self::assertCount(1, $report->getHandlers());
 
         $mock->disable();
     }
@@ -85,7 +85,7 @@ class ReportFactoryTest extends TestCase
         $factory = new ReportFactory($objectManager->reveal());
 
         $report = $factory->createFromSourceAndConfig(new Iterator(new \ArrayIterator([])), new Config('product', []));
-        $handlers = self::readAttribute($report, 'handlers');
+        $handlers = $report->getHandlers();
 
         self::assertInstanceOf(Report::class, $report);
         self::assertCount(2, $handlers);
@@ -129,7 +129,7 @@ class ReportFactoryTest extends TestCase
         $factory = new ReportFactory($objectManager->reveal());
 
         $report = $factory->createFromSourceAndConfig(new Iterator(new \ArrayIterator([])), new Config('product', []));
-        $handlers = self::readAttribute($report, 'handlers');
+        $handlers = $report->getHandlers();
 
         self::assertInstanceOf(Report::class, $report);
         self::assertCount(2, $handlers);
@@ -138,12 +138,11 @@ class ReportFactoryTest extends TestCase
         $mock->disable();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Report handler must implement "Jh\Import\Report\Handler\Handler"
-     */
     public function testExceptionIsThrownIfAdditionalHandlerDoesNotImplementCorrectInterface()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Report handler must implement "Jh\Import\Report\Handler\Handler"');
+
         $appState  = $this->prophesize(State::class);
         $appState->getMode()->willReturn(State::MODE_DEVELOPER);
 
@@ -196,7 +195,7 @@ class ReportFactoryTest extends TestCase
 
         $config = new Config('product', ['report_handlers' => ['some_handler', 'some_other_handler']]);
         $report = $factory->createFromSourceAndConfig(new Iterator(new \ArrayIterator([])), $config);
-        $handlers = self::readAttribute($report, 'handlers');
+        $handlers = $report->getHandlers();
 
         self::assertInstanceOf(Report::class, $report);
         self::assertCount(4, $handlers);

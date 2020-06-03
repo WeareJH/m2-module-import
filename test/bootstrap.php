@@ -3,7 +3,10 @@
 use Magento\Framework\Code\Generator\Io;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\ObjectManager\Code\Generator\Factory;
+use Magento\Framework\TestFramework\Unit\Autoloader\ExtensionAttributesGenerator;
+use Magento\Framework\TestFramework\Unit\Autoloader\ExtensionAttributesInterfaceGenerator;
 use Magento\Framework\TestFramework\Unit\Autoloader\ExtensionGeneratorAutoloader;
+use Magento\Framework\TestFramework\Unit\Autoloader\GeneratedClassesAutoloader;
 
 require_once __DIR__ . '/functions.php';
 
@@ -26,8 +29,16 @@ spl_autoload_register(function ($className) use ($generatorIo) {
         return false;
     }
 
-    include_once (new Factory($sourceClassName, $className, $generatorIo))->generate();
+    include_once(new Factory($sourceClassName, $className, $generatorIo))->generate();
     return true;
 });
 
-spl_autoload_register([new ExtensionGeneratorAutoloader($generatorIo), 'load']);
+spl_autoload_register(
+    [
+        new GeneratedClassesAutoloader(
+            [new ExtensionAttributesGenerator(), new ExtensionAttributesInterfaceGenerator],
+            $generatorIo
+        ),
+        'load'
+    ]
+);

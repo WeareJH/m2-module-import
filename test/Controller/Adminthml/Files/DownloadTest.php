@@ -14,6 +14,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\DriverPool;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -46,7 +47,7 @@ class DownloadTest extends TestCase
      */
     private $controller;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -67,7 +68,7 @@ class DownloadTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $this->controller = new Download(
             $context,
@@ -78,7 +79,7 @@ class DownloadTest extends TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Filesystem)->remove($this->tempDirectory);
     }

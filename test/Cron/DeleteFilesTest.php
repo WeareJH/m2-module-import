@@ -5,6 +5,7 @@ namespace Jh\ImportTest\Cron;
 use Jh\Import\Config\Data;
 use Jh\Import\Cron\ArchiveFiles;
 use Jh\Import\Cron\DeleteFiles;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -31,7 +32,7 @@ class DeleteFilesTest extends TestCase
      */
     private $writeFactory;
     
-    public function setUp()
+    public function setUp() : void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -61,13 +62,13 @@ class DeleteFilesTest extends TestCase
         $reader = $this->prophesize(ReaderInterface::class);
 
         return new DeleteFiles(
-            new Data($reader->reveal(), $cache->reveal(), 'cache-id'),
+            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize),
             $this->directoryList,
             $this->writeFactory
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Filesystem)->remove($this->tempDirectory);
     }

@@ -55,6 +55,7 @@ class ArchiveFiles
     private function archiveOldFilesInDir(string $dir, string $type)
     {
         $threeDaysAgo = \DateTime::createFromFormat('U', time())->modify('-3 days');
+        $d = \DateTime::createFromFormat('U', time())->format('d m Y H:i:s');
 
         $directoryWriter = $this->writeFactory->create(
             sprintf('%s/%s', $this->directoryList->getPath(DirectoryList::VAR_DIR), $dir)

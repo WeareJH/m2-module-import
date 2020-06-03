@@ -6,21 +6,19 @@
         "php": "^7.3",
         "tightenco/collect": "^5.4",
         "trash-panda/progress-bar-log": "^1.1",
-        "magento/framework": "^100",
-        "magento/module-catalog": "^101",
-        "magento/module-catalog-inventory": "^100.1",
-        "magento/module-configurable-product": "^100.1"
+        "magento/framework": "^102",
+        "magento/module-catalog": "^103.0.5",
+        "magento/module-catalog-inventory": "^100.3.5",
+        "magento/module-configurable-product": "^100.3.5"
     },
     "require-dev": {
-        "magento/module-bundle": "^100",
-        "magento/module-catalog-inventory": "^100",
-        "phpunit/phpunit": "^6.1",
+        "magento/module-bundle": "^100.3.5",
+        "phpunit/phpunit": "^8.1",
         "squizlabs/php_codesniffer": "^3.0",
         "php-mock/php-mock": "^2.0",
         "zendframework/zendframework1": "^1.12",
         "symfony/filesystem": "^3.2",
-        "wearejh/m2-unit-test-helpers": "^1.1",
-        "zendframework/zend-code": "^2.4.6",
+        "wearejh/m2-unit-test-helpers": "^1.3",
         "monolog/monolog": "^1.22"
     },
     "repositories": {

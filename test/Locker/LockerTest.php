@@ -19,7 +19,7 @@ class LockerTest extends TestCase
      */
     private $locker;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dbAdapter = $this->prophesize(AdapterInterface::class);
         $resourceConnection =  $this->prophesize(ResourceConnection::class);
@@ -27,12 +27,11 @@ class LockerTest extends TestCase
         $this->locker = new Locker($resourceConnection->reveal());
     }
 
-    /**
-     * @expectedException \Jh\Import\Locker\ImportLockedException
-     * @expectedExceptionMessage Import with name "product" is locked.
-     */
     public function testLockThrowsExceptionIfAlreadyLocked()
     {
+        $this->expectException(\Jh\Import\Locker\ImportLockedException::class);
+        $this->expectExceptionMessage('Import with name "product" is locked.');
+        
         $select = $this->prophesize(\Magento\Framework\DB\Select::class);
 
         $this->dbAdapter->select()->willReturn($select);
