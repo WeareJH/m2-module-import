@@ -34,6 +34,7 @@ class Converter implements ConverterInterface
             'writer' => ['type' => 'string'],
             'id_field' => ['type' => 'string'],
             'cron' => ['type' => 'string'],
+            'cron_group' => ['type' => 'string', 'default' => 'default'],
             'archive_old_files' => ['type' => 'bool', 'default' => false],
             'delete_old_files' => ['type' => 'bool', 'default' => false],
         ]

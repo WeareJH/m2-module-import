@@ -3,7 +3,7 @@
 namespace Jh\Import\Command;
 
 use Jh\Import\Config\Data;
-use Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory;
+use Magento\Cron\Model\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,14 +20,14 @@ class ListImportsCommand extends Command
     private $importConfig;
 
     /**
-     * @var CollectionFactory
+     * @var Config
      */
-    private $collectionFactory;
+    private $cronConfig;
 
-    public function __construct(Data $importConfig, CollectionFactory $collectionFactory)
+    public function __construct(Data $importConfig, Config $cronConfig)
     {
         $this->importConfig = $importConfig;
-        $this->collectionFactory = $collectionFactory;
+        $this->cronConfig = $cronConfig;
         parent::__construct();
     }
 
@@ -46,17 +46,25 @@ class ListImportsCommand extends Command
         $output->writeln('<comment>All imports registered with the system:</comment>');
         $output->writeln('');
 
+        $jobs = $this->cronConfig->getJobs();
+
         (new Table($output))
             ->setHeaders(['Name', 'Type', 'Match Files', 'Incoming Directory', 'Cron Expr'])
-            ->setRows(array_map(function ($import) {
+            ->setRows(array_map(function ($import) use ($jobs) {
                 $config = $this->importConfig->getImportConfigByName($import);
+
+                if ($config->hasCron() && isset($jobs[$config->getCronGroup()][$config->getCron()])) {
+                    $cron = $jobs[$config->getCronGroup()][$config->getCron()]['schedule'];
+                } else {
+                    $cron = 'N/A';
+                }
 
                 return [
                     $config->getImportName(),
                     $config->getType(),
                     $config->get('match_files'),
                     $config->get('incoming_directory'),
-                    $config->hasCron() ? $config->getCron() : 'N/A',
+                    $cron,
                 ];
             }, $this->importConfig->getAllImportNames()))
             ->render();
