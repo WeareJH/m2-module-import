@@ -69,8 +69,7 @@ class Record
      * @return mixed
      * @throws \RuntimeException
      */
-    public function
-    getColumnValue(string $columnName, $default = null, $dataType = null)
+    public function getColumnValue(string $columnName, $default = null, $dataType = null)
     {
         $value = $this->data[$columnName] ?? $default;
 
