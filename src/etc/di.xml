@@ -30,6 +30,7 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="import_list" xsi:type="object">Jh\Import\Command\ListImportsCommand</item>
                 <item name="import_run" xsi:type="object">Jh\Import\Command\RunImportCommand</item>
                 <item name="import_view_log" xsi:type="object">Jh\Import\Command\ViewLogsCommand</item>
                 <item name="import_unlock" xsi:type="object">Jh\Import\Command\UnlockImportCommand</item>
