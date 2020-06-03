@@ -68,9 +68,14 @@ class Config
         return isset($this->config['cron']);
     }
 
-    public function getCron() : string
+    public function getCron() : ?string
     {
         return $this->config['cron'] ?? null;
+    }
+
+    public function getCronGroup() : ?string
+    {
+        return $this->config['cron_group'] ?? null;
     }
 
     /**

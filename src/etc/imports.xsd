@@ -23,6 +23,7 @@
             <xs:element name="writer" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="id_field" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron_group" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="indexers" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>

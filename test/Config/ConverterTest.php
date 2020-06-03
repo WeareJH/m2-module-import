@@ -48,6 +48,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -99,6 +100,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -143,6 +145,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -194,6 +197,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -221,20 +225,21 @@ END;
         self::assertEquals(
             [
                 'product' => [
-                    'source'             => 'Jh\Import\Source\Csv',
+                    'source' => 'Jh\Import\Source\Csv',
                     'incoming_directory' => 'jh_import/incoming',
                     'archived_directory' => 'jh_import/archived',
-                    'failed_directory'   => 'jh_import/failed',
-                    'match_files'        => 'rdrive.csv',
-                    'specification'      => 'Jh\Import\Specification\Product',
-                    'writer'             => 'Jh\Import\Writer\Product',
-                    'type'               => 'files',
-                    'id_field'           => 'sku',
-                    'indexers'           => [],
-                    'report_handlers'    => [],
-                    'cron'               => null,
-                    'archive_old_files'  => false,
-                    'delete_old_files'   => false,
+                    'failed_directory' => 'jh_import/failed',
+                    'match_files' => 'rdrive.csv',
+                    'specification' => 'Jh\Import\Specification\Product',
+                    'writer' => 'Jh\Import\Writer\Product',
+                    'type' => 'files',
+                    'id_field' => 'sku',
+                    'indexers' => [],
+                    'report_handlers' => [],
+                    'cron' => null,
+                    'archive_old_files' => false,
+                    'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -276,11 +281,57 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
         );
     }
+
+    public function testConvertWithCustomCronGroup()
+    {
+        $xml = <<<'END'
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="imports.xsd">
+    <files name="product">
+        <source>Jh\Import\Source\Csv</source>
+        <match_files>rdrive.csv</match_files>
+        <specification>Jh\Import\Specification\Product</specification>
+        <writer>Jh\Import\Writer\Product</writer>
+        <id_field>sku</id_field>
+        <cron>my-cron-id</cron>
+        <cron_group>my-cron-group</cron_group>
+    </files>
+</config>
+END;
+
+        $domDocument = new \DOMDocument();
+        $domDocument->loadXML($xml);
+
+        self::assertEquals(
+            [
+                'product' => [
+                    'source' => 'Jh\Import\Source\Csv',
+                    'incoming_directory' => 'jh_import/incoming',
+                    'archived_directory' => 'jh_import/archived',
+                    'failed_directory' => 'jh_import/failed',
+                    'match_files' => 'rdrive.csv',
+                    'specification' => 'Jh\Import\Specification\Product',
+                    'writer' => 'Jh\Import\Writer\Product',
+                    'type' => 'files',
+                    'id_field' => 'sku',
+                    'indexers' => [],
+                    'report_handlers' => [],
+                    'cron' => 'my-cron-id',
+                    'archive_old_files' => false,
+                    'delete_old_files' => false,
+                    'cron_group' => 'my-cron-group'
+                ]
+            ],
+            (new Converter)->convert($domDocument)
+        );
+    }
+
 
     /**
      * @dataProvider fileCleanUpTruthy
@@ -325,6 +376,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => true,
                     'delete_old_files' => true,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
@@ -382,6 +434,7 @@ END;
                     'cron' => null,
                     'archive_old_files' => false,
                     'delete_old_files' => false,
+                    'cron_group' => 'default'
                 ]
             ],
             (new Converter)->convert($domDocument)
