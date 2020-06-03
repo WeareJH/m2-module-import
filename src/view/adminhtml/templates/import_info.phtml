@@ -17,12 +17,31 @@
             <?= implode(",\n", $this->getImport()->get('report_handlers')) ?>
         </div>
         <?php if ($this->hasCron()): ?>
-        <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Cron Expression') ?></div>
-            <?php $expression = $this->getCronExpression() ?>
-            <span><?= $expression ?></span>
-            <small><a target="_blank" href="https://crontab.guru/#<?= str_replace(' ', '_', $expression) ?>">What does that mean?</a></small>
-        </div>
+            <div class="dashboard-item">
+                <div class="dashboard-item-title"><?=  __('Cron') ?></div>
+                <div class="dashboard-item-content">
+                    <table class="admin__table-primary">
+                        <tbody>
+                        <tr>
+                            <?php $expression = $this->getCronExpression() ?>
+                            <td style="">Expression</td>
+                            <td style="" class="last">
+                                <?= $expression ?>
+                                <br><small><a target="_blank" href="https://crontab.guru/#<?= str_replace(' ', '_', $expression) ?>">What does that mean?</a></small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="">Cron group</td>
+                            <td style="" class="last"><?= $this->getCronGroup() ?></td>
+                        </tr>
+                        <tr>
+                            <td style="">Cron code</td>
+                            <td style="" class="last"><?= $this->getCronCode() ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         <?php endif ?>
     </div>
     <div class="dashboard-secondary col-m-9">

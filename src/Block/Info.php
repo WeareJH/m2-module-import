@@ -84,4 +84,38 @@ class Info extends Template
 
         throw new \RuntimeException('Import\'s cron job does not exist');
     }
+
+    public function getCronGroup() : string
+    {
+        $jobs = $this->cronConfig->getJobs();
+
+        if (!$this->getImport()->hasCron()) {
+            throw new \RuntimeException('Import has no cron code set');
+        }
+
+        $cronCode = $this->getImport()->getCron();
+
+        if (isset($jobs[$this->getImport()->getCronGroup()][$cronCode])) {
+            return $this->getImport()->getCronGroup();
+        }
+
+        throw new \RuntimeException('Import\'s cron job does not exist');
+    }
+
+    public function getCronCode() : string
+    {
+        $jobs = $this->cronConfig->getJobs();
+
+        if (!$this->getImport()->hasCron()) {
+            throw new \RuntimeException('Import has no cron code set');
+        }
+
+        $cronCode = $this->getImport()->getCron();
+
+        if (isset($jobs[$this->getImport()->getCronGroup()][$cronCode])) {
+            return $cronCode;
+        }
+
+        throw new \RuntimeException('Import\'s cron job does not exist');
+    }
 }
