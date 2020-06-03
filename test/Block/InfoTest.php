@@ -141,7 +141,9 @@ class InfoTest extends TestCase
 
         $cache
             ->load('cache-id')
-            ->willReturn(serialize(['product' => ['type' => 'files', 'cron' => 'my-cron-code']]))
+            ->willReturn(serialize(
+                ['product' => ['type' => 'files', 'cron' => 'my-cron-code', 'cron_group' => 'default']]
+            ))
             ->shouldBeCalled();
 
         $request = $this->prophesize(RequestInterface::class);
@@ -216,7 +218,9 @@ class InfoTest extends TestCase
 
         $cache
             ->load('cache-id')
-            ->willReturn(serialize(['product' => ['type' => 'files', 'cron' => 'my-cron-code']]))
+            ->willReturn(serialize(
+                ['product' => ['type' => 'files', 'cron' => 'my-cron-code', 'cron_group' => 'default']]
+            ))
             ->shouldBeCalled();
 
         $request = $this->prophesize(RequestInterface::class);

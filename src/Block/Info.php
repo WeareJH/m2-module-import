@@ -65,7 +65,7 @@ class Info extends Template
         $jobs = $this->cronConfig->getJobs();
 
         return $this->getImport()->hasCron()
-            && isset($jobs['default'][$this->getImport()->getCron()]);
+            && isset($jobs[$this->getImport()->getCronGroup()][$this->getImport()->getCron()]);
     }
 
     public function getCronExpression() : string
@@ -78,8 +78,8 @@ class Info extends Template
 
         $cronCode = $this->getImport()->getCron();
 
-        if (isset($jobs['default'][$cronCode])) {
-            return $jobs['default'][$cronCode]['schedule'];
+        if (isset($jobs[$this->getImport()->getCronGroup()][$cronCode])) {
+            return $jobs[$this->getImport()->getCronGroup()][$cronCode]['schedule'];
         }
 
         throw new \RuntimeException('Import\'s cron job does not exist');
