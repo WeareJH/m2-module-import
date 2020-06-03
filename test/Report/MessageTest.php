@@ -10,12 +10,11 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid Log Level supplied: "invalid-level"
-     */
     public function testExceptionIsThrownWithInvalidLogLevel()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Log Level supplied: "invalid-level"');
+
         new Message('invalid-level', 'wut');
     }
 

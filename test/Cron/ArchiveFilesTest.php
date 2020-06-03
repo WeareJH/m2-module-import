@@ -4,6 +4,7 @@ namespace Jh\ImportTest\Cron;
 
 use Jh\Import\Config\Data;
 use Jh\Import\Cron\ArchiveFiles;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -30,7 +31,7 @@ class ArchiveFilesTest extends TestCase
      */
     private $writeFactory;
     
-    public function setUp()
+    public function setUp() : void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -60,13 +61,13 @@ class ArchiveFilesTest extends TestCase
         $reader = $this->prophesize(ReaderInterface::class);
 
         return new ArchiveFiles(
-            new Data($reader->reveal(), $cache->reveal(), 'cache-id'),
+            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize),
             $this->directoryList,
             $this->writeFactory
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Filesystem)->remove($this->tempDirectory);
     }
@@ -79,6 +80,9 @@ class ArchiveFilesTest extends TestCase
         self::assertCount(0, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testNoZipCreatedIfFilesNotOlderThan3Days()
     {
         touch($this->tempDirectory . '/failed/file1.txt');
@@ -116,6 +120,9 @@ class ArchiveFilesTest extends TestCase
         self::assertCount(1, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testOldFilesZipped()
     {
         touch($this->tempDirectory . '/failed/file1.txt');
@@ -175,6 +182,9 @@ class ArchiveFilesTest extends TestCase
         self::assertCount(1, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testOnlyFilesOlderThan3DaysIncludedInZip()
     {
         touch($this->tempDirectory . '/failed/file1.txt');
@@ -226,6 +236,9 @@ class ArchiveFilesTest extends TestCase
         self::assertCount(0, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testOnlyImportWithArchiveOldFilesFlagAreArchived()
     {
         $config = [

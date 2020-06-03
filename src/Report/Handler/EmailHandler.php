@@ -7,6 +7,7 @@ use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 use Magento\Framework\Mail\Message as MailMessage;
+use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 
 /**
@@ -15,9 +16,9 @@ use Magento\Framework\Mail\TransportInterfaceFactory;
 class EmailHandler implements Handler
 {
     /**
-     * @var TransportInterfaceFactory
+     * @var TransportBuilder
      */
-    private $transportFactory;
+    private $transportBuilder;
 
     /**
      * @var int
@@ -69,12 +70,12 @@ class EmailHandler implements Handler
     ];
 
     public function __construct(
-        TransportInterfaceFactory $transportFactory,
+        TransportBuilder $transportBuilder,
         array $recipients,
         string $fromAddress,
         string $logLevel = LogLevel::ERROR
     ) {
-        $this->transportFactory = $transportFactory;
+        $this->transportBuilder = $transportBuilder;
         $this->minimumLogLevel =  LogLevel::$levels[$logLevel];
         $this->recipients = $recipients;
         $this->fromAddress = $fromAddress;
@@ -142,14 +143,20 @@ class EmailHandler implements Handler
             $finishTime->format('d-m-Y H:i:s')
         );
 
-        $mailMessage = (new MailMessage)
-            ->setMessageType(MailMessage::TYPE_HTML)
-            ->addTo($this->recipients)
-            ->setFrom($this->fromAddress)
-            ->setSubject($subject)
-            ->setBodyHtml($content);
+        $this->transportBuilder
+            ->setTemplateIdentifier('jh_import_import_report')
+            ->setTemplateVars(['subject' => $subject, 'content' => $content])
+            ->setTemplateOptions([])
+            ->setFromByScope(['email' => $this->fromAddress, 'name' => 'Test name']);
 
-        $this->transportFactory->create(['message' => $mailMessage])->sendMessage();
+        foreach ($this->recipients as $recipient) {
+            $this->transportBuilder
+                ->addTo($recipient);
+        }
+
+        $this->transportBuilder
+            ->getTransport()
+            ->sendMessage();
     }
 
     private function title(string $title, $level = 1)

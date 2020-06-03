@@ -78,6 +78,6 @@ class ReportTest extends TestCase
         self::assertEquals(100, $item->getReferenceLine());
         self::assertEquals('sku', $item->getIdField());
         self::assertEquals('PROD1', $item->getIdValue());
-        self::assertSame([$item], self::readAttribute($report, 'items'));
+        self::assertSame([$item], $report->getItems());
     }
 }

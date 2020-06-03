@@ -45,7 +45,7 @@ class CsvArchiverTest extends TestCase
      */
     private $date;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->tempRoot = sprintf('%s/%s', sys_get_temp_dir(), $this->getName());
         @mkdir($this->tempRoot, 0777, true);
@@ -70,7 +70,7 @@ class CsvArchiverTest extends TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Filesystem)->remove($this->tempRoot);
     }

@@ -6,6 +6,7 @@ use Jh\Import\Config\Data;
 use Jh\Import\Controller\Adminhtml\Config\Info;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\View\Result\PageFactory;
 use Prophecy\Prophecy\ObjectProphecy;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class InfoTest extends TestCase
      */
     private $controller;
 
-    public function setUp()
+    public function setUp() : void
     {
         $context = $this->getObject(Context::class);
 
@@ -44,7 +45,7 @@ class InfoTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $this->controller = new Info(
             $context,

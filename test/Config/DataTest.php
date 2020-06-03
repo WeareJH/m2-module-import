@@ -6,6 +6,7 @@ use Jh\Import\Config\Data;
 use Jh\Import\Config;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Config\ReaderInterface;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,7 +38,7 @@ class DataTest extends TestCase
         ]
     ];
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->reader = $this->prophesize(ReaderInterface::class);
         $this->cache  = $this->prophesize(CacheInterface::class);
@@ -49,7 +50,7 @@ class DataTest extends TestCase
         $this->reader->read()->willReturn(static::$testData)->shouldBeCalled();
         $this->cache->save(serialize(static::$testData), 'cache-id', [])->shouldBeCalled();
 
-        new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
     }
 
     public function testDataIsRetrievedFromCacheIfExists()
@@ -57,14 +58,14 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
     }
     public function testHasImportReturnsTrueIfImportExists()
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertTrue($config->hasImport('product'));
     }
 
@@ -73,7 +74,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertFalse($config->hasImport('stock'));
     }
 
@@ -82,7 +83,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
 
         self::assertInstanceOf(Config::class, $config->getImportConfigByName('product'));
     }
@@ -92,7 +93,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertNull($config->getImportConfigByName('stock'));
     }
 
@@ -101,7 +102,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertEquals('files', $config->getImportType('product'));
     }
 
@@ -110,7 +111,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertNull($config->getImportType('stock'));
     }
 
@@ -119,7 +120,7 @@ class DataTest extends TestCase
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
-        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id');
+        $config = new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize);
         self::assertSame(
             ['product'],
             $config->getAllImportNames()

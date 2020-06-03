@@ -132,4 +132,14 @@ class Report
             return $reportItem->isSuccessful();
         }, true);
     }
+
+    public function getItems() : array
+    {
+        return $this->items;
+    }
+
+    public function getHandlers() : array
+    {
+        return $this->handlers;
+    }
 }

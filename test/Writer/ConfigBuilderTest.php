@@ -29,7 +29,7 @@ class ConfigBuilderTest extends TestCase
 
     private $optionValues = [];
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->optionValueFactory = $this->prophesize(OptionValueInterfaceFactory::class);
     }
@@ -78,7 +78,7 @@ class ConfigBuilderTest extends TestCase
 
         $extension = new ProductExtension;
         $extensionFactory = $this->prophesize(\Magento\Framework\Api\ExtensionAttributesFactory::class);
-        $extensionFactory->create(\Magento\Catalog\Api\Data\ProductInterface::class)->willReturn($extension);
+        $extensionFactory->create(\Magento\Catalog\Model\Product::class, [])->willReturn($extension);
         $product = $this->getObject(Product::class, [
             'extensionFactory' => $extensionFactory->reveal()
         ]);

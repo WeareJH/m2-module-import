@@ -16,12 +16,11 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class UnlockImportCommandTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot find configuration for import with name: "product"
-     */
     public function testExceptionIsThrownIfImportDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot find configuration for import with name: "product"');
+
         $config  = $this->prophesize(Data::class);
         $locker  = $this->prophesize(Locker::class);
 
@@ -31,12 +30,11 @@ class UnlockImportCommandTest extends TestCase
         $commandTester->execute(['import_name' => 'product']);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Import: "product" is not locked
-     */
     public function testExceptionIsThrownIsImportNotLocked()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Import: "product" is not locked');
+
         $config  = $this->prophesize(Data::class);
         $locker  = $this->prophesize(Locker::class);
 
@@ -59,6 +57,9 @@ class UnlockImportCommandTest extends TestCase
         $commandTester = new CommandTester(new UnlockImportCommand($config->reveal(), $locker->reveal()));
         $commandTester->execute(['import_name' => 'product']);
 
-        self::assertContains('The lock for import: "product" has been released', $commandTester->getDisplay());
+        self::assertStringContainsString(
+            'The lock for import: "product" has been released',
+            $commandTester->getDisplay()
+        );
     }
 }

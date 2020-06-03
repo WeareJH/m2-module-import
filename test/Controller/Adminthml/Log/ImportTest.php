@@ -83,7 +83,7 @@ class ImportTest extends TestCase
      */
     private $import;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->context        = $this->prophesize(Context::class);
         $this->pageFactory    = $this->prophesize(PageFactory::class);

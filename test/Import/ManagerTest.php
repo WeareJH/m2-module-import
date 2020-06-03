@@ -15,12 +15,12 @@ use PHPUnit\Framework\TestCase;
  */
 class ManagerTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot find configuration for import with name: "not-valid-import"
-     */
     public function testExceptionIsThrownIfImportWithNameDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot find configuration for import with name: "not-valid-import"');
+
+
         $config = $this->prophesize(Data::class);
         $om     = $this->prophesize(ObjectManagerInterface::class);
 
@@ -29,13 +29,13 @@ class ManagerTest extends TestCase
         (new Manager($config->reveal(), $om->reveal()))->executeImportByName('not-valid-import');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Import configuration specified invalid type: "not-a-valid-type". Valid types
-     * @expectedExceptionMessage are: "files"
-     */
     public function testExceptionIsThrownIfInvalidType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Import configuration specified invalid type: "not-a-valid-type". Valid types are: "files"'
+        );
+
         $config = $this->prophesize(Data::class);
         $om     = $this->prophesize(ObjectManagerInterface::class);
 
@@ -45,12 +45,13 @@ class ManagerTest extends TestCase
         (new Manager($config->reveal(), $om->reveal()))->executeImportByName('some-import');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Import type: "stdClass" does not implement require interface: "Jh\Import\Type\Type"
-     */
     public function testExceptionIsThrownIfTypeDoesNotImplementCorrectInterface()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Import type: "stdClass" does not implement require interface: "Jh\Import\Type\Type"'
+        );
+
         $config = $this->prophesize(Data::class);
         $om     = $this->prophesize(ObjectManagerInterface::class);
 

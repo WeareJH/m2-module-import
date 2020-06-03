@@ -96,7 +96,7 @@ class ProductWriterTest extends TestCase
      */
     private $stock;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->productFactory     = $this->prophesize(ProductFactory::class);
         $this->productResource    = $this->prophesize(ProductResource::class);
@@ -406,6 +406,7 @@ class ProductWriterTest extends TestCase
         $product->setStoreId(0)->shouldBeCalled();
         $product->setVisibility(Visibility::VISIBILITY_BOTH)->shouldBeCalled();
         $product->setData('tax_class_id', 5)->shouldBeCalled();
+        $product->getSku()->shouldBeCalled();
 
         return new Record($id, [
             'status'            => 1,

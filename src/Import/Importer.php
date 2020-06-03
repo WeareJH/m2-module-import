@@ -262,4 +262,9 @@ class Importer
 
         $this->source->traverse($success, $error, $report);
     }
+
+    public function getProgress() : Progress
+    {
+        return $this->progress;
+    }
 }

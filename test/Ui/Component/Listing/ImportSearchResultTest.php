@@ -8,6 +8,7 @@ use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\Config\CacheInterface;
@@ -26,7 +27,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -57,7 +58,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -97,7 +98,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -132,7 +133,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -159,7 +160,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -186,7 +187,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id');
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 

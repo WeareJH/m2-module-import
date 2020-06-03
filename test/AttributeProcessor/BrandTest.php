@@ -35,7 +35,7 @@ class BrandTest extends TestCase
     private $brandProcessor;
     private $tempDirectory;
 
-    public function setUp()
+    public function setUp() : void
     {
         if (!class_exists(Brand::class)) {
             $this->markTestSkipped('wearejh/m2-module-brands not installed');
@@ -57,7 +57,7 @@ class BrandTest extends TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new SymfonyFilesystem)->remove($this->tempDirectory);
     }

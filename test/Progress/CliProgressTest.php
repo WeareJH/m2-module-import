@@ -12,24 +12,22 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CliProgressTest extends TestCase
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Progress not started
-     */
     public function testAdvanceThrowsExceptionIfNotStarted()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Progress not started');
+
         $output = $this->prophesize(OutputInterface::class);
 
         $progress = new CliProgress($output->reveal());
         $progress->advance();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Progress not started
-     */
     public function testFinishThrowsExceptionIfNotStarted()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Progress not started');
+
         $output = $this->prophesize(OutputInterface::class);
         $source = $this->prophesize(Source::class);
 
