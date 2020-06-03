@@ -219,7 +219,7 @@ class Price implements \Jh\Import\Specification\ImportSpecification
 {
     public function configure(\Jh\Import\Import\Importer $importer)
     {
-        $importer->transform(function (\Jh\Import\Import\Record $record, \Jh\Import\Report\Report $report) {
+        $importer->transform(function (\Jh\Import\Import\Record $record, \Jh\Import\Report\ReportItem $report) {
             $record->renameColumn('Product_Number', 'sku');
         });
     }
@@ -262,7 +262,7 @@ class Price implements \Jh\Import\Specification\ImportSpecification
 {
     public function configure(\Jh\Import\Import\Importer $importer)
     {
-        $importer->filter(function (\Jh\Import\Import\Record $record, \Jh\Import\Report\Report $report) {
+        $importer->filter(function (\Jh\Import\Import\Record $record, \Jh\Import\Report\ReportItem $report) {
             return $record->getColumnValue('price') <= 100;
         });
     }
