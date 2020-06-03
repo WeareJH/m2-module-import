@@ -67,8 +67,8 @@ class StockWriterTest extends TestCase
         $this->resourceConnection->getConnection()->willReturn($this->adapter->reveal());
         $this->adapter->select()->willReturn($select->reveal());
         $select->from('catalog_product_entity', ['sku', 'entity_id'])->willReturn($select->reveal());
-        $this->adapter->fetchPairs(Argument::type(Select::class)
-        )->willReturn(['PROD1' => 10, 'PROD2' => 11, 'PROD3' => 12]);
+        $this->adapter->fetchPairs(Argument::type(Select::class))
+            ->willReturn(['PROD1' => 10, 'PROD2' => 11, 'PROD3' => 12]);
 
         $this->stockConfiguration->getDefaultScopeId()->willReturn(2);
 
