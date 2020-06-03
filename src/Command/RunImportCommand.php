@@ -33,7 +33,7 @@ class RunImportCommand extends Command
 
     protected function configure()
     {
-        $this->setName('import:run')
+        $this->setName('jh-import:run')
             ->setDescription('Manually run an import immediately')
             ->addArgument('import_name', InputArgument::REQUIRED, 'The import to run as defined in imports.xml');
     }

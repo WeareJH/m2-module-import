@@ -33,7 +33,7 @@ class UnlockImportCommand extends Command
 
     protected function configure()
     {
-        $this->setName('import:unlock')
+        $this->setName('jh-import:unlock')
             ->setDescription('Unlock a locked import')
             ->addArgument('import_name', InputArgument::REQUIRED, 'The import to run as defined in imports.xml');
     }
