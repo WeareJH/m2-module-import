@@ -8,6 +8,7 @@ use Jh\Import\Config;
 use Jh\Import\Import\History;
 use Jh\Import\Import\Importer;
 use Jh\Import\Import\Record;
+use Jh\Import\Import\RequiresPreperation;
 use Jh\Import\Import\Result;
 use Jh\Import\Locker\ImportLockedException;
 use Jh\Import\Locker\Locker;
@@ -61,7 +62,7 @@ class ImporterTest extends TestCase
 
         $importer->process($config);
     }
-    
+
     public function testProgressIsAdvancedForEachRecordWithErrors()
     {
         $config   = new Config('product', ['id_field' => 'sku']);
@@ -432,5 +433,57 @@ class ImporterTest extends TestCase
             ->willReturn(new Report([], 'product', 'some-source-id'));
 
         return $reportFactory;
+    }
+
+    public function testAddFilterCallsPrepareIfNecessary() : void
+    {
+        $config  = new Config('product', []);
+        $om      = $this->prophesize(ObjectManagerInterface::class);
+        $writer  = $this->prophesize(Writer::class);
+        $history = $this->prophesize(History::class);
+        $history->isImported(Argument::type(Source::class))->willReturn(false);
+
+        $importer = $this->getObject(Importer::class, [
+            'source' => Iterator::fromCallable(function () {
+                yield [1];
+                yield [2];
+                yield [3];
+            }),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
+            'archiverFactory' => new Factory($om->reveal()),
+            'history' => $history->reveal(),
+            'writer'  => $writer->reveal()
+        ]);
+
+        $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
+        $callable->prepare($importer)->shouldBeCalled();
+
+        $importer->filter($callable->reveal());
+    }
+
+    public function testAddTransformerCallsPrepareIfNecessary() : void
+    {
+        $config  = new Config('product', []);
+        $om      = $this->prophesize(ObjectManagerInterface::class);
+        $writer  = $this->prophesize(Writer::class);
+        $history = $this->prophesize(History::class);
+        $history->isImported(Argument::type(Source::class))->willReturn(false);
+
+        $importer = $this->getObject(Importer::class, [
+            'source' => Iterator::fromCallable(function () {
+                yield [1];
+                yield [2];
+                yield [3];
+            }),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
+            'archiverFactory' => new Factory($om->reveal()),
+            'history' => $history->reveal(),
+            'writer'  => $writer->reveal()
+        ]);
+
+        $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
+        $callable->prepare($importer)->shouldBeCalled();
+
+        $importer->transform($callable->reveal());
     }
 }

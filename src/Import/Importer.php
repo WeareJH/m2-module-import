@@ -104,11 +104,19 @@ class Importer
     public function filter(callable $filter)
     {
         $this->filters[] = $filter;
+
+        if ($filter instanceof RequiresPreperation) {
+            $filter->prepare($this);
+        }
     }
 
     public function transform(callable $transform)
     {
         $this->transformers[] = $transform;
+
+        if ($transform instanceof RequiresPreperation) {
+            $transform->prepare($this);
+        }
     }
 
     private function canImport(string $importName, Report $report) : bool
