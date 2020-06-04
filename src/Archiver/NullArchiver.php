@@ -8,12 +8,12 @@ namespace Jh\Import\Archiver;
 class NullArchiver implements Archiver
 {
 
-    public function failed()
+    public function failed() : void
     {
         //noop
     }
 
-    public function successful()
+    public function successful() : void
     {
         //noop
     }

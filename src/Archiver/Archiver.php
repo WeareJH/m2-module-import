@@ -7,7 +7,7 @@ namespace Jh\Import\Archiver;
  */
 interface Archiver
 {
-    public function failed();
+    public function failed() : void;
 
-    public function successful();
+    public function successful() : void;
 }
