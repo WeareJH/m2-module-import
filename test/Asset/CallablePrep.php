@@ -11,7 +11,6 @@ class CallablePrep implements RequiresPreperation
 {
     public function __invoke()
     {
-
     }
 
     public function prepare(Importer $importer): void
