@@ -6,6 +6,7 @@ use Jh\Import\Archiver\CsvArchiver;
 use Jh\Import\Config;
 use Jh\Import\Source\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -41,9 +42,19 @@ class CsvArchiverTest extends TestCase
     private $archiver;
 
     /**
+     * @var AdapterInterface
+     */
+    private $db;
+
+    /**
      * @var \DateTime
      */
     private $date;
+
+    /**
+     * @var string
+     */
+    private $sourceId;
 
     public function setUp() : void
     {
@@ -56,6 +67,12 @@ class CsvArchiverTest extends TestCase
         $this->source = $this->prophesize(Csv::class);
 
         $this->source->getFile()->willReturn(new \SplFileObject($this->testFileLocation, 'r'));
+        $this->sourceId = md5_file($this->testFileLocation);
+        $this->source->getSourceId()->willReturn($this->sourceId);
+
+        $this->db = $this->prophesize(AdapterInterface::class);
+        $resourceConnection = $this->prophesize(\Magento\Framework\App\ResourceConnection::class);
+        $resourceConnection->getConnection()->willReturn($this->db->reveal());
 
         $this->date = new \DateTime('02-03-2017 10:15:00');
         $this->archiver = new CsvArchiver(
@@ -66,6 +83,7 @@ class CsvArchiverTest extends TestCase
             ]),
             $this->directoryList,
             new File,
+            $resourceConnection->reveal(),
             $this->date
         );
     }
@@ -83,6 +101,16 @@ class CsvArchiverTest extends TestCase
 
         self::assertFileExists(sprintf('%s/var/jh_import/failed/my-file-02032017101500.csv', $this->tempRoot));
         self::assertFileNotExists($this->testFileLocation);
+
+        $this->db
+            ->insert(
+                'jh_import_archive_csv',
+                [
+                    'source_id' => $this->sourceId,
+                    'file_location' => 'jh_import/failed/my-file-02032017101500.csv'
+                ]
+            )
+            ->shouldHaveBeenCalled();
     }
 
     public function testFailedMovesToFailedFolderAndCreatesFolderWhenItDoesNotExist()
@@ -91,6 +119,16 @@ class CsvArchiverTest extends TestCase
 
         self::assertFileExists(sprintf('%s/var/jh_import/failed/my-file-02032017101500.csv', $this->tempRoot));
         self::assertFileNotExists($this->testFileLocation);
+
+        $this->db
+            ->insert(
+                'jh_import_archive_csv',
+                [
+                    'source_id' => $this->sourceId,
+                    'file_location' => 'jh_import/failed/my-file-02032017101500.csv'
+                ]
+            )
+            ->shouldHaveBeenCalled();
     }
 
     public function testSuccessMovesToArchivedFolderAndRenamesFileWithCurrentDate()
@@ -101,6 +139,16 @@ class CsvArchiverTest extends TestCase
 
         self::assertFileExists(sprintf('%s/var/jh_import/archived/my-file-02032017101500.csv', $this->tempRoot));
         self::assertFileNotExists($this->testFileLocation);
+
+        $this->db
+            ->insert(
+                'jh_import_archive_csv',
+                [
+                    'source_id' => $this->sourceId,
+                    'file_location' => 'jh_import/archived/my-file-02032017101500.csv'
+                ]
+            )
+            ->shouldHaveBeenCalled();
     }
 
     public function testSuccessMovesToArchivedFolderAndCreatesFolderWhenItDoesNotExist()
@@ -109,5 +157,15 @@ class CsvArchiverTest extends TestCase
 
         self::assertFileExists(sprintf('%s/var/jh_import/archived/my-file-02032017101500.csv', $this->tempRoot));
         self::assertFileNotExists($this->testFileLocation);
+
+        $this->db
+            ->insert(
+                'jh_import_archive_csv',
+                [
+                    'source_id' => $this->sourceId,
+                    'file_location' => 'jh_import/archived/my-file-02032017101500.csv'
+                ]
+            )
+            ->shouldHaveBeenCalled();
     }
 }

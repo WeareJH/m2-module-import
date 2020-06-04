@@ -29,7 +29,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ->addColumn('import_name', Table::TYPE_TEXT);
 
             $setup->getConnection()->createTable($table);
-            
+
             $table = $setup->getConnection()
                 ->newTable('jh_import_history')
                 ->addColumn(
@@ -246,6 +246,61 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'comment' => 'memory_usage'
                 ]
             );
+        }
+
+        if (version_compare($context->getVersion(), '1.8.0', '<')) {
+            $csvArchiveTable = $setup->getConnection()
+                ->newTable('jh_import_archive_csv')
+                ->addColumn(
+                    'id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    [
+                        'identity' => true,
+                        'unsigned' => true,
+                        'nullable' => false,
+                        'primary'  => true
+                    ]
+                )
+                ->addColumn(
+                    'source_id',
+                    Table::TYPE_TEXT,
+                    64
+                )
+                ->addColumn(
+                    'file_location',
+                    Table::TYPE_TEXT,
+                    512,
+                    [
+                        'nullable' => false
+                    ]
+                )
+                ->addColumn(
+                    'deleted',
+                    Table::TYPE_BOOLEAN,
+                    null,
+                    [
+                        'default' => 0
+                    ]
+                )
+                ->addColumn(
+                    'archived',
+                    Table::TYPE_BOOLEAN,
+                    null,
+                    [
+                        'default' => 0
+                    ]
+                )
+                ->addColumn(
+                    'archive_location',
+                    Table::TYPE_TEXT,
+                    512,
+                    [
+                        'nullable' => true
+                    ]
+                );
+
+            $setup->getConnection()->createTable($csvArchiveTable);
         }
 
         $setup->endSetup();

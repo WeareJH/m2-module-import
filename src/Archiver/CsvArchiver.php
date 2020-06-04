@@ -6,6 +6,7 @@ use DateTime;
 use Jh\Import\Config;
 use Jh\Import\Source\Csv;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Filesystem\Driver\File;
 
 /**
@@ -34,6 +35,11 @@ class CsvArchiver implements Archiver
     private $directoryList;
 
     /**
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql
+     */
+    private $adapter;
+
+    /**
      * @var DateTime
      */
     private $date;
@@ -43,6 +49,7 @@ class CsvArchiver implements Archiver
         Config $config,
         DirectoryList $directoryList,
         File $filesystem,
+        ResourceConnection $resourceConnection,
         DateTime $date = null
     ) {
         $this->source = $source;
@@ -50,9 +57,10 @@ class CsvArchiver implements Archiver
         $this->filesystem = $filesystem;
         $this->directoryList = $directoryList;
         $this->date = $date;
+        $this->adapter = $resourceConnection->getConnection();
     }
 
-    public function failed()
+    public function failed() : void
     {
         $this->ensureDirectoryExists(
             sprintf(
@@ -62,18 +70,31 @@ class CsvArchiver implements Archiver
             )
         );
 
+        $destination = sprintf(
+            "%s/%s",
+            $this->config->get('failed_directory'),
+            $this->newName($this->source->getFile())
+        );
+
         $this->filesystem->rename(
             $this->source->getFile()->getRealPath(),
             sprintf(
-                '%s/%s/%s',
+                '%s/%s',
                 $this->directoryList->getPath(DirectoryList::VAR_DIR),
-                $this->config->get('failed_directory'),
-                $this->newName($this->source->getFile())
+                $destination
             )
+        );
+
+        $this->adapter->insert(
+            'jh_import_archive_csv',
+            [
+                'source_id' => $this->source->getSourceId() ,
+                'file_location' => $destination,
+            ]
         );
     }
 
-    public function successful()
+    public function successful() : void
     {
         $this->ensureDirectoryExists(
             sprintf(
@@ -83,14 +104,27 @@ class CsvArchiver implements Archiver
             )
         );
 
+        $destination = sprintf(
+            "%s/%s",
+            $this->config->get('archived_directory'),
+            $this->newName($this->source->getFile())
+        );
+
         $this->filesystem->rename(
             $this->source->getFile()->getRealPath(),
             sprintf(
-                '%s/%s/%s',
+                '%s/%s',
                 $this->directoryList->getPath(DirectoryList::VAR_DIR),
-                $this->config->get('archived_directory'),
-                $this->newName($this->source->getFile())
+                $destination
             )
+        );
+
+        $this->adapter->insert(
+            'jh_import_archive_csv',
+            [
+                'source_id' => $this->source->getSourceId() ,
+                'file_location' => $destination,
+            ]
         );
     }
 

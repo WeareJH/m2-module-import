@@ -29,6 +29,11 @@ class Csv implements Source, \Countable
      */
     private $escape;
 
+    /**
+     * @var string
+     */
+    private $sourceId;
+
     public function __construct(string $file, string $delimiter = ',', string $enclosure = '"', string $escape = '\\')
     {
         $this->file = new \SplFileObject($file, 'r');
@@ -44,6 +49,8 @@ class Csv implements Source, \Countable
         if (isset($delimiterMap[$this->delimiter])) {
             $this->delimiter = $delimiterMap[$this->delimiter];
         }
+
+        $this->sourceId = md5_file($this->file->getRealPath());
     }
 
     public function traverse(callable $onSuccess, callable $onError, Report $report)
@@ -114,6 +121,6 @@ class Csv implements Source, \Countable
      */
     public function getSourceId()
     {
-        return md5_file($this->file->getRealPath());
+        return $this->sourceId;
     }
 }
