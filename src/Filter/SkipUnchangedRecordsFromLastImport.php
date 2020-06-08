@@ -89,6 +89,7 @@ class SkipUnchangedRecordsFromLastImport implements RequiresPreparation
             ->getBySourceId($this->previousImport->getData('source_id'));
 
         if (!$archive->isFileAvailable()) {
+            //file has been deleted or archived (zipped)
             return;
         }
 
