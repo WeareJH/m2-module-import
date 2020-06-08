@@ -22,9 +22,4 @@ class ImportHistory extends AbstractModel
     {
         return new \DateTime($this->getData('started'));
     }
-
-    public function getLastImportByName(string $importName): self
-    {
-        return $this->getResource()->getLastImportByName($this, $importName);
-    }
 }
