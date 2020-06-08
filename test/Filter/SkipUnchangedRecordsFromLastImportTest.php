@@ -42,7 +42,6 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         $this->directoryList = new DirectoryList($this->tempRoot);
     }
 
-
     public function testUnchangedRecordsAreSkipped() : void
     {
         $data = [
@@ -157,7 +156,6 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(0, ['country' => 'Turkey', 'code' => 'TR'])));
         self::assertTrue($filter->__invoke(new Record(0, ['country' => 'France', 'code' => 'FR'])));
     }
-
 
     public function testAllRecordsAreProcessedIfNoPreviousFileExists() : void
     {
