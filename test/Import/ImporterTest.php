@@ -29,6 +29,7 @@ use Magento\Framework\Mview\View\StateInterface;
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -422,7 +423,7 @@ class ImporterTest extends TestCase
         $importer->process($config);
     }
 
-    private function reportFactory(Config $config)
+    private function reportFactory(Config $config) : ObjectProphecy
     {
         $reportFactory = $this->prophesize(ReportFactory::class);
         $reportFactory
@@ -439,7 +440,6 @@ class ImporterTest extends TestCase
     {
         $config  = new Config('product', []);
         $om      = $this->prophesize(ObjectManagerInterface::class);
-        $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
@@ -452,20 +452,20 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer'  => $writer->reveal()
+            'writer' => new CollectingWriter,
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
-        $callable->prepare($importer)->shouldBeCalled();
+        $callable->prepare($config)->shouldBeCalled();
 
         $importer->filter($callable->reveal());
+        $importer->process($config);
     }
 
     public function testAddTransformerCallsPrepareIfNecessary() : void
     {
         $config  = new Config('product', []);
         $om      = $this->prophesize(ObjectManagerInterface::class);
-        $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
@@ -478,12 +478,13 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer'  => $writer->reveal()
+            'writer' => new CollectingWriter,
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
-        $callable->prepare($importer)->shouldBeCalled();
+        $callable->prepare($config)->shouldBeCalled();
 
         $importer->transform($callable->reveal());
+        $importer->process($config);
     }
 }
