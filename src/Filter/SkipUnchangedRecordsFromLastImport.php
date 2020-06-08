@@ -112,6 +112,9 @@ class SkipUnchangedRecordsFromLastImport implements RequiresPreparation
                 ['file' => $filePath]
             );
 
+        //TODO: Do we even need the data in memory?
+        //TODO: We could probably read the file as an iterator (thus not loading at once)
+        //TODO: And then only keep the hash in memory
         $prevData = $this->sourceConsumer
             ->toArray($source, $this->importConfig);
 
