@@ -97,16 +97,12 @@ class Importer
         $importSpecification->configure($this);
     }
 
-    /**
-     * @param callable $filter
-     * @return void
-     */
-    public function filter(callable $filter)
+    public function filter(callable $filter) : void
     {
         $this->filters[] = $filter;
     }
 
-    public function transform(callable $transform)
+    public function transform(callable $transform) : void
     {
         $this->transformers[] = $transform;
     }
@@ -129,11 +125,7 @@ class Importer
         return true;
     }
 
-    /**
-     * @param Config $config
-     * @return void
-     */
-    public function process(Config $config)
+    public function process(Config $config) : void
     {
         $report = $this->reportFactory->createFromSourceAndConfig($this->source, $config);
         $report->start();
@@ -188,9 +180,13 @@ class Importer
         }
     }
 
-    private function prepare(Config $config)
+    private function prepare(Config $config) : void
     {
         $this->progress->start($this->source, $config);
+
+        $this->prepareComponents($config, $this->filters);
+        $this->prepareComponents($config, $this->transformers);
+
         $this->writer->prepare($this->source);
 
         //disable any indexers that may be triggered by this import
@@ -206,6 +202,17 @@ class Importer
                 continue;
             }
         }
+    }
+
+    private function prepareComponents(Config $config, array $components) : void
+    {
+        collect($components)
+            ->filter(function (callable $component) {
+                return $component instanceof RequiresPreparation;
+            })
+            ->each(function (callable $component) use ($config) {
+                $component->prepare($config);
+            });
     }
 
     private function finish(Config $config)
