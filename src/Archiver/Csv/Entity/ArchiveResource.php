@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jh\Import\Archiver\Csv\Entity;
 
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\Model\ResourceModel\Db\Context;
 
 class ArchiveResource extends AbstractDb
 {
