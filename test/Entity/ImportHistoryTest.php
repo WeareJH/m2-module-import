@@ -14,7 +14,7 @@ class ImportHistoryTest extends TestCase
 {
     use ObjectHelper;
 
-    public function testGetStartedAt()
+    public function testGetStartedAt() : void
     {
         $resource = $this->prophesize(AbstractDb::class);
         $resource->getIdFieldName()->willReturn('id');

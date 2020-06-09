@@ -23,13 +23,12 @@ class SourceConsumerTest extends TestCase
         $consumer = new SourceConsumer();
         $data = $consumer->toArray($source, new Config('my-stock-import', ['id_field' => 'sku']));
 
-        self::assertEquals(['PROD1', 'PROD2', 'PROD3'], array_keys($data));
-        self::assertInstanceOf(Record::class, $data['PROD1']);
-        self::assertInstanceOf(Record::class, $data['PROD2']);
-        self::assertInstanceOf(Record::class, $data['PROD3']);
+        self::assertInstanceOf(Record::class, $data[0]);
+        self::assertInstanceOf(Record::class, $data[1]);
+        self::assertInstanceOf(Record::class, $data[2]);
 
-        self::assertEquals(['sku' => 'PROD1', 'stock' => 10], $data['PROD1']->asArray());
-        self::assertEquals(['sku' => 'PROD2', 'stock' => 5], $data['PROD2']->asArray());
-        self::assertEquals(['sku' => 'PROD3', 'stock' => 11], $data['PROD3']->asArray());
+        self::assertEquals(['sku' => 'PROD1', 'stock' => 10], $data[0]->asArray());
+        self::assertEquals(['sku' => 'PROD2', 'stock' => 5], $data[1]->asArray());
+        self::assertEquals(['sku' => 'PROD3', 'stock' => 11], $data[2]->asArray());
     }
 }

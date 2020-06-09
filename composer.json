@@ -4,6 +4,7 @@
     "type": "magento2-module",
     "require": {
         "php": "^7.3",
+        "ext-json": "*",
         "tightenco/collect": "^7.2",
         "trash-panda/progress-bar-log": "^1.1",
         "magento/framework": "^102",

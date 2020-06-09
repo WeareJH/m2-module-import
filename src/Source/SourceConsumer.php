@@ -18,8 +18,8 @@ class SourceConsumer
         $data = [];
 
         $source->traverse(
-            function (int $rowNumber, array $row) use ($config, &$data) {
-                $data[$row[$config->getIdField()]] = new Record($rowNumber, $row);
+            function (int $rowNumber, array $row) use (&$data) {
+                $data[] = new Record($rowNumber, $row);
             },
             function ($rowNumber) {
                 //noop - error reading/parsing row
