@@ -2,9 +2,6 @@
 
 namespace Jh\Import\Import;
 
-/**
- * @author Aydin Hassan <aydin@wearejh.com>
- */
 class Record
 {
     /**
@@ -17,10 +14,6 @@ class Record
      */
     private $data;
 
-    /**
-     * @param int $rowNumber
-     * @param array $data
-     */
     public function __construct(int $rowNumber, array $data = [])
     {
         $this->rowNumber = $rowNumber;
@@ -32,44 +25,34 @@ class Record
         return $this->rowNumber;
     }
 
-    /**
-     * @param string $columnName
-     * @param mixed $value
-     * @return void
-     */
-    public function setColumnValue(string $columnName, $value)
+    public function setColumnValue(string $columnName, $value): void
     {
         $this->data[$columnName] = $value;
     }
 
-    /**
-     * @param string $columnName
-     * @return void
-     */
-    public function unset(string $columnName)
+    public function unset(string $columnName): void
     {
         unset($this->data[$columnName]);
     }
 
-    /**
-     * @param string[] ...$columnNames
-     * @return void
-     */
-    public function unsetMany(string ...$columnNames)
+    public function unsetMany(string ...$columnNames): void
     {
         foreach ($columnNames as $columnName) {
             $this->unset($columnName);
         }
     }
 
-    /**
-     * @param string $columnName
-     * @param mixed $default
-     * @param string|null $dataType The expected data type of the value
-     * @return mixed
-     * @throws \RuntimeException
-     */
-    public function getColumnValue(string $columnName, $default = null, $dataType = null)
+    public function only(string ...$columnNames): void
+    {
+        $data = [];
+        foreach ($columnNames as $columnName) {
+            $data[$columnName] = $this->getColumnValue($columnName);
+        }
+
+        $this->data = $data;
+    }
+
+    public function getColumnValue(string $columnName, $default = null, string $dataType = null)
     {
         $value = $this->data[$columnName] ?? $default;
 
@@ -87,65 +70,35 @@ class Record
         return $value;
     }
 
-    /**
-     * @param string $columnName
-     * @param null $default
-     * @param string|null $dataType
-     * @throws \RuntimeException
-     * @return mixed
-     */
-    public function getColumnValueAndUnset(string $columnName, $default = null, $dataType = null)
+    public function getColumnValueAndUnset(string $columnName, $default = null, string $dataType = null)
     {
         $value = $this->getColumnValue($columnName, $default, $dataType);
         $this->unset($columnName);
         return $value;
     }
 
-    /**
-     * @param string $columnName
-     * @return bool
-     */
-    public function columnExists(string $columnName)
+    public function columnExists(string $columnName): bool
     {
         return array_key_exists($columnName, $this->data);
     }
 
-    /**
-     * @return array
-     */
-    public function asArray() : array
+    public function asArray(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param string $column
-     * @param callable $callable
-     * @return void
-     */
-    public function transform(string $column, callable $callable)
+    public function transform(string $column, callable $callable): void
     {
         $this->setColumnValue($column, $callable($this->getColumnValue($column)));
     }
 
-    /**
-     * @param string $columnFrom
-     * @param string $columnTo
-     * @return void
-     */
-    public function renameColumn(string $columnFrom, string $columnTo)
+    public function renameColumn(string $columnFrom, string $columnTo): void
     {
         $this->setColumnValue($columnTo, $this->getColumnValue($columnFrom));
         $this->unset($columnFrom);
     }
 
-    /**
-     * @param string $columnFrom
-     * @param string $columnTo
-     * @param string $key
-     * @return void
-     */
-    public function moveColumnToArray(string $columnFrom, string $columnTo, string $key = null)
+    public function moveColumnToArray(string $columnFrom, string $columnTo, string $key = null): void
     {
         if (null === $key) {
             $key = $columnFrom;
@@ -157,25 +110,14 @@ class Record
         $this->unset($columnFrom);
     }
 
-    /**
-     * @param string[] $columns
-     * @param string $columnTo
-     * @return void
-     */
-    public function moveMultipleColumnsToArray(array $columns, string $columnTo)
+    public function moveMultipleColumnsToArray(array $columns, string $columnTo): void
     {
         foreach ($columns as $columnFrom) {
             $this->moveColumnToArray($columnFrom, $columnTo);
         }
     }
 
-    /**
-     * @param string $column
-     * @param string $key
-     * @param mixed $value
-     * @return void
-     */
-    public function addValueToArray(string $column, string $key, $value)
+    public function addValueToArray(string $column, string $key, $value): void
     {
         $array = $this->getColumnValue($column, [], 'array');
         $array[$key] = $value;
