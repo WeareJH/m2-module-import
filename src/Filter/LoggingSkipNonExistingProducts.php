@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Jh\Import\Filter;
 
+use Jh\Import\Config;
 use Jh\Import\Import\Record;
+use Jh\Import\Import\RequiresPreparation;
 use Jh\Import\Report\ReportItem;
 
-class LoggingSkipNonExistingProducts
+class LoggingSkipNonExistingProducts implements RequiresPreparation
 {
     /**
      * @var SkipNonExistingProducts
@@ -17,12 +19,16 @@ class LoggingSkipNonExistingProducts
     /**
      * @var string
      */
-    private $skuField;
+    private $skuField = 'sku';
 
-    public function __construct(SkipNonExistingProducts $skipNonExistingProducts, string $skuField = 'sku')
+    public function __construct(SkipNonExistingProducts $skipNonExistingProducts)
     {
         $this->skipNonExistingProducts = $skipNonExistingProducts;
-        $this->skuField = $skuField;
+    }
+
+    public function prepare(Config $config): void
+    {
+        $this->skuField = $config->getIdField();
     }
 
     public function __invoke(Record $record, ReportItem $reportItem) : bool

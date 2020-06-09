@@ -2,6 +2,7 @@
 
 namespace Jh\ImportTest\Import;
 
+use Jh\Import\Config;
 use Jh\Import\Filter\SkipNonExistingProducts;
 use Jh\Import\Import\Record;
 use Magento\Framework\App\ResourceConnection;
@@ -15,7 +16,7 @@ use Prophecy\Argument;
  */
 class SkipNonExistingProductsTest extends TestCase
 {
-    public function testNonExistingProductsAreSkipped()
+    public function testNonExistingProductsAreSkipped() : void
     {
         $connection = $this->prophesize(ResourceConnection::class);
         $adapter   = $this->prophesize(AdapterInterface::class);
@@ -32,7 +33,7 @@ class SkipNonExistingProductsTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(1, ['sku' => 'EXISTINGSKU'])));
     }
 
-    public function testNonExistingProductsAreSkippedWithCustomSkuField()
+    public function testNonExistingProductsAreSkippedWithCustomSkuField() : void
     {
         $connection = $this->prophesize(ResourceConnection::class);
         $adapter   = $this->prophesize(AdapterInterface::class);
@@ -43,7 +44,8 @@ class SkipNonExistingProductsTest extends TestCase
         $select->from('catalog_product_entity', ['sku'])->willReturn($select->reveal());
         $adapter->fetchCol(Argument::type(Select::class))->willReturn(['EXISTINGSKU', 'EXISTINGSKU2']);
 
-        $filter = new SkipNonExistingProducts($connection->reveal(), 'my-sku-field');
+        $filter = new SkipNonExistingProducts($connection->reveal());
+        $filter->prepare(new Config('my-import', ['id_field' => 'my-sku-field']));
 
         self::assertFalse($filter->__invoke(new Record(1, ['my-sku-field' => 'NONEXISTINGSKU'])));
         self::assertTrue($filter->__invoke(new Record(1, ['my-sku-field' => 'EXISTINGSKU'])));
