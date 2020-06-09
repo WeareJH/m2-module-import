@@ -10,15 +10,15 @@ use Jh\Import\Source\Source;
  */
 class NullProgress implements Progress
 {
-    public function start(Source $source, Config $config)
+    public function start(Source $source, Config $config): void
     {
     }
 
-    public function advance()
+    public function advance(): void
     {
     }
 
-    public function finish(Source $source)
+    public function finish(Source $source): void
     {
     }
 }

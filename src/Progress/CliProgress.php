@@ -35,12 +35,7 @@ class CliProgress implements Progress
         $this->numLogsToDisplay = $numLogsToDisplay;
     }
 
-    /**
-     * @param Source $source
-     * @param Config $config
-     * @return void
-     */
-    public function start(Source $source, Config $config)
+    public function start(Source $source, Config $config): void
     {
         $max = null;
         if ($source instanceof \Countable) {
@@ -67,25 +62,31 @@ class CliProgress implements Progress
         $this->progressBarLog->start();
     }
 
-    public function advance()
+    public function advance(): void
     {
         $this->guardStarted();
         $this->progressBarLog->advance();
     }
 
-    public function addLog(string $severity, string $message)
+    public function addLog(string $severity, string $message) : void
     {
         $this->guardStarted();
         $this->progressBarLog->addLog(strtolower($severity), $message);
     }
 
-    public function finish(Source $source)
+    public function finish(Source $source): void
     {
         $this->guardStarted();
         $this->progressBarLog->finish();
+
+        $this->output->writeln([
+            "",
+            "<bg=blue>Import finished</>",
+            ""
+        ]);
     }
 
-    private function guardStarted()
+    private function guardStarted() : void
     {
         if (null === $this->progressBarLog) {
             throw new \RuntimeException('Progress not started');
