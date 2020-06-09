@@ -158,9 +158,9 @@ class EmailHandler implements Handler
             ->setTemplateVars(['subject' => $subject, 'content' => $content])
             ->setFromByScope(['email' => $this->fromAddress, 'name' => $this->fromName]);
 
-        foreach ($this->recipients as $recipient) {
+        foreach ($this->recipients as $name => $email) {
             $this->transportBuilder
-                ->addTo($recipient);
+                ->addTo($email, $name);
         }
 
         $this->transportBuilder
