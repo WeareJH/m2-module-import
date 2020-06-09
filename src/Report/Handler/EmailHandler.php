@@ -9,6 +9,8 @@ use Jh\Import\Report\ReportItem;
 use Magento\Framework\Mail\Message as MailMessage;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Mail\TransportInterfaceFactory;
+use Magento\Framework\App\Area;
+use Magento\Store\Model\Store;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
@@ -34,6 +36,11 @@ class EmailHandler implements Handler
      * @var string
      */
     private $fromAddress;
+
+    /**
+     * @var string
+     */
+    private $fromName;
 
     /**
      * @var \DateTime
@@ -73,12 +80,14 @@ class EmailHandler implements Handler
         TransportBuilder $transportBuilder,
         array $recipients,
         string $fromAddress,
+        string $fromName,
         string $logLevel = LogLevel::ERROR
     ) {
         $this->transportBuilder = $transportBuilder;
         $this->minimumLogLevel =  LogLevel::$levels[$logLevel];
         $this->recipients = $recipients;
         $this->fromAddress = $fromAddress;
+        $this->fromName = $fromName;
     }
 
     public function start(Report $report, \DateTime $startTime)
@@ -145,9 +154,9 @@ class EmailHandler implements Handler
 
         $this->transportBuilder
             ->setTemplateIdentifier('jh_import_import_report')
+            ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => Store::DEFAULT_STORE_ID])
             ->setTemplateVars(['subject' => $subject, 'content' => $content])
-            ->setTemplateOptions([])
-            ->setFromByScope(['email' => $this->fromAddress, 'name' => 'Test name']);
+            ->setFromByScope(['email' => $this->fromAddress, 'name' => $this->fromName]);
 
         foreach ($this->recipients as $recipient) {
             $this->transportBuilder
