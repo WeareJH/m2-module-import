@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CsvTest extends TestCase
 {
-    public function testCount()
+    public function testCount(): void
     {
         $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
         file_put_contents($tempFile, implode("\n", [
@@ -36,7 +36,7 @@ class CsvTest extends TestCase
         unlink($tempFile);
     }
 
-    public function testGetFile()
+    public function testGetFile(): void
     {
         $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
         file_put_contents($tempFile, implode("\n", [
@@ -55,12 +55,11 @@ class CsvTest extends TestCase
             new Report([], 'product', 'some-source-id')
         );
 
-        self::assertInstanceOf(\SplFileObject::class, $csvSource->getFile());
         self::assertEquals($tempFile, $csvSource->getFile()->getRealPath());
         unlink($tempFile);
     }
 
-    public function testParseCsvCallsCallableForEachRow()
+    public function testParseCsvCallsCallableForEachRow(): void
     {
         $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
         file_put_contents($tempFile, implode("\n", [
@@ -91,7 +90,7 @@ class CsvTest extends TestCase
         unlink($tempFile);
     }
 
-    public function testParseCsvCallsErrorCallableForEachErroneousRowAndAddsAnEntryToTheReport()
+    public function testParseCsvCallsErrorCallableForEachErroneousRowAndAddsAnEntryToTheReport(): void
     {
         $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
         file_put_contents($tempFile, implode("\n", [
@@ -104,7 +103,7 @@ class CsvTest extends TestCase
         $expectedData = [
             2 => ['column1' => 'row1column1value', 'column2' => 'row1column2value', 'column3' => 'row1column3value'],
         ];
-        
+
         $parsed = [];
         $errors = [];
         $csvSource = new Csv($tempFile);
@@ -136,7 +135,7 @@ class CsvTest extends TestCase
         unlink($tempFile);
     }
 
-    public function testSourceIdReturnsSameIdForSameFile()
+    public function testSourceIdReturnsSameIdForSameFile(): void
     {
         $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
         file_put_contents($tempFile, implode("\n", [
@@ -152,7 +151,7 @@ class CsvTest extends TestCase
         self::assertEquals($firstId, $secondId);
     }
 
-    public function testSourceIdReturnsDifferentIdForDifferentFile()
+    public function testSourceIdReturnsDifferentIdForDifferentFile(): void
     {
         $tempFile1 = tempnam(sys_get_temp_dir(), $this->getName());
         $tempFile2 = tempnam(sys_get_temp_dir(), $this->getName());
@@ -168,5 +167,36 @@ class CsvTest extends TestCase
         $secondId = (new Csv($tempFile2))->getSourceId();
 
         self::assertNotEquals($firstId, $secondId);
+    }
+
+    public function testParseCsvIgnoresExtraCommaAtEndOfHeaderRow(): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
+        file_put_contents($tempFile, implode("\n", [
+            'column1,column2,column3,',
+            'row1column1value,row1column2value,row1column3value',
+            'row2column1value,row2column2value,row2column3value',
+            'row3column1value,row3column2value,row3column3value',
+        ]));
+
+        $expectedData = [
+            2 => ['column1' => 'row1column1value', 'column2' => 'row1column2value', 'column3' => 'row1column3value'],
+            3 => ['column1' => 'row2column1value', 'column2' => 'row2column2value', 'column3' => 'row2column3value'],
+            4 => ['column1' => 'row3column1value', 'column2' => 'row3column2value', 'column3' => 'row3column3value'],
+        ];
+
+        $parsed = [];
+        $csvSource = new Csv($tempFile);
+        $csvSource->traverse(
+            function ($rowId, $row) use (&$parsed) {
+                $parsed[$rowId] = $row;
+            },
+            function () {
+            },
+            new Report([], 'product', 'some-source-id')
+        );
+
+        self::assertEquals($expectedData, $parsed);
+        unlink($tempFile);
     }
 }

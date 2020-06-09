@@ -55,7 +55,7 @@ class Csv implements Source, \Countable
 
     public function traverse(callable $onSuccess, callable $onError, Report $report)
     {
-        $headers = $this->getRow();
+        $headers = $this->getHeader();
 
         foreach ($this->filterInvalidRows($this->readLines(), $headers, $report, $onError) as $rowNumber => $row) {
             $onSuccess($this->file->key() + 1, array_combine($headers, $row));
@@ -85,7 +85,17 @@ class Csv implements Source, \Countable
         }
     }
 
-    private function getRow()
+    private function getHeader(): array
+    {
+        return str_getcsv(
+            rtrim(rtrim($this->file->fgets(), "\r\n"), ','),
+            $this->delimiter,
+            $this->enclosure,
+            $this->escape
+        );
+    }
+
+    private function getRow(): array
     {
         return $this->file->fgetcsv($this->delimiter, $this->enclosure, $this->escape);
     }
