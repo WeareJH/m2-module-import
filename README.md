@@ -446,9 +446,9 @@ To use an additional report handler, you just add the class name or the name of 
         <writer>MyVendor\Import\Writer\Price</specification>
         <id_field>sku</id_field>
         <report_handlers>
-            <report_handler>Jh\Import\Report\Handler\EmailHandler</indexer>
-            <report_handler>my_report_handler</indexer>
-        </indexers>
+            <report_handler>Jh\Import\Report\Handler\EmailHandler</report_handler>
+            <report_handler>my_report_handler</report_handler>
+        </report_handlers>
     </files>
 </config>
 ```
