@@ -127,7 +127,7 @@ class SkipUnchangedRecordsFromLastImport implements RequiresPreparation
 
     public function __invoke(Record $record)
     {
-        if (!$this->previousImport) {
+        if (!$this->previousImport->getId()) {
             //if we have no previous import then
             //no records should be filtered
             return true;
