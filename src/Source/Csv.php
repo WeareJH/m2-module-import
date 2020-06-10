@@ -2,15 +2,15 @@
 
 namespace Jh\Import\Source;
 
+use Countable;
+use Generator;
 use Jh\Import\Report\Report;
+use SplFileObject;
 
-/**
- * @author Aydin Hassan <aydin@wearejh.com>
- */
-class Csv implements Source, \Countable
+class Csv implements Source, Countable
 {
     /**
-     * @var \SplFileObject
+     * @var SplFileObject
      */
     private $file;
 
@@ -46,7 +46,7 @@ class Csv implements Source, \Countable
         string $escape = '\\',
         int $headerRowNum = 0
     ) {
-        $this->file = new \SplFileObject($file, 'r');
+        $this->file = new SplFileObject($file, 'r');
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
         $this->escape = $escape;
@@ -64,7 +64,7 @@ class Csv implements Source, \Countable
         $this->sourceId = md5_file($this->file->getRealPath());
     }
 
-    public function traverse(callable $onSuccess, callable $onError, Report $report)
+    public function traverse(callable $onSuccess, callable $onError, Report $report): void
     {
         $headers = $this->getHeader($this->headerRowNum);
 
@@ -74,11 +74,11 @@ class Csv implements Source, \Countable
     }
 
     private function filterInvalidRows(
-        \Generator $generator,
+        Generator $generator,
         array $headers,
         Report $report,
         callable $onError
-    ) : \Generator {
+    ) : Generator {
         foreach ($generator as $rowNumber => $row) {
             if (!$this->validateRow($headers, $rowNumber, $row, $report)) {
                 $onError($rowNumber);
@@ -89,7 +89,7 @@ class Csv implements Source, \Countable
         }
     }
 
-    private function readLines() : \Generator
+    private function readLines(): Generator
     {
         while (!$this->file->eof() && ($row = $this->getRow()) && $row[0] !== null) {
             yield $this->file->key() => $row;
@@ -116,7 +116,7 @@ class Csv implements Source, \Countable
         return $this->file->fgetcsv($this->delimiter, $this->enclosure, $this->escape);
     }
 
-    private function validateRow(array $headers, int $rowNumber, array $row, Report $report)
+    private function validateRow(array $headers, int $rowNumber, array $row, Report $report): bool
     {
         if (count($row) !== count($headers)) {
             $report->addError(sprintf('Column count does not match header count on row: "%d"', $rowNumber));
@@ -125,7 +125,7 @@ class Csv implements Source, \Countable
         return true;
     }
 
-    public function count() : int
+    public function count(): int
     {
         $currentKey = $this->file->key();
         $this->file->seek(PHP_INT_MAX);
@@ -134,7 +134,7 @@ class Csv implements Source, \Countable
         return $numLines;
     }
 
-    public function getFile() : \SplFileObject
+    public function getFile(): SplFileObject
     {
         return $this->file;
     }
@@ -142,10 +142,8 @@ class Csv implements Source, \Countable
     /**
      * An ID which represents this particular import - For example a file type source should return the
      * same ID for the same file.
-     *
-     * @return string
      */
-    public function getSourceId()
+    public function getSourceId(): string
     {
         return $this->sourceId;
     }
