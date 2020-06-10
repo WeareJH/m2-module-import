@@ -199,4 +199,66 @@ class CsvTest extends TestCase
         self::assertEquals($expectedData, $parsed);
         unlink($tempFile);
     }
+
+    /**
+     * @dataProvider extraHeaderProvider
+     */
+    public function testParseCsvIgnoresLinesAboveTheSpecifiedHeaderRow(array $lines, int $headerRow): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), $this->getName());
+        file_put_contents($tempFile, implode("\n", $lines));
+
+        $expectedData = [
+            $headerRow + 2 => [
+                'column1' => 'row1column1value', 'column2' => 'row1column2value', 'column3' => 'row1column3value'
+            ],
+            $headerRow + 3 => [
+                'column1' => 'row2column1value', 'column2' => 'row2column2value', 'column3' => 'row2column3value']
+            ,
+            $headerRow + 4 => [
+                'column1' => 'row3column1value', 'column2' => 'row3column2value', 'column3' => 'row3column3value'
+            ],
+        ];
+
+        $parsed = [];
+        $csvSource = new Csv($tempFile, ',', '"', '\\', $headerRow);
+        $csvSource->traverse(
+            function ($rowId, $row) use (&$parsed) {
+                $parsed[$rowId] = $row;
+            },
+            function () {
+            },
+            new Report([], 'product', 'some-source-id')
+        );
+
+        self::assertEquals($expectedData, $parsed);
+        unlink($tempFile);
+    }
+
+    public function extraHeaderProvider() : array
+    {
+        return [
+            [
+                'lines' => [
+                    'My CSV File',
+                    'column1,column2,column3,',
+                    'row1column1value,row1column2value,row1column3value',
+                    'row2column1value,row2column2value,row2column3value',
+                    'row3column1value,row3column2value,row3column3value',
+                ],
+                'headerRow' => 1
+            ],
+            [
+                'lines' => [
+                    'My CSV File',
+                    'Random extra line',
+                    'column1,column2,column3,',
+                    'row1column1value,row1column2value,row1column3value',
+                    'row2column1value,row2column2value,row2column3value',
+                    'row3column1value,row3column2value,row3column3value',
+                ],
+                'headerRow' => 2
+            ]
+        ];
+    }
 }

@@ -30,16 +30,27 @@ class Csv implements Source, \Countable
     private $escape;
 
     /**
+     * @var int
+     */
+    private $headerRowNum;
+
+    /**
      * @var string
      */
     private $sourceId;
 
-    public function __construct(string $file, string $delimiter = ',', string $enclosure = '"', string $escape = '\\')
-    {
+    public function __construct(
+        string $file,
+        string $delimiter = ',',
+        string $enclosure = '"',
+        string $escape = '\\',
+        int $headerRowNum = 0
+    ) {
         $this->file = new \SplFileObject($file, 'r');
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
         $this->escape = $escape;
+        $this->headerRowNum = $headerRowNum;
 
         $delimiterMap = [
             '\n' => "\n",
@@ -55,7 +66,7 @@ class Csv implements Source, \Countable
 
     public function traverse(callable $onSuccess, callable $onError, Report $report)
     {
-        $headers = $this->getHeader();
+        $headers = $this->getHeader($this->headerRowNum);
 
         foreach ($this->filterInvalidRows($this->readLines(), $headers, $report, $onError) as $rowNumber => $row) {
             $onSuccess($this->file->key() + 1, array_combine($headers, $row));
@@ -85,8 +96,13 @@ class Csv implements Source, \Countable
         }
     }
 
-    private function getHeader(): array
+    private function getHeader(int $headerRowNum): array
     {
+        for ($i = 0; $i < $headerRowNum; $i++) {
+            //read and discard any rows before the designated header row
+            $this->file->fgetcsv($this->delimiter, $this->enclosure, $this->escape);
+        }
+
         return str_getcsv(
             rtrim(rtrim($this->file->fgets(), "\r\n"), ','),
             $this->delimiter,
