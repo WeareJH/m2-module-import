@@ -36,27 +36,27 @@ class ConsoleHandler implements Handler
     }
 
 
-    public function start(Report $report, \DateTime $startTime)
+    public function start(Report $report, \DateTime $startTime): void
     {
         // noop
     }
 
-    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage)
+    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage): void
     {
         // noop
     }
 
-    public function handleMessage(Message $message)
+    public function handleMessage(Message $message): void
     {
         $this->write($message);
     }
 
-    public function handleItemMessage(ReportItem $item, Message $message)
+    public function handleItemMessage(ReportItem $item, Message $message): void
     {
         $this->write($message);
     }
 
-    private function write(Message $message)
+    private function write(Message $message): void
     {
         if (!isset($this->acceptedLogLevels[$message->getLogLevel()])) {
             return;
