@@ -11,6 +11,9 @@ use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 
+/**
+ * This strategy sends all messages regardless of their severity.
+ */
 class All implements EmailHandlerStrategy
 {
     /**

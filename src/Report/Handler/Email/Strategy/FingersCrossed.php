@@ -11,6 +11,10 @@ use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 
+/**
+ * This strategy sends all messages after a certain severity level
+ * is hit.
+ */
 class FingersCrossed implements EmailHandlerStrategy
 {
     /**
