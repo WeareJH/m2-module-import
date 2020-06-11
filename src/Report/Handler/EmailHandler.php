@@ -96,7 +96,7 @@ class EmailHandler implements Handler
         $itemMessages = $this->strategy->filterItemMessages($this->itemMessages);
         $importMessages = $this->strategy->filterImportMessages($this->messages);
 
-        if (empty($itemMessages) || empty($importMessages)) {
+        if (empty($itemMessages) && empty($importMessages)) {
             return;
         }
 
