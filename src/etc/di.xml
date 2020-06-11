@@ -39,6 +39,9 @@
         </arguments>
     </type>
 
+    <!-- reporting -->
+    <preference for="Jh\Import\Report\Handler\Email\Strategy\EmailHandlerStrategy" type="Jh\Import\Report\Handler\Email\Strategy\FingersCrossedMax" />
+
     <!-- admin area -->
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
