@@ -71,6 +71,7 @@
         "cs-fix": "phpcbf -s src --standard=PSR12 && phpcbf -s test --standard=PSR12",
         "unit-tests": "phpunit --colors=always",
         "unit-tests-coverage": "phpunit --colors=always -v --coverage-text",
-        "unit-tests-coverage-clover": "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
+        "unit-tests-coverage-clover": "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml",
+        "static": "phpstan --ansi analyse --level 2 --configuration phpstan.neon src"
     }
 }
