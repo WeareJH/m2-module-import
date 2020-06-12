@@ -7,7 +7,7 @@ namespace Jh\Import\Locker;
  */
 class ImportLockedException extends \RuntimeException
 {
-    public static function fromName(string $name) : self
+    public static function fromName(string $name): self
     {
         return new static(sprintf('Import with name "%s" is locked.', $name));
     }

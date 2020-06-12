@@ -78,7 +78,7 @@ class Csv implements Source, Countable
         array $headers,
         Report $report,
         callable $onError
-    ) : Generator {
+    ): Generator {
         foreach ($generator as $rowNumber => $row) {
             if (!$this->validateRow($headers, $rowNumber, $row, $report)) {
                 $onError($rowNumber);

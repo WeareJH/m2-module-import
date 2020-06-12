@@ -28,14 +28,14 @@ class Message
     {
         $this->logLevel = $logLevel;
         $this->message = $message;
-        $this->dateTime = $dateTime ?: new \DateTime;
+        $this->dateTime = $dateTime ?: new \DateTime();
 
         if (!isset(LogLevel::$levels[$this->logLevel])) {
             throw new \InvalidArgumentException(sprintf('Invalid Log Level supplied: "%s"', $logLevel));
         }
     }
 
-    public function getLogLevel() : string
+    public function getLogLevel(): string
     {
         return $this->logLevel;
     }
@@ -50,7 +50,7 @@ class Message
         return $this->dateTime;
     }
 
-    public function toArray() : array
+    public function toArray(): array
     {
         return [
             'log_level' => $this->getLogLevel(),

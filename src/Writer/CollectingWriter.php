@@ -29,7 +29,7 @@ class CollectingWriter implements Writer
         $this->data[] = $record->asArray();
     }
 
-    public function finish(Source $source) : Result
+    public function finish(Source $source): Result
     {
         return new Result($this->affectedIds);
     }

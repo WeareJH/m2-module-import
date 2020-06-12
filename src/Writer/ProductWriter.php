@@ -229,7 +229,7 @@ class ProductWriter implements Writer
         $r->setValue($this->pluginList, $processed);
     }
 
-    public function finish(Source $source) : Result
+    public function finish(Source $source): Result
     {
         return new Result($this->updatedProductsIds);
     }

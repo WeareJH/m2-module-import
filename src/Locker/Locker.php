@@ -48,7 +48,7 @@ class Locker
      * @param string $importName
      * @return bool
      */
-    public function locked(string $importName) : bool
+    public function locked(string $importName): bool
     {
         try {
             $this->checkAlreadyLocked($importName);

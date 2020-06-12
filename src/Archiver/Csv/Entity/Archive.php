@@ -13,17 +13,17 @@ class Archive extends AbstractModel
         $this->_init(ArchiveResource::class);
     }
 
-    public function isFileDeleted() : bool
+    public function isFileDeleted(): bool
     {
         return (bool) $this->getData('deleted');
     }
 
-    public function isFileArchived() : bool
+    public function isFileArchived(): bool
     {
         return (bool) $this->getData('archived');
     }
 
-    public function isFileAvailable() : bool
+    public function isFileAvailable(): bool
     {
         return !$this->isFileDeleted() && !$this->isFileArchived();
     }

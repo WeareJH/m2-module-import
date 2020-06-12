@@ -31,7 +31,7 @@ class AboveLevelWithContext implements EmailHandlerStrategy
      * @param array[ReportItem, Message]
      * @return array[ReportItem, Message]
      */
-    public function filterItemMessages(array $messages) : array
+    public function filterItemMessages(array $messages): array
     {
         return collect($messages)
             ->filter(function (array $reportAndMessage) {

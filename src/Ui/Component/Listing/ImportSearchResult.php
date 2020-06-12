@@ -55,7 +55,7 @@ class ImportSearchResult extends Collection implements SearchResultInterface
      * @param DocumentInterface[] $items
      * @return $this
      */
-    public function setItems(array $items = null) : self
+    public function setItems(array $items = null): self
     {
         if (!$items) {
             return $this;
@@ -72,7 +72,7 @@ class ImportSearchResult extends Collection implements SearchResultInterface
         return $this;
     }
 
-    public function getAggregations() : AggregationInterface
+    public function getAggregations(): AggregationInterface
     {
         return $this->aggregations;
     }
@@ -81,24 +81,24 @@ class ImportSearchResult extends Collection implements SearchResultInterface
      * @param AggregationInterface $aggregations
      * @return $this
      */
-    public function setAggregations($aggregations) : self
+    public function setAggregations($aggregations): self
     {
         $this->aggregations = $aggregations;
         return $this;
     }
 
-    public function getSearchCriteria() : SearchCriteriaInterface
+    public function getSearchCriteria(): SearchCriteriaInterface
     {
         return $this->searchCriteria;
     }
 
-    public function setSearchCriteria(Api\SearchCriteriaInterface $searchCriteria) : self
+    public function setSearchCriteria(Api\SearchCriteriaInterface $searchCriteria): self
     {
         $this->searchCriteria = $searchCriteria;
         return $this;
     }
 
-    public function getTotalCount() : int
+    public function getTotalCount(): int
     {
         if (!$this->totalCount) {
             $this->totalCount = $this->getSize();
@@ -107,7 +107,7 @@ class ImportSearchResult extends Collection implements SearchResultInterface
     }
 
 
-    public function setTotalCount($totalCount) : self
+    public function setTotalCount($totalCount): self
     {
         $this->totalCount = $totalCount;
         return $this;

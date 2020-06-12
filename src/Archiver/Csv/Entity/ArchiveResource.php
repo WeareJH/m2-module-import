@@ -25,7 +25,7 @@ class ArchiveResource extends AbstractDb
         $this->_init('jh_import_archive_csv', 'id');
     }
 
-    public function getBySourceId(string $sourceId) : Archive
+    public function getBySourceId(string $sourceId): Archive
     {
         $archive = $this->archiveFactory->create();
 

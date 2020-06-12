@@ -10,7 +10,7 @@ use Magento\Framework\Config\Data as DataConfig;
  */
 class Data extends DataConfig
 {
-    public function hasImport(string $name) : bool
+    public function hasImport(string $name): bool
     {
         return null !== $this->get($name);
     }
@@ -40,7 +40,7 @@ class Data extends DataConfig
     }
 
 
-    public function getAllImportNames() : array
+    public function getAllImportNames(): array
     {
         return array_keys($this->get());
     }

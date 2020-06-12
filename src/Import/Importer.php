@@ -87,7 +87,7 @@ class Importer
     ) {
         $this->source = $source;
         $this->writer = $writer;
-        $this->progress = $progress ?: new NullProgress;
+        $this->progress = $progress ?: new NullProgress();
         $this->archiverFactory = $archiverFactory;
         $this->reportFactory = $reportFactory;
         $this->locker = $locker;
@@ -97,17 +97,17 @@ class Importer
         $importSpecification->configure($this);
     }
 
-    public function filter(callable $filter) : void
+    public function filter(callable $filter): void
     {
         $this->filters[] = $filter;
     }
 
-    public function transform(callable $transform) : void
+    public function transform(callable $transform): void
     {
         $this->transformers[] = $transform;
     }
 
-    private function canImport(string $importName, Report $report) : bool
+    private function canImport(string $importName, Report $report): bool
     {
         if ($this->history->isImported($this->source)) {
             $report->addError('This import source has already been imported.');
@@ -125,7 +125,7 @@ class Importer
         return true;
     }
 
-    public function process(Config $config) : void
+    public function process(Config $config): void
     {
         $report = $this->reportFactory->createFromSourceAndConfig($this->source, $config);
         $report->start();
@@ -159,10 +159,10 @@ class Importer
 
     private function endReport(Report $report)
     {
-        $report->finish(new \DateTime, memory_get_usage(true));
+        $report->finish(new \DateTime(), memory_get_usage(true));
     }
 
-    private function processFilters(Record $record, ReportItem $reportItem) : bool
+    private function processFilters(Record $record, ReportItem $reportItem): bool
     {
         foreach ($this->filters as $filter) {
             if (false === $filter($record, $reportItem)) {
@@ -180,7 +180,7 @@ class Importer
         }
     }
 
-    private function prepare(Config $config) : void
+    private function prepare(Config $config): void
     {
         $this->progress->start($this->source, $config);
 
@@ -204,7 +204,7 @@ class Importer
         }
     }
 
-    private function prepareComponents(Config $config, array $components) : void
+    private function prepareComponents(Config $config, array $components): void
     {
         collect($components)
             ->filter(function (callable $component) {
@@ -270,7 +270,7 @@ class Importer
         $this->source->traverse($success, $error, $report);
     }
 
-    public function getProgress() : Progress
+    public function getProgress(): Progress
     {
         return $this->progress;
     }

@@ -71,7 +71,7 @@ class Files implements Type
         });
     }
 
-    private function getFilesToProcess(Config $config) : Collection
+    private function getFilesToProcess(Config $config): Collection
     {
         $directoryWriter = $this->writeFactory->create(
             sprintf(

@@ -16,5 +16,5 @@ interface Writer
 
     public function write(Record $record, ReportItem $report);
 
-    public function finish(Source $source) : Result;
+    public function finish(Source $source): Result;
 }

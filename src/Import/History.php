@@ -21,7 +21,7 @@ class History
         $this->dbAdapter = $resourceConnection->getConnection();
     }
 
-    public function isImported(Source $source) : bool
+    public function isImported(Source $source): bool
     {
         $select = $this->dbAdapter
             ->select()

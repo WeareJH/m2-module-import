@@ -40,7 +40,7 @@ class Info extends Template
         $this->cronConfig = $cronConfig;
     }
 
-    public function getImport() : Config
+    public function getImport(): Config
     {
         return $this->config->getImportConfigByName($this->getRequest()->getParam('name'));
     }
@@ -60,7 +60,7 @@ class Info extends Template
         return $this;
     }
 
-    public function hasCron() : bool
+    public function hasCron(): bool
     {
         $jobs = $this->cronConfig->getJobs();
 
@@ -68,7 +68,7 @@ class Info extends Template
             && isset($jobs[$this->getImport()->getCronGroup()][$this->getImport()->getCron()]);
     }
 
-    public function getCronExpression() : string
+    public function getCronExpression(): string
     {
         $jobs = $this->cronConfig->getJobs();
 
@@ -85,7 +85,7 @@ class Info extends Template
         throw new \RuntimeException('Import\'s cron job does not exist');
     }
 
-    public function getCronGroup() : string
+    public function getCronGroup(): string
     {
         $jobs = $this->cronConfig->getJobs();
 
@@ -102,7 +102,7 @@ class Info extends Template
         throw new \RuntimeException('Import\'s cron job does not exist');
     }
 
-    public function getCronCode() : string
+    public function getCronCode(): string
     {
         $jobs = $this->cronConfig->getJobs();
 

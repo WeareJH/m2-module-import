@@ -71,7 +71,7 @@ class ImporterFactory
         $this->cliProgress = $cliProgress;
     }
 
-    public function create(Source $source, ImportSpecification $specification, Writer $writer) : Importer
+    public function create(Source $source, ImportSpecification $specification, Writer $writer): Importer
     {
         $progress = null;
         if ($this->appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {

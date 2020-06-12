@@ -23,57 +23,57 @@ class Config
         $this->config = $config;
     }
 
-    public function getImportName() : string
+    public function getImportName(): string
     {
         return $this->name;
     }
 
-    public function getType() : string
+    public function getType(): string
     {
         return $this->config['type'];
     }
 
-    public function getSourceService() : string
+    public function getSourceService(): string
     {
         return $this->config['source'];
     }
 
-    public function getSpecificationService() : string
+    public function getSpecificationService(): string
     {
         return $this->config['specification'];
     }
 
-    public function getWriterService() : string
+    public function getWriterService(): string
     {
         return $this->config['writer'];
     }
 
-    public function getIdField() : string
+    public function getIdField(): string
     {
         return $this->config['id_field'];
     }
 
-    public function getIndexers() : array
+    public function getIndexers(): array
     {
         return $this->config['indexers'] ?? [];
     }
 
-    public function getReportHandlers() : array
+    public function getReportHandlers(): array
     {
         return $this->config['report_handlers'] ?? [];
     }
 
-    public function hasCron() : bool
+    public function hasCron(): bool
     {
         return isset($this->config['cron']);
     }
 
-    public function getCron() : ?string
+    public function getCron(): ?string
     {
         return $this->config['cron'] ?? null;
     }
 
-    public function getCronGroup() : ?string
+    public function getCronGroup(): ?string
     {
         return $this->config['cron_group'] ?? null;
     }
@@ -87,7 +87,7 @@ class Config
         return $this->config[$key] ?? null;
     }
 
-    public function all() : array
+    public function all(): array
     {
         return $this->config;
     }

@@ -44,7 +44,7 @@ class Index extends Action
     /**
      * @throws NotFoundException
      */
-    public function execute() : Page
+    public function execute(): Page
     {
         $page = $this->resultPageFactory->create();
         $page->getConfig()->getTitle()->prepend(__('JH Import Log'));

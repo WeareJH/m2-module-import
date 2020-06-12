@@ -45,17 +45,17 @@ class TypeFiles extends Template
         $this->setTemplate('Jh_Import::info_type_files.phtml');
     }
 
-    public function getImport() : Config
+    public function getImport(): Config
     {
         return $this->getParentBlock()->getImport();
     }
 
-    public function filesNew() : array
+    public function filesNew(): array
     {
         return $this->getFilesInDir('incoming_directory')->all();
     }
 
-    public function filesFailed() : array
+    public function filesFailed(): array
     {
         return $this->getFilesInDir('failed_directory')
             ->sort(function (\SplFileInfo $a, \SplFileInfo $b) {
@@ -65,7 +65,7 @@ class TypeFiles extends Template
             ->all();
     }
 
-    public function filesArchived() : array
+    public function filesArchived(): array
     {
         return $this->getFilesInDir('archived_directory')
             ->sort(function (\SplFileInfo $a, \SplFileInfo $b) {
@@ -75,12 +75,12 @@ class TypeFiles extends Template
             ->all();
     }
 
-    public function fileWillBeProcessed(\SplFileInfo $file) : bool
+    public function fileWillBeProcessed(\SplFileInfo $file): bool
     {
         return $this->fileMatcher->matches($this->getImport()->get('match_files'), $file->getFilename());
     }
 
-    private function getFilesInDir(string $dir) : Collection
+    private function getFilesInDir(string $dir): Collection
     {
         $directoryWriter = $this->writeFactory->create(
             sprintf(
@@ -111,7 +111,7 @@ class TypeFiles extends Template
         );
     }
 
-    public function archivedDirectory() : string
+    public function archivedDirectory(): string
     {
         return sprintf(
             '%s/%s',
@@ -120,7 +120,7 @@ class TypeFiles extends Template
         );
     }
 
-    public function failedDirectory() : string
+    public function failedDirectory(): string
     {
         return sprintf(
             '%s/%s',
@@ -129,12 +129,12 @@ class TypeFiles extends Template
         );
     }
 
-    public function getChangeTime(\SplFileInfo $file) : string
+    public function getChangeTime(\SplFileInfo $file): string
     {
         return (new \DateTime('@' . $file->getCTime()))->format('M jS, Y H:i:s');
     }
 
-    public function getDownloadUrl(\SplFileInfo $file, string $directory) : string
+    public function getDownloadUrl(\SplFileInfo $file, string $directory): string
     {
         return $this->getUrl(
             'jh_import/files/download',
@@ -146,7 +146,7 @@ class TypeFiles extends Template
         );
     }
 
-    public function getDeleteUrl(\SplFileInfo $file, string $directory) : string
+    public function getDeleteUrl(\SplFileInfo $file, string $directory): string
     {
         return $this->getUrl(
             'jh_import/files/delete',

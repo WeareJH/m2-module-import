@@ -20,7 +20,7 @@ class Record
         $this->data = $data;
     }
 
-    public function getRowNumber() : int
+    public function getRowNumber(): int
     {
         return $this->rowNumber;
     }

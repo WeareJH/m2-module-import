@@ -17,12 +17,12 @@ class Result
         $this->affectedIds = $affectedIds;
     }
 
-    public function getAffectedIds() : array
+    public function getAffectedIds(): array
     {
         return $this->affectedIds;
     }
 
-    public function hasAffectedIds() : bool
+    public function hasAffectedIds(): bool
     {
         return count($this->affectedIds) > 0;
     }

@@ -63,7 +63,7 @@ class Brand implements IndividualAttributeProcessor
         $this->brandRepository = $brandRepository;
     }
 
-    public function process(AttributeInterface $attribute, string $value, Record $record, ReportItem $reportItem) : int
+    public function process(AttributeInterface $attribute, string $value, Record $record, ReportItem $reportItem): int
     {
         $this->initialise();
 
@@ -97,7 +97,7 @@ class Brand implements IndividualAttributeProcessor
             $this->brands[$value] = $brand; //cache for later usages
         } catch (CouldNotSaveException $e) {
             $reportItem->addWarning(sprintf('Brand: "%s" could not be saved. Error: %s', $value, $e->getMessage()));
-            throw new CouldNotCreateOptionException;
+            throw new CouldNotCreateOptionException();
         }
 
         return $brand->getId();
@@ -106,7 +106,7 @@ class Brand implements IndividualAttributeProcessor
     private function initialise()
     {
         if (false === $this->initialised) {
-            $this->brands = collect($this->brandRepository->getList(new SearchCriteria)->getItems())
+            $this->brands = collect($this->brandRepository->getList(new SearchCriteria())->getItems())
                 ->keyBy(function (BrandModel $brand) {
                     return $brand->getName();
                 })
@@ -116,7 +116,7 @@ class Brand implements IndividualAttributeProcessor
         }
     }
 
-    private function importImage(string $imagePath) : string
+    private function importImage(string $imagePath): string
     {
         $mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         if (!$this->file->isExists($imagePath)) {

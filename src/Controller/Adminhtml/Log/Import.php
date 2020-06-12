@@ -41,7 +41,7 @@ class Import extends Action
         parent::__construct($context);
     }
 
-    public function execute() : ResultInterface
+    public function execute(): ResultInterface
     {
         if (!$this->getRequest()->getParam('history_id')) {
             return $this->resultRedirectFactory->create()->setPath('*/*/index');

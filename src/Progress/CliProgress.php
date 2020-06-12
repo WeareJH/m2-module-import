@@ -68,7 +68,7 @@ class CliProgress implements Progress
         $this->progressBarLog->advance();
     }
 
-    public function addLog(string $severity, string $message) : void
+    public function addLog(string $severity, string $message): void
     {
         $this->guardStarted();
         $this->progressBarLog->addLog(strtolower($severity), $message);
@@ -86,7 +86,7 @@ class CliProgress implements Progress
         ]);
     }
 
-    private function guardStarted() : void
+    private function guardStarted(): void
     {
         if (null === $this->progressBarLog) {
             throw new \RuntimeException('Progress not started');

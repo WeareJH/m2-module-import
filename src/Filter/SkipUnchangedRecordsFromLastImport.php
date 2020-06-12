@@ -102,7 +102,7 @@ class SkipUnchangedRecordsFromLastImport implements RequiresPreparation
         );
     }
 
-    private function loadPreviousImport(string $filePath) : void
+    private function loadPreviousImport(string $filePath): void
     {
         //TODO: Bail out of file does not exist
         //TODO: from manual deletion

@@ -14,7 +14,7 @@ class FileMatcher
      * @param array $files
      * @return Collection
      */
-    public function matched(string $pattern, array $files) : Collection
+    public function matched(string $pattern, array $files): Collection
     {
         $files = collect($files);
 
@@ -35,7 +35,7 @@ class FileMatcher
         })->values();
     }
 
-    public function matches(string $pattern, string $file) : bool
+    public function matches(string $pattern, string $file): bool
     {
         return $this->matched($pattern, [$file])->count() === 1;
     }

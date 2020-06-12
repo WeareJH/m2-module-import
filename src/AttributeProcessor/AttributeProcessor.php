@@ -183,7 +183,7 @@ class AttributeProcessor
      * @return AbstractAttribute
      * @throws NoSuchEntityException
      */
-    private function findAttribute(string $attributeCode) : AbstractAttribute
+    private function findAttribute(string $attributeCode): AbstractAttribute
     {
         if (false === $this->initialised) {
             $attributes = $this->attributeLoader->getAttributes(ProductInterface::class);
@@ -197,7 +197,7 @@ class AttributeProcessor
         }
 
         if (!isset($this->attributes[$attributeCode])) {
-            throw new NoSuchEntityException;
+            throw new NoSuchEntityException();
         }
 
         return $this->attributes[$attributeCode];
@@ -286,13 +286,13 @@ class AttributeProcessor
      * @return int
      * @throws NoSuchEntityException
      */
-    private function getOption(AttributeInterface $attribute, string $value) : int
+    private function getOption(AttributeInterface $attribute, string $value): int
     {
         if (isset($this->attributeOptions[$attribute->getAttributeCode()][$value])) {
             return $this->attributeOptions[$attribute->getAttributeCode()][$value];
         }
 
-        throw new NoSuchEntityException;
+        throw new NoSuchEntityException();
     }
 
     /**

@@ -30,7 +30,7 @@ class Index extends Action
         parent::__construct($context);
     }
 
-    public function execute() : ResultInterface
+    public function execute(): ResultInterface
     {
         $page = $this->resultPageFactory->create();
         $page->getConfig()->getTitle()->prepend(__('JH Import Configuration'));

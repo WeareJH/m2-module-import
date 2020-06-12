@@ -59,13 +59,13 @@ class Report
 
     public function start(\DateTime $startTime = null)
     {
-        $startTime = $startTime ?: new \DateTime;
+        $startTime = $startTime ?: new \DateTime();
         foreach ($this->handlers as $handler) {
             $handler->start($this, $startTime);
         }
     }
 
-    public function newItem(string $referenceLine, string $idField, string $idValue) : ReportItem
+    public function newItem(string $referenceLine, string $idField, string $idValue): ReportItem
     {
         $this->items[] = $item = new ReportItem($this->handlers, $referenceLine, $idField, $idValue);
         return $item;
@@ -112,14 +112,14 @@ class Report
 
     public function finish(\DateTime $finishTime = null, int $memoryUsage = null)
     {
-        $finishTime  = $finishTime ?: new \DateTime;
+        $finishTime  = $finishTime ?: new \DateTime();
         $memoryUsage = $memoryUsage ?: memory_get_usage(true);
         foreach ($this->handlers as $handler) {
             $handler->finish($this, $finishTime, $memoryUsage);
         }
     }
 
-    public function isSuccessful() : bool
+    public function isSuccessful(): bool
     {
         if (!$this->isSuccessful) {
             return false;
@@ -133,12 +133,12 @@ class Report
         }, true);
     }
 
-    public function getItems() : array
+    public function getItems(): array
     {
         return $this->items;
     }
 
-    public function getHandlers() : array
+    public function getHandlers(): array
     {
         return $this->handlers;
     }

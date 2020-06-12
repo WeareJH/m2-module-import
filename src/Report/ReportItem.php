@@ -86,7 +86,7 @@ class ReportItem
         return $this->idValue;
     }
 
-    public function isSuccessful() : bool
+    public function isSuccessful(): bool
     {
         return $this->isSuccessful;
     }

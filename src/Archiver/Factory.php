@@ -29,12 +29,12 @@ class Factory
         $this->objectManager = $objectManager;
     }
 
-    public function getArchiverForSource(Source $source, Config $config) : Archiver
+    public function getArchiverForSource(Source $source, Config $config): Archiver
     {
         $class = get_class($source);
 
         if (!isset(self::$sourceToArchiverMap[$class])) {
-            return new NullArchiver;
+            return new NullArchiver();
         }
 
         return $this->objectManager->create(

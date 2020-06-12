@@ -45,7 +45,7 @@ class Renderer
         $output .= self::tableRow('Message', $message->getMessage());
         $output .= self::tableRow('Time', $message->getDateTime()->format('d-m-Y H:i:s'));
 
-        return $output.'</table>';
+        return $output . '</table>';
     }
 
     public static function importLogEntry(Message $message): string
@@ -55,10 +55,10 @@ class Renderer
         $output .= self::tableRow('Message', $message->getMessage());
         $output .= self::tableRow('Time', $message->getDateTime()->format('d-m-Y H:i:s'));
 
-        return $output.'</table>';
+        return $output . '</table>';
     }
 
-    public static function logTitle(string $logLevel) : string
+    public static function logTitle(string $logLevel): string
     {
         $title = htmlspecialchars($logLevel, ENT_NOQUOTES, 'UTF-8');
         return sprintf(

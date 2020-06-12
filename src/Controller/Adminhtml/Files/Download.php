@@ -57,7 +57,7 @@ class Download extends Action
         parent::__construct($context);
     }
 
-    public function execute() : ResultInterface
+    public function execute(): ResultInterface
     {
         if (!$this->getRequest()->getParam('name')) {
             return $this->resultRedirectFactory->create()->setPath('*/*/index');

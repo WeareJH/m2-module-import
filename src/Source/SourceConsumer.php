@@ -13,7 +13,7 @@ class SourceConsumer
     /**
      * @return Record[]
      */
-    public function toArray(Source $source, Config $config) : array
+    public function toArray(Source $source, Config $config): array
     {
         $data = [];
 

@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('format_bytes')) {
-    function format_bytes(int $bytes) : string
+    function format_bytes(int $bytes): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 

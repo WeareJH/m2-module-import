@@ -29,7 +29,7 @@ class ImportHistoryResource extends AbstractDb
         $this->_init('jh_import_history', 'id');
     }
 
-    public function getLastImportByName(string $importName) : ImportHistory
+    public function getLastImportByName(string $importName): ImportHistory
     {
         $model = $this->importHistoryFactory->create();
 

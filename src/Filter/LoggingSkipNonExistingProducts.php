@@ -31,7 +31,7 @@ class LoggingSkipNonExistingProducts implements RequiresPreparation
         $this->skuField = $config->getIdField();
     }
 
-    public function __invoke(Record $record, ReportItem $reportItem) : bool
+    public function __invoke(Record $record, ReportItem $reportItem): bool
     {
         $found = $this->skipNonExistingProducts->__invoke($record);
 

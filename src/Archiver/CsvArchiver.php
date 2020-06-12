@@ -60,7 +60,7 @@ class CsvArchiver implements Archiver
         $this->adapter = $resourceConnection->getConnection();
     }
 
-    public function failed() : void
+    public function failed(): void
     {
         $this->ensureDirectoryExists(
             sprintf(
@@ -94,7 +94,7 @@ class CsvArchiver implements Archiver
         );
     }
 
-    public function successful() : void
+    public function successful(): void
     {
         $this->ensureDirectoryExists(
             sprintf(
@@ -135,7 +135,7 @@ class CsvArchiver implements Archiver
         }
     }
 
-    private function newName(\SplFileObject $file) : string
+    private function newName(\SplFileObject $file): string
     {
         return sprintf(
             '%s-%s.%s',
@@ -145,8 +145,8 @@ class CsvArchiver implements Archiver
         );
     }
 
-    private function getDateTime() : DateTime
+    private function getDateTime(): DateTime
     {
-        return $this->date ?? new DateTime;
+        return $this->date ?? new DateTime();
     }
 }

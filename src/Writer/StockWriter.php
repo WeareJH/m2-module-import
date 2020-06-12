@@ -96,7 +96,7 @@ class StockWriter implements Writer
         $this->updatedIds[] = $this->skusToIds[$sku];
     }
 
-    public function finish(Source $source) : Result
+    public function finish(Source $source): Result
     {
         return new Result(array_values($this->updatedIds));
     }

@@ -19,7 +19,7 @@ class SourceFactory
         $this->objectManager = $objectManager;
     }
 
-    public function create(Config $config, array $args) : Source
+    public function create(Config $config, array $args): Source
     {
         $source = $this->objectManager
             ->create($config->getSourceService(), $args);

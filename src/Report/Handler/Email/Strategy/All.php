@@ -45,7 +45,7 @@ class All implements EmailHandlerStrategy
         $output .= Renderer::tableRow('Import Started', $startTime->format('d-m-Y H:i:s'));
         $output .= Renderer::tableRow('Import Finished', $finishTime->format('d-m-Y H:i:s'));
         $output .= Renderer::tableRow('Peak Memory Usage', format_bytes($memoryUsage));
-        return $output.'</table>';
+        return $output . '</table>';
     }
 
     /**

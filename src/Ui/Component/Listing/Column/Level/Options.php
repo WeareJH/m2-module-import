@@ -15,7 +15,7 @@ class Options implements OptionSourceInterface
      */
     protected $options;
 
-    public function toOptionArray() : array
+    public function toOptionArray(): array
     {
         return array_map(function ($levelName) {
             return [
