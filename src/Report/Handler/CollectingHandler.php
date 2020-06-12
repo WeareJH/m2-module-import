@@ -22,22 +22,22 @@ class CollectingHandler implements Handler
      */
     public $itemMessages = [];
 
-    public function start(Report $report, \DateTime $startTime)
+    public function start(Report $report, \DateTime $startTime): void
     {
         // noop
     }
 
-    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage)
+    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage): void
     {
         // noop
     }
 
-    public function handleMessage(Message $message)
+    public function handleMessage(Message $message): void
     {
         $this->messages[] = $message->toArray();
     }
 
-    public function handleItemMessage(ReportItem $item, Message $message)
+    public function handleItemMessage(ReportItem $item, Message $message): void
     {
         $this->itemMessages[] = $message->toArray();
     }

@@ -27,7 +27,7 @@ class DatabaseHandler implements Handler
         $this->adapter = $resourceConnection->getConnection();
     }
 
-    public function start(Report $report, \DateTime $startTime)
+    public function start(Report $report, \DateTime $startTime): void
     {
         $this->adapter->insert('jh_import_history', [
             'started'     => $startTime->format('Y-m-d H:i:s'),
@@ -38,7 +38,7 @@ class DatabaseHandler implements Handler
         $this->id = $this->adapter->lastInsertId();
     }
 
-    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage)
+    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage): void
     {
         $this->adapter->update(
             'jh_import_history',
@@ -57,7 +57,7 @@ class DatabaseHandler implements Handler
      *
      * @param Message $message
      */
-    public function handleMessage(Message $message)
+    public function handleMessage(Message $message): void
     {
         $this->adapter->insert('jh_import_history_log', [
             'history_id' => $this->id,
@@ -72,7 +72,7 @@ class DatabaseHandler implements Handler
      *
      * @param Message $message
      */
-    public function handleItemMessage(ReportItem $item, Message $message)
+    public function handleItemMessage(ReportItem $item, Message $message): void
     {
         $this->adapter->insert('jh_import_history_item_log', [
             'history_id'     => $this->id,

@@ -11,11 +11,11 @@ use Jh\Import\Report\ReportItem;
  */
 interface Handler
 {
-    public function start(Report $report, \DateTime $startTime);
+    public function start(Report $report, \DateTime $startTime): void;
 
-    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage);
+    public function finish(Report $report, \DateTime $finishTime, int $memoryUsage): void;
 
-    public function handleMessage(Message $message);
+    public function handleMessage(Message $message): void;
 
-    public function handleItemMessage(ReportItem $item, Message $message);
+    public function handleItemMessage(ReportItem $item, Message $message): void;
 }
