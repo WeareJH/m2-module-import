@@ -13,7 +13,7 @@ class ArchiveTest extends TestCase
 {
     use ObjectHelper;
 
-    public function testIsFileAvailableReturnsTrueIfNotDeletedOrArchived() : void
+    public function testIsFileAvailableReturnsTrueIfNotDeletedOrArchived(): void
     {
         $resource = $this->prophesize(AbstractDb::class);
         $resource->getIdFieldName()->willReturn('id');
@@ -26,7 +26,7 @@ class ArchiveTest extends TestCase
         self::assertTrue($archive->isFileAvailable());
     }
 
-    public function testIsFileAvailableReturnsFalseIfFileIsArchived() : void
+    public function testIsFileAvailableReturnsFalseIfFileIsArchived(): void
     {
         $resource = $this->prophesize(AbstractDb::class);
         $resource->getIdFieldName()->willReturn('id');
@@ -39,7 +39,7 @@ class ArchiveTest extends TestCase
         self::assertFalse($archive->isFileAvailable());
     }
 
-    public function testIsFileAvailableReturnsFalseIfFileIsDeleted() : void
+    public function testIsFileAvailableReturnsFalseIfFileIsDeleted(): void
     {
         $resource = $this->prophesize(AbstractDb::class);
         $resource->getIdFieldName()->willReturn('id');
@@ -52,7 +52,7 @@ class ArchiveTest extends TestCase
         self::assertFalse($archive->isFileAvailable());
     }
 
-    public function testIsFileAvailableReturnsFalseIfFileIsDeletedAndArchived() : void
+    public function testIsFileAvailableReturnsFalseIfFileIsDeletedAndArchived(): void
     {
         $resource = $this->prophesize(AbstractDb::class);
         $resource->getIdFieldName()->willReturn('id');

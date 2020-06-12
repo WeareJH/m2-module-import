@@ -69,7 +69,7 @@ class YesNoTransformerTest extends TestCase
 
     public function testYesNoWithUnknownValueIsSetToNo()
     {
-        $record = new Record(11, ['is_cool_product' => new \stdClass]);
+        $record = new Record(11, ['is_cool_product' => new \stdClass()]);
 
         $transformer = new YesNoTransformer('is_cool_product');
         $transformer->__invoke($record);

@@ -30,7 +30,7 @@ class InfoTest extends TestCase
      */
     private $controller;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $context = $this->getObject(Context::class);
 
@@ -45,7 +45,7 @@ class InfoTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $this->controller = new Info(
             $context,

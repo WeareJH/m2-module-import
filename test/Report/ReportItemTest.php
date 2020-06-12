@@ -14,7 +14,7 @@ class ReportItemTest extends TestCase
 {
     public function testAddersAndGetters()
     {
-        $report = new ReportItem([$handler = new CollectingHandler], 33, 'sku', 'PROD1');
+        $report = new ReportItem([$handler = new CollectingHandler()], 33, 'sku', 'PROD1');
 
         self::assertEmpty($handler->itemMessages);
         self::assertEquals(33, $report->getReferenceLine());

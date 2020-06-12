@@ -16,7 +16,7 @@ use Prophecy\Argument;
  */
 class SkipNonExistingProductsTest extends TestCase
 {
-    public function testNonExistingProductsAreSkipped() : void
+    public function testNonExistingProductsAreSkipped(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
         $adapter   = $this->prophesize(AdapterInterface::class);
@@ -33,7 +33,7 @@ class SkipNonExistingProductsTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(1, ['sku' => 'EXISTINGSKU'])));
     }
 
-    public function testNonExistingProductsAreSkippedWithCustomSkuField() : void
+    public function testNonExistingProductsAreSkippedWithCustomSkuField(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
         $adapter   = $this->prophesize(AdapterInterface::class);

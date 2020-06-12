@@ -34,7 +34,7 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
      */
     private $directoryList;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempRoot = sprintf('%s/%s', sys_get_temp_dir(), $this->getName());
         @mkdir($this->tempRoot, 0777, true);
@@ -42,7 +42,7 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         $this->directoryList = new DirectoryList($this->tempRoot);
     }
 
-    public function testUnchangedRecordsAreSkipped() : void
+    public function testUnchangedRecordsAreSkipped(): void
     {
         $data = [
             ['country' => 'Austria', 'code' => 'AT'],
@@ -89,7 +89,7 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(0, ['country' => 'France', 'code' => 'FR'])));
     }
 
-    public function testAllRecordsAreProcessedIfNoDuplicates() : void
+    public function testAllRecordsAreProcessedIfNoDuplicates(): void
     {
         $config = new Config('my-import', ['source' => 'My/Source']);
         $source = new Iterator(new \ArrayIterator([]));
@@ -129,7 +129,7 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(0, ['country' => 'France', 'code' => 'FR'])));
     }
 
-    public function testAllRecordsAreProcessedIfNoPreviousImport() : void
+    public function testAllRecordsAreProcessedIfNoPreviousImport(): void
     {
         $config = new Config('my-import', ['source' => 'My/Source']);
 
@@ -157,7 +157,7 @@ class SkipUnchangedRecordsFromLastImportTest extends TestCase
         self::assertTrue($filter->__invoke(new Record(0, ['country' => 'France', 'code' => 'FR'])));
     }
 
-    public function testAllRecordsAreProcessedIfNoPreviousFileExists() : void
+    public function testAllRecordsAreProcessedIfNoPreviousFileExists(): void
     {
         $config = new Config('my-import', ['source' => 'My/Source']);
 

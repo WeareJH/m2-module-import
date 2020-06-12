@@ -39,7 +39,7 @@ class CategoryPathTransformerTest extends TestCase
         $record = new Record(11, ['categories' => ['level1/level2/some-category']]);
 
         $transformer = new CategoryPathTransformer($categoryManagement->reveal());
-        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler], 100, 'sku', 100));
+        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler()], 100, 'sku', 100));
 
         self::assertEquals([5], $record->getColumnValue('categories'));
         self::assertCount(0, $handler->itemMessages);
@@ -65,7 +65,7 @@ class CategoryPathTransformerTest extends TestCase
         $record = new Record(11, ['categories' => ['level1/level2/some-category']]);
 
         $transformer = new CategoryPathTransformer($categoryManagement->reveal());
-        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler], 100, 'sku', 100));
+        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler()], 100, 'sku', 100));
 
         self::assertEmpty($record->getColumnValue('categories'));
         self::assertSame(

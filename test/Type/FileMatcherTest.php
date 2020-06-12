@@ -16,7 +16,7 @@ class FileMatcherTest extends TestCase
             '/var/www/import/other.txt'
         ];
 
-        $matcher = new FileMatcher;
+        $matcher = new FileMatcher();
         $matched = $matcher->matched('other.txt', $files)->all();
 
         self::assertCount(1, $matched);
@@ -32,7 +32,7 @@ class FileMatcherTest extends TestCase
             '/var/www/import/other.txt'
         ];
 
-        $matcher = new FileMatcher;
+        $matcher = new FileMatcher();
         $matched = $matcher->matched('/file\d.csv/', $files)->all();
 
         self::assertCount(3, $matched);
@@ -55,7 +55,7 @@ class FileMatcherTest extends TestCase
             '/var/www/import/other.txt'
         ];
 
-        $matcher = new FileMatcher;
+        $matcher = new FileMatcher();
         $matched = $matcher->matched('*', $files)->all();
 
         self::assertCount(4, $matched);
@@ -72,7 +72,7 @@ class FileMatcherTest extends TestCase
 
     public function testMatchesWithSingleFile()
     {
-        $matcher = new FileMatcher;
+        $matcher = new FileMatcher();
 
         self::assertTrue($matcher->matches('*', '/var/www/import/file1.csv'));
         self::assertTrue($matcher->matches('/file\d\.csv/', '/var/www/import/file1.csv'));

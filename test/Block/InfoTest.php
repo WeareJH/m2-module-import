@@ -31,7 +31,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
 
@@ -66,7 +66,7 @@ class InfoTest extends TestCase
             'request' => $request->reveal(),
             'layout'  => $layout->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
 
@@ -98,7 +98,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -125,7 +125,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -151,7 +151,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
@@ -176,7 +176,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -201,7 +201,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -228,7 +228,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
@@ -256,7 +256,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -283,7 +283,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -309,7 +309,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
@@ -337,7 +337,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -364,7 +364,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
@@ -390,7 +390,7 @@ class InfoTest extends TestCase
         $context = $this->getObject(Context::class, [
             'request' => $request->reveal()
         ]);
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);

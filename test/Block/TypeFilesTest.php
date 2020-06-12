@@ -38,7 +38,7 @@ class TypeFilesTest extends TestCase
      */
     private $block;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -68,7 +68,7 @@ class TypeFilesTest extends TestCase
             $context,
             $this->directoryList,
             $this->writeFactory,
-            new FileMatcher
+            new FileMatcher()
         );
         $this->block->setNameInLayout('type-info');
     }

@@ -43,7 +43,7 @@ class ProductVisibilityTransformerTest extends TestCase
         $record = new Record(11, ['visibility' => 'unknown-visibility']);
 
         $transformer = new ProductVisibilityTransformer('visibility');
-        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler], 100, 'sku', 100));
+        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler()], 100, 'sku', 100));
 
         self::assertNull($record->getColumnValue('visibility'));
         self::assertSame(
@@ -62,7 +62,7 @@ class ProductVisibilityTransformerTest extends TestCase
         $record = new Record(11, ['visibility' => null]);
 
         $transformer = new ProductVisibilityTransformer('visibility', Visibility::VISIBILITY_BOTH);
-        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler], 100, 'sku', 100));
+        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler()], 100, 'sku', 100));
 
         self::assertEquals(Visibility::VISIBILITY_BOTH, $record->getColumnValue('visibility'));
     }

@@ -96,7 +96,7 @@ class ProductWriterTest extends TestCase
      */
     private $stock;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->productFactory     = $this->prophesize(ProductFactory::class);
         $this->productResource    = $this->prophesize(ProductResource::class);

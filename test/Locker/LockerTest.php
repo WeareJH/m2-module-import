@@ -19,7 +19,7 @@ class LockerTest extends TestCase
      */
     private $locker;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->dbAdapter = $this->prophesize(AdapterInterface::class);
         $resourceConnection =  $this->prophesize(ResourceConnection::class);

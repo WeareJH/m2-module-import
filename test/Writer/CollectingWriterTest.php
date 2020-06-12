@@ -18,7 +18,7 @@ class CollectingWriterTest extends TestCase
         $record2 = new Record(2, ['col1' => 'row2col1value', 'col2' => 'row2col2value']);
         $report = new ReportItem([], 100, 'sku', 100);
 
-        $writer = new CollectingWriter;
+        $writer = new CollectingWriter();
         $writer->write($record1, $report);
         $writer->write($record2, $report);
 

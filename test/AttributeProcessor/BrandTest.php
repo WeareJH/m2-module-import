@@ -35,7 +35,7 @@ class BrandTest extends TestCase
     private $brandProcessor;
     private $tempDirectory;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         if (!class_exists(Brand::class)) {
             $this->markTestSkipped('wearejh/m2-module-brands not installed');
@@ -48,18 +48,18 @@ class BrandTest extends TestCase
         $this->brandProcessor = new BrandProcessor(
             $this->brandFactory->reveal(),
             $this->brandRepository->reveal(),
-            new File,
+            new File(),
             new Filesystem(
                 new DirectoryList($this->tempDirectory),
-                new ReadFactory(new DriverPool),
-                new WriteFactory(new DriverPool)
+                new ReadFactory(new DriverPool()),
+                new WriteFactory(new DriverPool())
             )
         );
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
-        (new SymfonyFilesystem)->remove($this->tempDirectory);
+        (new SymfonyFilesystem())->remove($this->tempDirectory);
     }
 
     public function testIfBrandExistsNoNewBrandIsCreated()
@@ -68,7 +68,7 @@ class BrandTest extends TestCase
         $brand->getName()->willReturn('Atom');
         $brand->getId()->willReturn(12);
 
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([$brand->reveal()]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 
@@ -91,7 +91,7 @@ class BrandTest extends TestCase
         $brand->getName()->willReturn('Atom');
         $brand->getId()->willReturn(12);
 
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([$brand->reveal()]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 
@@ -122,7 +122,7 @@ class BrandTest extends TestCase
         $brand->getName()->willReturn('Atom');
         $brand->getId()->willReturn(12);
 
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([$brand->reveal()]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 
@@ -158,7 +158,7 @@ class BrandTest extends TestCase
 
     public function testBrandIsSavedWithoutImageIfImageDoesNotExist()
     {
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 
@@ -191,7 +191,7 @@ class BrandTest extends TestCase
         mkdir(sprintf('%s/pub/media/catalog/product/brands', $this->tempDirectory), 0777, true);
         touch(sprintf('%s/pub/media/catalog/product/brands/my-image.png', $this->tempDirectory));
 
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 
@@ -226,7 +226,7 @@ class BrandTest extends TestCase
         $brand->getName()->willReturn('Atom');
         $brand->getId()->willReturn(12);
 
-        $searchResult = new BrandSearchResult;
+        $searchResult = new BrandSearchResult();
         $searchResult->setItems([$brand->reveal()]);
         $this->brandRepository->getList(Argument::type(SearchCriteria::class))->willReturn($searchResult);
 

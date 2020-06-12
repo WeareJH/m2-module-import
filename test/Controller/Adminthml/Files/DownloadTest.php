@@ -47,7 +47,7 @@ class DownloadTest extends TestCase
      */
     private $controller;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -68,7 +68,7 @@ class DownloadTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize);
+        $data = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $this->controller = new Download(
             $context,
@@ -79,9 +79,9 @@ class DownloadTest extends TestCase
         );
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
-        (new Filesystem)->remove($this->tempDirectory);
+        (new Filesystem())->remove($this->tempDirectory);
     }
 
     public function testRedirectIsReturnedIfNameParamNotPreset()

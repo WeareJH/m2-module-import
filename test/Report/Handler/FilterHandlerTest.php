@@ -18,7 +18,7 @@ class FilterHandlerTest extends TestCase
 
         $filter = new FilterHandler(LogLevel::CRITICAL, $wrapped->reveal());
         $report = new Report([], 'product', 'source-id');
-        $startTime = new \DateTime;
+        $startTime = new \DateTime();
         $filter->start($report, $startTime);
 
         $wrapped->start($report, $startTime)->shouldHaveBeenCalled();
@@ -30,7 +30,7 @@ class FilterHandlerTest extends TestCase
 
         $filter = new FilterHandler(LogLevel::CRITICAL, $wrapped->reveal());
         $report = new Report([], 'product', 'source-id');
-        $finishTime = new \DateTime;
+        $finishTime = new \DateTime();
         $filter->finish($report, $finishTime, 1024);
 
         $wrapped->finish($report, $finishTime, 1024)->shouldHaveBeenCalled();

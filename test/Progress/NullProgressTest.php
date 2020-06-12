@@ -17,7 +17,7 @@ class NullProgressTest extends TestCase
         $this->expectOutputString('');
 
         $source = $this->prophesize(Source::class);
-        $nullProgress = new NullProgress;
+        $nullProgress = new NullProgress();
         $nullProgress->start($source->reveal(), new Config('product', []));
         $nullProgress->advance();
         $nullProgress->finish($source->reveal());

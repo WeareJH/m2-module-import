@@ -114,7 +114,7 @@ class CsvTest extends TestCase
             function ($rowNumber) use (&$errors) {
                 $errors[] = $rowNumber;
             },
-            new Report([$handler = new CollectingHandler], 'product', 'some-source-id')
+            new Report([$handler = new CollectingHandler()], 'product', 'some-source-id')
         );
 
         self::assertEquals($expectedData, $parsed);
@@ -235,7 +235,7 @@ class CsvTest extends TestCase
         unlink($tempFile);
     }
 
-    public function extraHeaderProvider() : array
+    public function extraHeaderProvider(): array
     {
         return [
             [

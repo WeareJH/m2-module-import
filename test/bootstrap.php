@@ -36,7 +36,7 @@ spl_autoload_register(function ($className) use ($generatorIo) {
 spl_autoload_register(
     [
         new GeneratedClassesAutoloader(
-            [new ExtensionAttributesGenerator(), new ExtensionAttributesInterfaceGenerator],
+            [new ExtensionAttributesGenerator(), new ExtensionAttributesInterfaceGenerator()],
             $generatorIo
         ),
         'load'

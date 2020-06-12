@@ -15,7 +15,7 @@ class CollectingHandlerTest extends TestCase
 {
     public function testMessagesAreCollected()
     {
-        $handler = new CollectingHandler;
+        $handler = new CollectingHandler();
         $handler->handleMessage(new Message(LogLevel::CRITICAL, 'Message 1'));
         $handler->handleMessage(new Message(LogLevel::EMERGENCY, 'Message 2'));
         $handler->handleItemMessage(

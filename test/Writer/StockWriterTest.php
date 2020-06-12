@@ -55,7 +55,7 @@ class StockWriterTest extends TestCase
      */
     private $adapter;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->stockRegistryProvider = $this->prophesize(StockRegistryProvider::class);
         $this->stockItemRepository = $this->prophesize(StockItemRepositoryInterface::class);
@@ -80,7 +80,7 @@ class StockWriterTest extends TestCase
         );
     }
 
-    public function testErrorIsAddedIfProductDoesNotExist() : void
+    public function testErrorIsAddedIfProductDoesNotExist(): void
     {
         $record = new Record(10, [
             'sku' => 'PROD30',
@@ -89,7 +89,7 @@ class StockWriterTest extends TestCase
 
         $this->writer->write(
             $record,
-            new ReportItem([$handler = new CollectingHandler], '100', 'sku', '100')
+            new ReportItem([$handler = new CollectingHandler()], '100', 'sku', '100')
         );
 
         $this->stockItemRepository->save()->shouldNotHaveBeenCalled();
@@ -104,7 +104,7 @@ class StockWriterTest extends TestCase
         );
     }
 
-    public function testProductIdIsSetIfNewStockItemIsProducedFromRegistry() : void
+    public function testProductIdIsSetIfNewStockItemIsProducedFromRegistry(): void
     {
         $record = new Record(10, [
             'sku' => 'PROD2',
@@ -127,7 +127,7 @@ class StockWriterTest extends TestCase
         );
     }
 
-    public function testProductStockIsUpdated() : void
+    public function testProductStockIsUpdated(): void
     {
         $record = new Record(10, [
             'sku' => 'PROD1',
@@ -151,7 +151,7 @@ class StockWriterTest extends TestCase
         );
     }
 
-    public function testFinishReturnsIdsOfUpdatedStocks() : void
+    public function testFinishReturnsIdsOfUpdatedStocks(): void
     {
         $record1 = new Record(10, [
             'sku' => 'PROD1',

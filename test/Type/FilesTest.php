@@ -35,7 +35,7 @@ class FilesTest extends TestCase
      */
     private $files = [];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var/import', sys_get_temp_dir(), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -46,9 +46,9 @@ class FilesTest extends TestCase
         }
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
-        (new Filesystem)->remove($this->tempDirectory);
+        (new Filesystem())->remove($this->tempDirectory);
     }
 
     public function testFilesTypeCreatesAndRunsImportForEachMatchesFileInIncomingDirectory()
@@ -119,7 +119,7 @@ class FilesTest extends TestCase
             new WriteFactory(new DriverPool()),
             $objectManager->reveal(),
             $importFactory->reveal(),
-            new FileMatcher
+            new FileMatcher()
         );
         $files->run($config);
     }

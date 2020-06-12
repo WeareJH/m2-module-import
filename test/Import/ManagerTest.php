@@ -57,7 +57,7 @@ class ManagerTest extends TestCase
 
         $config->hasImport('some-import')->willReturn(true);
         $config->getImportType('some-import')->willReturn('files');
-        $om->get(Files::class)->willReturn(new \stdClass);
+        $om->get(Files::class)->willReturn(new \stdClass());
 
         (new Manager($config->reveal(), $om->reveal()))->executeImportByName('some-import');
     }

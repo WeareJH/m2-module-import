@@ -34,7 +34,7 @@ class MemoryTest extends TestCase
         );
     }
 
-    public function bytesProvider() : array
+    public function bytesProvider(): array
     {
         return [
             ['2147483700', '2 GB'],

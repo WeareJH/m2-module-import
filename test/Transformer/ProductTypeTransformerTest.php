@@ -68,7 +68,7 @@ class ProductTypeTransformerTest extends TestCase
         $record = new Record(11, ['type' => 'unknown-type']);
 
         $transformer = new ProductTypeTransformer('type');
-        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler], 100, 'sku', 100));
+        $transformer->__invoke($record, new ReportItem([$handler = new CollectingHandler()], 100, 'sku', 100));
 
         self::assertNull($record->getColumnValue('type'));
         self::assertSame(

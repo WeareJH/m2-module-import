@@ -31,7 +31,7 @@ class ArchiveFilesTest extends TestCase
      */
     private $writeFactory;
     
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -42,7 +42,7 @@ class ArchiveFilesTest extends TestCase
         $this->writeFactory = new WriteFactory(new DriverPool());
     }
 
-    private function getCron(array $data = null) : ArchiveFiles
+    private function getCron(array $data = null): ArchiveFiles
     {
         if (null === $data) {
             $data = [
@@ -61,15 +61,15 @@ class ArchiveFilesTest extends TestCase
         $reader = $this->prophesize(ReaderInterface::class);
 
         return new ArchiveFiles(
-            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize),
+            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize()),
             $this->directoryList,
             $this->writeFactory
         );
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
-        (new Filesystem)->remove($this->tempDirectory);
+        (new Filesystem())->remove($this->tempDirectory);
     }
     
     public function testNoZipIsCreatedIfNoFiles()
@@ -161,7 +161,7 @@ class ArchiveFilesTest extends TestCase
         self::assertFileExists($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
         self::assertFileExists($this->tempDirectory . '/archived/archived-14-06-2017-10-00.zip');
 
-        $zip = new \ZipArchive;
+        $zip = new \ZipArchive();
         $zip->open($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
 
         self::assertEquals(2, $zip->numFiles);
@@ -170,7 +170,7 @@ class ArchiveFilesTest extends TestCase
 
         $zip->close();
 
-        $zip = new \ZipArchive;
+        $zip = new \ZipArchive();
         $zip->open($this->tempDirectory . '/archived/archived-14-06-2017-10-00.zip');
 
         self::assertEquals(1, $zip->numFiles);
@@ -224,7 +224,7 @@ class ArchiveFilesTest extends TestCase
         self::assertFileExists($this->tempDirectory . '/failed/file2.txt');
         self::assertFileExists($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
 
-        $zip = new \ZipArchive;
+        $zip = new \ZipArchive();
         $zip->open($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
 
         self::assertEquals(1, $zip->numFiles);

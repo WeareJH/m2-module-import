@@ -16,7 +16,7 @@ class ReportTest extends TestCase
 {
     public function testAddersAndGetters()
     {
-        $report = new Report([$handler = new CollectingHandler], 'product', 'some-source-id');
+        $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source-id');
 
         self::assertEmpty($handler->messages);
         self::assertEquals('product', $report->getImportName());

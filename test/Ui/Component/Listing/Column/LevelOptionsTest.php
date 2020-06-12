@@ -45,6 +45,6 @@ class LevelOptionsTest extends TestCase
                 'value' => 'EMERGENCY',
                 'label' => 'EMERGENCY'
             ]
-        ], (new Options)->toOptionArray());
+        ], (new Options())->toOptionArray());
     }
 }

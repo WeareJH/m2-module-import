@@ -57,7 +57,7 @@ class ElapsedTest extends TestCase
         );
     }
 
-    public function dateProvider() : array
+    public function dateProvider(): array
     {
         return [
             ['2017-03-27 15:07:02', '2017-03-27 17:17:02', '2 Hours, 10 Minutes'],

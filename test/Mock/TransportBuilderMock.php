@@ -20,7 +20,7 @@ class TransportBuilderMock extends \Magento\Framework\Mail\Template\TransportBui
         return $this;
     }
 
-    public function getSentMessage() : EmailMessage
+    public function getSentMessage(): EmailMessage
     {
         return $this->sentMessage;
     }

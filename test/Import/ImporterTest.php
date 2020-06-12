@@ -82,7 +82,7 @@ class ImporterTest extends TestCase
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'progress' => $progress->reveal(),
-            'writer' => new CollectingWriter
+            'writer' => new CollectingWriter()
         ]);
 
         $progress->start($source, $config)->shouldBeCalled();
@@ -109,7 +109,7 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => $archiveFactory->reveal(),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter
+            'writer' => $writer = new CollectingWriter()
         ]);
 
         $archiveFactory->getArchiverForSource($source, $config)->willReturn($archiver->reveal());
@@ -144,7 +144,7 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter
+            'writer' => $writer = new CollectingWriter()
         ]);
 
         $importer->transform(function (Record $record) {
@@ -181,7 +181,7 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter
+            'writer' => $writer = new CollectingWriter()
         ]);
 
         $importer->filter(function (Record $record) {
@@ -217,11 +217,11 @@ class ImporterTest extends TestCase
             'history' => $history->reveal(),
             'reportFactory'   => $reportFactory->reveal(),
             'archiverFactory' => $archiveFactory->reveal(),
-            'writer' => new CollectingWriter
+            'writer' => new CollectingWriter()
         ]);
 
         $archiveFactory->getArchiverForSource($source, $config)->willReturn($archiver->reveal());
-        $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
+        $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source');
         $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
         $importer->process($config);
@@ -255,13 +255,13 @@ class ImporterTest extends TestCase
             'history' => $history->reveal(),
             'locker' => $locker->reveal(),
             'archiverFactory' => $archiveFactory->reveal(),
-            'writer' => new CollectingWriter
+            'writer' => new CollectingWriter()
         ]);
 
         $history->isImported($source)->willReturn(false);
         $locker->lock('product')->willThrow(ImportLockedException::fromName('product'));
 
-        $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
+        $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source');
         $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
         $importer->process($config);
@@ -295,12 +295,12 @@ class ImporterTest extends TestCase
             'history' => $history->reveal(),
             'locker' => $locker->reveal(),
             'archiverFactory' => $archiveFactory->reveal(),
-            'writer' => new CollectingWriter
+            'writer' => new CollectingWriter()
         ]);
 
         $history->isImported($source)->willReturn(true);
 
-        $report = new Report([$handler = new CollectingHandler], 'product', 'some-source');
+        $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source');
         $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
         $importer->process($config);
@@ -326,11 +326,11 @@ class ImporterTest extends TestCase
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator),
+            'source' => $source = new Iterator(new \ArrayIterator()),
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter,
+            'writer' => $writer = new CollectingWriter(),
             'indexerRegistry' => $indexerRegistry->reveal(),
         ]);
 
@@ -366,11 +366,11 @@ class ImporterTest extends TestCase
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator),
+            'source' => $source = new Iterator(new \ArrayIterator()),
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter,
+            'writer' => $writer = new CollectingWriter(),
             'indexerRegistry' => $indexerRegistry->reveal(),
         ]);
 
@@ -397,11 +397,11 @@ class ImporterTest extends TestCase
         $history->isImported(Argument::type(Source::class))->willReturn(false);
 
         $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator),
+            'source' => $source = new Iterator(new \ArrayIterator()),
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter,
+            'writer' => $writer = new CollectingWriter(),
             'indexerRegistry' => $indexerRegistry->reveal(),
         ]);
 
@@ -423,7 +423,7 @@ class ImporterTest extends TestCase
         $importer->process($config);
     }
 
-    private function reportFactory(Config $config) : ObjectProphecy
+    private function reportFactory(Config $config): ObjectProphecy
     {
         $reportFactory = $this->prophesize(ReportFactory::class);
         $reportFactory
@@ -436,7 +436,7 @@ class ImporterTest extends TestCase
         return $reportFactory;
     }
 
-    public function testAddFilterCallsPrepareIfNecessary() : void
+    public function testAddFilterCallsPrepareIfNecessary(): void
     {
         $config  = new Config('product', []);
         $om      = $this->prophesize(ObjectManagerInterface::class);
@@ -452,7 +452,7 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => new CollectingWriter,
+            'writer' => new CollectingWriter(),
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
@@ -462,7 +462,7 @@ class ImporterTest extends TestCase
         $importer->process($config);
     }
 
-    public function testAddTransformerCallsPrepareIfNecessary() : void
+    public function testAddTransformerCallsPrepareIfNecessary(): void
     {
         $config  = new Config('product', []);
         $om      = $this->prophesize(ObjectManagerInterface::class);
@@ -478,7 +478,7 @@ class ImporterTest extends TestCase
             'reportFactory' => $this->reportFactory($config)->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
-            'writer' => new CollectingWriter,
+            'writer' => new CollectingWriter(),
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);

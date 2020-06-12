@@ -14,20 +14,20 @@ use PHPUnit\Framework\TestCase;
 
 class SourceFactoryTest extends TestCase
 {
-    public function testCreateThrowsExceptionIfSourceDoesNotImplementCorrectInterface() : void
+    public function testCreateThrowsExceptionIfSourceDoesNotImplementCorrectInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(sprintf('Source must implement "%s"', Source::class));
 
         $om = $this->prophesize(ObjectManagerInterface::class);
-        $om->create('stdClass', [])->willReturn(new \stdClass);
+        $om->create('stdClass', [])->willReturn(new \stdClass());
 
         $conf = new Config('my-import', ['source' => 'stdClass']);
 
         (new SourceFactory($om->reveal()))->create($conf, []);
     }
 
-    public function testCreateWithValidSource() : void
+    public function testCreateWithValidSource(): void
     {
         $om = $this->prophesize(ObjectManagerInterface::class);
         $source = new Iterator(new ArrayIterator([]));
@@ -38,7 +38,7 @@ class SourceFactoryTest extends TestCase
         self::assertSame($source, (new SourceFactory($om->reveal()))->create($conf, []));
     }
 
-    public function testCreateWithValidSourceAndArgs() : void
+    public function testCreateWithValidSourceAndArgs(): void
     {
         $om = $this->prophesize(ObjectManagerInterface::class);
         $source = new Iterator(new ArrayIterator([]));

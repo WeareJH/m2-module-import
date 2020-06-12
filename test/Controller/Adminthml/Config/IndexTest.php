@@ -26,7 +26,7 @@ class IndexTest extends TestCase
      */
     private $controller;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $context = $this->getObject(Context::class);
 

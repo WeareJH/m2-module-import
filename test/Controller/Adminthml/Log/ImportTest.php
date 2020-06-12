@@ -83,7 +83,7 @@ class ImportTest extends TestCase
      */
     private $import;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->context        = $this->prophesize(Context::class);
         $this->pageFactory    = $this->prophesize(PageFactory::class);
@@ -163,7 +163,7 @@ class ImportTest extends TestCase
         $history->load(33)->shouldBeCalled()->willReturn($history);
         $history->getId()->willReturn(33);
         $history->getData('import_name')->willReturn('product');
-        $history->getStartedAt()->willReturn(new \DateTime);
+        $history->getStartedAt()->willReturn(new \DateTime());
 
         $this->importHistoryFactory->create()->willReturn($history);
 

@@ -80,7 +80,7 @@ class ReportFactoryTest extends TestCase
 
         $objectManager
             ->create(ConsoleHandler::class, ['minErrorLevel' => LogLevel::WARNING])
-            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput), LogLevel::WARNING));
+            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput()), LogLevel::WARNING));
 
         $factory = new ReportFactory($objectManager->reveal());
 
@@ -124,7 +124,7 @@ class ReportFactoryTest extends TestCase
 
         $objectManager
             ->create(ConsoleHandler::class, ['minErrorLevel' => LogLevel::WARNING])
-            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput), LogLevel::WARNING));
+            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput()), LogLevel::WARNING));
 
         $factory = new ReportFactory($objectManager->reveal());
 
@@ -149,7 +149,7 @@ class ReportFactoryTest extends TestCase
         $services = [
             State::class => $appState,
             DatabaseHandler::class => $this->prophesize(DatabaseHandler::class)->reveal(),
-            'some_handler' => new \stdClass
+            'some_handler' => new \stdClass()
         ];
 
         $objectManager = $this->prophesize(ObjectManagerInterface::class);
@@ -159,7 +159,7 @@ class ReportFactoryTest extends TestCase
 
         $objectManager
             ->create(ConsoleHandler::class, ['minErrorLevel' => LogLevel::WARNING])
-            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput), LogLevel::WARNING));
+            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput()), LogLevel::WARNING));
 
         $factory = new ReportFactory($objectManager->reveal());
 
@@ -189,7 +189,7 @@ class ReportFactoryTest extends TestCase
 
         $objectManager
             ->create(ConsoleHandler::class, ['minErrorLevel' => LogLevel::WARNING])
-            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput), LogLevel::WARNING));
+            ->willReturn(new ConsoleHandler(new CliProgress(new NullOutput()), LogLevel::WARNING));
 
         $factory = new ReportFactory($objectManager->reveal());
 

@@ -16,7 +16,7 @@ use Prophecy\Argument;
 
 class LoggingSkipNonExistingProductsTest extends TestCase
 {
-    public function testSkippedProductIsLogged() : void
+    public function testSkippedProductIsLogged(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
         $adapter   = $this->prophesize(AdapterInterface::class);

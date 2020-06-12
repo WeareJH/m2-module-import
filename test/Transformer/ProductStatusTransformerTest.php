@@ -74,7 +74,7 @@ class ProductStatusTransformerTest extends TestCase
 
     public function testProductStatusWithUnknownValueIsSetToDisabled()
     {
-        $record = new Record(11, ['status' => new \stdClass]);
+        $record = new Record(11, ['status' => new \stdClass()]);
 
         $transformer = new ProductStatusTransformer('status');
         $transformer->__invoke($record);

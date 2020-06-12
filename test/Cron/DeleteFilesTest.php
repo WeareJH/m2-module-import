@@ -32,7 +32,7 @@ class DeleteFilesTest extends TestCase
      */
     private $writeFactory;
     
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
         @mkdir($this->tempDirectory, 0777, true);
@@ -43,7 +43,7 @@ class DeleteFilesTest extends TestCase
         $this->writeFactory = new WriteFactory(new DriverPool());
     }
 
-    private function getCron(array $data = null) : DeleteFiles
+    private function getCron(array $data = null): DeleteFiles
     {
         if (null === $data) {
             $data = [
@@ -62,15 +62,15 @@ class DeleteFilesTest extends TestCase
         $reader = $this->prophesize(ReaderInterface::class);
 
         return new DeleteFiles(
-            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize),
+            new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize()),
             $this->directoryList,
             $this->writeFactory
         );
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
-        (new Filesystem)->remove($this->tempDirectory);
+        (new Filesystem())->remove($this->tempDirectory);
     }
     
 //    public function testNoZipIsCreatedIfNoFiles()

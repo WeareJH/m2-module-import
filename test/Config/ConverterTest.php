@@ -51,7 +51,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -103,7 +103,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -148,7 +148,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -200,7 +200,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -242,7 +242,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -284,7 +284,7 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -328,7 +328,7 @@ END;
                     'cron_group' => 'my-cron-group'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
@@ -379,11 +379,11 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
-    public function fileCleanUpTruthy() : array
+    public function fileCleanUpTruthy(): array
     {
         return [
             [1, 1],
@@ -437,11 +437,11 @@ END;
                     'cron_group' => 'default'
                 ]
             ],
-            (new Converter)->convert($domDocument)
+            (new Converter())->convert($domDocument)
         );
     }
 
-    public function fileCleanUpFalsy() : array
+    public function fileCleanUpFalsy(): array
     {
         return [
             [0, 0],
