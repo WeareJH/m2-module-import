@@ -20,7 +20,11 @@
         "zendframework/zendframework1": "^1.12",
         "symfony/filesystem": "^3.2",
         "wearejh/m2-unit-test-helpers": "^1.4",
-        "monolog/monolog": "^1.22"
+        "monolog/monolog": "^1.22",
+        "phpstan/phpstan": "^0.12.28",
+        "bitexpert/phpstan-magento": "^0.3.0",
+        "wearejh/m2-module-brands": "^2.0",
+        "wearejh/m2-module-toolkit": "^2.0"
     },
     "repositories": {
         "0": {
@@ -30,6 +34,14 @@
         "m2-unit-test-helpers": {
             "type": "vcs",
             "url": "git@github.com:WeareJH/m2-unit-test-helpers.git"
+        },
+        "m2-brands" : {
+            "type": "vcs",
+            "url": "git@github.com:WeareJH/m2-module-jh-brands.git"
+        },
+        "m2-toolkit" : {
+            "type": "vcs",
+            "url": "git@github.com:WeareJH/m2-module-jh-toolkit.git"
         }
     },
     "autoload": {

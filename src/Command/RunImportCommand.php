@@ -3,6 +3,7 @@
 namespace Jh\Import\Command;
 
 use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

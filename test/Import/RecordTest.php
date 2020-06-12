@@ -60,13 +60,13 @@ class RecordTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Value of "column1" data type: "string" does not match expected: "array"');
 
-        $record = new Record(10, ['column1' => 'some value'], 'array');
+        $record = new Record(10, ['column1' => 'some value']);
         $record->getColumnValue('column1', null, 'array');
     }
 
     public function testGetColumnValuePerformsTypeCheckIfSpecified(): void
     {
-        $record = new Record(10, ['column1' => ['key' => 'value']], 'array');
+        $record = new Record(10, ['column1' => ['key' => 'value']]);
         self::assertEquals(['key' => 'value'], $record->getColumnValue('column1', null, 'array'));
     }
 
@@ -107,7 +107,7 @@ class RecordTest extends TestCase
 
     public function testGetColumnAndUnsetPerformsTypeCheckIfSpecified(): void
     {
-        $record = new Record(10, ['column1' => ['key' => 'value']], 'array');
+        $record = new Record(10, ['column1' => ['key' => 'value']]);
         self::assertEquals(['key' => 'value'], $record->getColumnValueAndUnset('column1', null, 'array'));
         self::assertNull($record->getColumnValue('column1'));
     }

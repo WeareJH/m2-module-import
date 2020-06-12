@@ -73,6 +73,7 @@ class AboveLevelWithContext implements EmailHandlerStrategy
     public function renderInfo(Report $report, DateTime $startTime, DateTime $finishTime, int $memoryUsage): string
     {
         // TODO: Implement renderInfo() method.
+        return '';
     }
 
     /**
@@ -82,6 +83,7 @@ class AboveLevelWithContext implements EmailHandlerStrategy
     public function renderItemMessages(array $messages): string
     {
         // TODO: Implement renderItemMessages() method.
+        return '';
     }
 
     /**
@@ -91,5 +93,6 @@ class AboveLevelWithContext implements EmailHandlerStrategy
     public function renderImportMessages(array $messages): string
     {
         // TODO: Implement renderImportMessages() method.
+        return '';
     }
 }

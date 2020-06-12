@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18bb8866f456cf29c84100f1978b31b5",
+    "content-hash": "a57488dbd3baf9794ee0d7ba597cb7f9",
     "packages": [
         {
             "name": "colinmollenhour/credis",
@@ -4867,7 +4867,7 @@
         },
         {
             "name": "symfony/console",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -4958,7 +4958,7 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.4.41",
+            "version": "v3.4.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
@@ -5022,7 +5022,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -5523,7 +5523,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -5658,7 +5658,7 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
@@ -6000,6 +6000,64 @@
     ],
     "packages-dev": [
         {
+            "name": "bitexpert/phpstan-magento",
+            "version": "v0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bitExpert/phpstan-magento.git",
+                "reference": "bb7de49734e385c20165cb85831226cb7579a44d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bitExpert/phpstan-magento/zipball/bb7de49734e385c20165cb85831226cb7579a44d",
+                "reference": "bb7de49734e385c20165cb85831226cb7579a44d",
+                "shasum": ""
+            },
+            "require": {
+                "nette/neon": "^3.1",
+                "php": "^7.2.0",
+                "phpstan/phpstan": "^0.12.24"
+            },
+            "require-dev": {
+                "bitexpert/phing-securitychecker": "^0.4.0",
+                "captainhook/captainhook": "^5.1.2",
+                "captainhook/plugin-composer": "^5.1.3",
+                "mikey179/vfsstream": "^1.6",
+                "nikic/php-parser": "^4.3",
+                "phing/phing": "^2.16",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan-phpunit": "^0.12.8",
+                "phpunit/phpunit": "^8.5.3",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "bitExpert\\PHPStan\\": "src/bitExpert/PHPStan"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephan Hochdörfer",
+                    "email": "S.Hochdoerfer@bitExpert.de",
+                    "homepage": "http://www.bitExpert.de"
+                }
+            ],
+            "description": "PHPStan Magento Extension",
+            "time": "2020-05-29T07:35:23+00:00"
+        },
+        {
             "name": "doctrine/instantiator",
             "version": "1.3.1",
             "source": {
@@ -6116,6 +6174,68 @@
                 "object graph"
             ],
             "time": "2020-01-17T21:11:47+00:00"
+        },
+        {
+            "name": "nette/neon",
+            "version": "v3.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/neon.git",
+                "reference": "3c3dcbc6bf6c80dc97b1fc4ba9a22ae67930fc0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/neon/zipball/3c3dcbc6bf6c80dc97b1fc4ba9a22ae67930fc0e",
+                "reference": "3c3dcbc6bf6c80dc97b1fc4ba9a22ae67930fc0e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "ext-json": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "nette/tester": "^2.0",
+                "phpstan/phpstan": "^0.12",
+                "tracy/tracy": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "🍸 Nette NEON: encodes and decodes NEON file format.",
+            "homepage": "https://ne-on.org",
+            "keywords": [
+                "export",
+                "import",
+                "neon",
+                "nette",
+                "yaml"
+            ],
+            "time": "2020-03-04T11:47:04+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6493,6 +6613,62 @@
                 "stub"
             ],
             "time": "2020-03-05T15:02:03+00:00"
+        },
+        {
+            "name": "phpstan/phpstan",
+            "version": "0.12.28",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan.git",
+                "reference": "76c0c4ec90b1eed66fa4855b8b4b53fa9054353f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/76c0c4ec90b1eed66fa4855b8b4b53fa9054353f",
+                "reference": "76c0c4ec90b1eed66fa4855b8b4b53fa9054353f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "conflict": {
+                "phpstan/phpstan-shim": "*"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.12-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpstan",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-06-10T06:20:14+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -7544,6 +7720,81 @@
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
             "time": "2019-06-13T22:48:21+00:00"
+        },
+        {
+            "name": "wearejh/m2-module-brands",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:WeareJH/m2-module-jh-brands.git",
+                "reference": "86e0514ff2ce80f1e1045811dec575ee78a0a4cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WeareJH/m2-module-jh-brands/zipball/86e0514ff2ce80f1e1045811dec575ee78a0a4cd",
+                "reference": "86e0514ff2ce80f1e1045811dec575ee78a0a4cd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">7.0.0",
+                "wearejh/m2-module-toolkit": "^1 |^2"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Jh\\Brands\\": ""
+                }
+            },
+            "description": "Catalog brands moudule",
+            "support": {
+                "source": "https://github.com/WeareJH/m2-module-jh-brands/tree/2.0.0",
+                "issues": "https://github.com/WeareJH/m2-module-jh-brands/issues"
+            },
+            "time": "2019-06-19T09:17:47+00:00"
+        },
+        {
+            "name": "wearejh/m2-module-toolkit",
+            "version": "2.4.5",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:WeareJH/m2-module-jh-toolkit.git",
+                "reference": "4cec09bcd428e083d3a6181dab1a4cecb3c382e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WeareJH/m2-module-jh-toolkit/zipball/4cec09bcd428e083d3a6181dab1a4cecb3c382e1",
+                "reference": "4cec09bcd428e083d3a6181dab1a4cecb3c382e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0|^7.1"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Jh\\Toolkit\\": ""
+                }
+            },
+            "scripts": {
+                "lint": [
+                    "docker run --rm --volume=\"$(pwd):/mnt\" wearejh/php-coding-standards:latest"
+                ],
+                "fix": [
+                    "docker run --rm --volume=\"$(pwd):/mnt\" wearejh/php-coding-standards:latest phpcbf -s /mnt --standard=/etc/coding-standard/Jh"
+                ]
+            },
+            "description": "Jh Toolkit M2 Module",
+            "support": {
+                "source": "https://github.com/WeareJH/m2-module-jh-toolkit/tree/2.4.5",
+                "issues": "https://github.com/WeareJH/m2-module-jh-toolkit/issues"
+            },
+            "time": "2020-04-15T10:23:52+00:00"
         },
         {
             "name": "wearejh/m2-unit-test-helpers",

@@ -9,6 +9,6 @@ class ImportLockedException extends \RuntimeException
 {
     public static function fromName(string $name): self
     {
-        return new static(sprintf('Import with name "%s" is locked.', $name));
+        return new self(sprintf('Import with name "%s" is locked.', $name));
     }
 }

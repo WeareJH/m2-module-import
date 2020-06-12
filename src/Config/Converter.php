@@ -59,7 +59,7 @@ class Converter implements ConverterInterface
     private function getOptions(\DOMElement $import, array $requiredFields, string $importType): Collection
     {
         $options = collect($requiredFields)
-            ->map(function (array $spec, string $requiredField) use ($import, $importType) {
+            ->map(function (array $spec, string $requiredField) use ($import) {
                 /** @var \DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
 

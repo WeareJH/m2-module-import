@@ -163,6 +163,7 @@ class AttributeProcessor
         }
 
         try {
+            $id = null;
             if (isset($this->attributeProcessors[$attributeCode])) {
                 $id = $this->attributeProcessors[$attributeCode]
                     ->process($attribute, $attributeValue, $record, $report);

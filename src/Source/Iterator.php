@@ -30,7 +30,7 @@ class Iterator implements Source, Countable
                 )
             );
         }
-        return new static($generator);
+        return new self($generator);
     }
 
     /**
