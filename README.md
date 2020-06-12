@@ -211,7 +211,7 @@ PHP callables.
 
 A transformer is used to rename columns, manipulate data and organise it. For example if the sku column comes in as `Product_Number`
 from the CSV file (`Product_Number` would be the column header in the CSV), you might want to rename it to `sku` so your writer accepts
-generic data. You Could do this like:
+generic data. You could do this like:
 
 ```php
 <?php
@@ -229,19 +229,21 @@ class Price implements \Jh\Import\Specification\ImportSpecification
 This transformer function will be ran on every row read from the source. The importer will convert that row from the source
 in to a `Record` object. The `Record` object has many methods on it for manipulating data, some are listed below:
 
- * setColumnValue(string $columnName, $value) : void
- * unset(string $columnName) : void
- * unsetMany(string ...$columnNames) : void
- * getColumnValue(string $columnName, $default = null, $dataType = null) : mixed
- * getColumnValueAndUnset(string $columnName, $default = null, $dataType = null) : mixed
- * columnExists(string $columnName) : bool
- * transform(string $column, callable $callable) : void
- * renameColumn(string $columnFrom, string $columnTo) : void
- * moveColumnToArray(string $columnFrom, string $columnTo, string $key = null) : void
- * moveMultipleColumnsToArray(array $columns, string $columnTo) : void
- * addValueToArray(string $column, string $key, $value)
+ * `setColumnValue(string $columnName, $value): void`
+ * `unset(string $columnName): void`
+ * `unsetMany(string ...$columnNames): void`
+ * `only(string ...$columnNames): void`
+ * `getColumnValue(string $columnName, $default = null, $dataType = null): mixed`
+ * `getColumnValueAndUnset(string $columnName, $default = null, $dataType = null): mixed`
+ * `columnExists(string $columnName): bool`
+ * `transform(string $column, callable $callable): void`
+ * `renameColumn(string $columnFrom, string $columnTo): void`
+ * `moveColumnToArray(string $columnFrom, string $columnTo, string $key = null): void`
+ * `moveMultipleColumnsToArray(array $columns, string $columnTo): void`
+ * `addValueToArray(string $column, string $key, $value): void
+ * `addValueToArray(string $column, string $key, $value): void
  
-`transform(string $column, callable $callable) : void` is particularly interesting as it can be passed any
+`transform(string $column, callable $callable): void` is particularly interesting as it can be passed any
 PHP callable, so also an invokable class which can change the data. See [src/Transformer](src/Transformer) for
 examples of transformers. The `ProductStatusTransformer` maps an `enabled` or `disabled` string value in the import to 
 the correct Magento constants.
@@ -253,8 +255,8 @@ if a particular product status was not recognised.
 
 #### Filters
 
-Filters allow you to ignore some rows of data from the source, if the filter returns false for a particular record, then it
-will be discarded, see below where we ignore something with a price of over 100, completely arbitrary of course.
+Filters allow you to ignore some rows of data from the source. Ff the filter returns false for a particular record, then it
+will be discarded. See below where we ignore something with a price of over 100, completely arbitrary of course.
 
 ```php
 <?php
@@ -536,9 +538,6 @@ To use a different strategy for one import (or whichever use this email handler)
 
 You would then use the name of this virtual type `my_email_handler` and add it to the `report_handlers` config of your import.
 
-So, in this example, if any message occurred with a log level greater than or equal to ERROR (ERROR, CRITICAL, ALERT & EMERGENCY) at the end
-of the import, the whole import log would be emailed to aydin@wearejh.com.
-
 ### Creating custom handlers
 
 You may want to send messages to a third party logging system. In order to do that you just need to implement the interface
@@ -597,7 +596,7 @@ class Price
 
 The cron is just a dumb object, the Import Manager does the real work. 
 
-If you create a cron for your import you should add the cron job name (the one you specify in `crontab.xml`) to your import configuration defined in `app/code/MyVendor/Import/etc/imports.xml`. This will allow the import admin to display details about your cron configuration. See below for an example configuration:
+If you create a cron for your import you should add the cron job name and the group (the one you specify in `crontab.xml`) to your import configuration defined in `app/code/MyVendor/Import/etc/imports.xml`. This will allow the import admin to display details about your cron configuration. See below for an example configuration:
 
 ```xml
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
@@ -609,6 +608,7 @@ If you create a cron for your import you should add the cron job name (the one y
         <writer>MyVendor\Import\Writer\Price</specification>
         <id_field>sku</id_field>
         <cron>vendor_import_product</cron>
+        <cron_group>default</cron_group>
     </files>
 </config>
 ```
@@ -647,12 +647,11 @@ For example on a client project we use the regex `/RDrive_Export_\d{8}.txt/` to 
 * `RDrive_Export_13022017.txt`
 * `RDrive_Export_05042017.txt`
 
-So before you run an import, you will need to make sure the file name matches the configuration file and it is placed in the correct folder. When working locally
-you can place a file in `var/jh_import/incoming` in PHP Storm and use `workflow push var/jh_import/incoming/<file-name>` to get it in to the docker container.
+So before you run an import, you will need to make sure the file name matches the configuration file and it is placed in the correct folder.
 
 ## Viewing Import Configuration
 
-Import configuration can be viewein in the admin area. All of the information specified in `imports.xml` and more will be displayed there. Simply navigate to: Admin -> System -> JH Import -> Import Configuration. 
+Import configuration can be viewed in the admin area. All the information specified in `imports.xml` and more will be displayed there. Simply navigate to: Admin -> System -> JH Import -> Import Configuration. 
 
 ![Admin Page](https://user-images.githubusercontent.com/2817002/27139908-831b6b88-5124-11e7-8b2d-a57660895827.png)
 
@@ -676,7 +675,7 @@ You will also see a selection of files listed in the import folders. For the arc
 
 #### Check Incoming Files
 
-On the right hand side you will see all the files currently in the incoming folder. These files are waiting to be processed. However, some of them will be ignored based on the `match_files` configuration. This sometimes causes confusion with client when they incorrectly named their files wrong. From this screen they can see which files will and will not be processed, a green tick indicates that the file name matches the `match_files` directive and a red cross indicates that it does not. All files with a red cross will not be processed by this import. 
+On the right-hand side you will see all the files currently in the incoming folder. These files are waiting to be processed. However, some of them will be ignored based on the `match_files` configuration. This sometimes causes confusion with clients when they incorrectly named their files wrong. From this screen they can see which files will and will not be processed, a green tick indicates that the file name matches the `match_files` directive and a red cross indicates that it does not. All files with a red cross will not be processed by this import. 
 
 **Note** If multiple imports share the same incoming folder, you might see that some imports show they don't match a file that another import does, this is to be expected as different imports can have different `match_files` values.
 
@@ -684,7 +683,7 @@ On the right hand side you will see all the files currently in the incoming fold
 
 Any file from any of the folders can be download and viewed, simply click the file name.
 
-### Deleting Files
+#### Deleting Files
 
 Any file from any of the folders can be deleted on the server, simply click the trash can icon next to the file name.
 
@@ -693,7 +692,7 @@ Any file from any of the folders can be deleted on the server, simply click the 
 Import logs can be viewed in the admin area. Simply navigate to: Admin -> System -> JH Import ->Import Log.
 
 The listing will show the previous imports. Filter by import type and date to find the import you wish to view the logs for, then select
-`View Logs`. The view is split in to two listings:
+`View Logs`. The view is split into two listings:
 
 ### Item level logs
 
@@ -710,7 +709,7 @@ Issues which occurred at the import level, for example: duplicate source detecte
 You can also get a summary of the logs on the CLI. Simply run the following command:
 
 ```shell
-$ php bin/magento import:view-logs <import-name>
+$ php bin/magento jh-import:view-logs <import-name>
 ```
 
 Substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`. Eg: `price`.
