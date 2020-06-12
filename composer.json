@@ -15,7 +15,7 @@
     "require-dev": {
         "magento/module-bundle": "^100.3.5",
         "phpunit/phpunit": "^8.1",
-        "squizlabs/php_codesniffer": "^3.0",
+        "squizlabs/php_codesniffer": "^3.5",
         "php-mock/php-mock": "^2.0",
         "zendframework/zendframework1": "^1.12",
         "symfony/filesystem": "^3.2",
@@ -55,8 +55,8 @@
             "@unit-tests-coverage-clover",
             "@cs"
         ],
-        "cs": "phpcs -s src --standard=PSR2 --extensions=php && phpcs -s test --standard=PSR2 --extensions=php",
-        "cs-fix": "phpcbf -s src --standard=PSR2 && phpcbf -s src --standard=PSR2",
+        "cs": "phpcs -s src --standard=PSR12 --extensions=php && phpcs -s test --standard=PSR12 --extensions=php",
+        "cs-fix": "phpcbf -s src --standard=PSR12 && phpcbf -s src --standard=PSR12",
         "unit-tests": "phpunit --colors=always",
         "unit-tests-coverage": "phpunit --colors=always -v --coverage-text",
         "unit-tests-coverage-clover": "phpunit --colors=always -v --coverage-clover ./build/logs/clover.xml"
