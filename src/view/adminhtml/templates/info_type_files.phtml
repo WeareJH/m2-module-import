@@ -64,7 +64,7 @@
                                         <a href="<?= $this->getDeleteUrl($file, 'archived_directory') ?>" class="action-delete"></a>
                                         <a href="<?= $this->getDownloadUrl($file, 'archived_directory') ?>"><?= $file->getRealPath() ?></a>
                                     </td>
-                                    <td style="text-align:right" class="last"><?= $file->getCTime() ?></td>
+                                    <td style="text-align:right" class="last"><?= $this->getChangeTime($file) ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
