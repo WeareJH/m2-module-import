@@ -464,9 +464,22 @@ is triggered manually from the CLI.
 
 #### Jh\Import\Report\Handler\EmailHandler
 
-The mail handler will send an e-mail at the end of the import which contains every message which was recorded, including notices and debug
-if (and only if) a message was recorded which was equal to or above the minimum error level. The minimum error level is configurable, as are the
-recipients and from addresses. To reiterate, only one e-mail will be sent no matter how many critical messages occur.
+The mail handler will send an e-mail at the end of the import, if any messages/errors occur. Before sending the e-mail, the e-mail handler
+will pass the emails to strategy which can filter/organise the logs. 
+
+A strategy is an instance of `\Jh\Import\Report\Handler\Email\Strategy\EmailHandlerStrategy` and the default is `\Jh\Import\Report\Handler\Email\Strategy\FingersCrossedMax`
+
+The provided strategies are as follows:
+
+* `\Jh\Import\Report\Handler\Email\Strategy\FingersCrossed` - Send all logs after a log of a given severity is hit. The minimum severity is provided as a constructor arg
+* `\Jh\Import\Report\Handler\Email\Strategy\FingersCrossedMax` - Same as the previous one with a maximum number of logs. Severity and max provided as constructor args
+* `\Jh\Import\Report\Handler\Email\Strategy\All` - Forwards every single messages regardless of severity
+* `\Jh\Import\Report\Handler\Email\Strategy\AboveLevelWithContext` - Sends all logs over a given severity with the previous and next 5 logs regardless of severity to provide context
+
+To use a different strategy globally for all imports define a preference for `\Jh\Import\Report\Handler\Email\Strategy\EmailHandlerStrategy` in your import module. You can use virtual types to configure the 
+various arguments of the strategies. 
+
+Or to scope it to a particular import, when defining your email handler virtual type, specify your strategy virtual type there.
 
 To configure the mail handler, you need to create a virtual type which specifies the constructor arguments:
 
@@ -479,10 +492,46 @@ To configure the mail handler, you need to create a virtual type which specifies
                 <item name="aydin" xsi:type="string">aydin@wearejh.com</item>            
             </argument>
             <argument name="fromAddress" xsi:type="string">import@wearejh.com</argument>
-            <argument name="logLevel" xsi:type="const">Jh\Import\LogLevel::ERROR</argument>
+            <argument name="fromName" xsi:type="string">JH Import </argument>
         </arguments>
     </virtualType>
 </config>
+<!-- uses the default strategy -->
+```
+
+To use a different strategy globally:
+
+```xml
+<!-- in a di.xml file -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Jh\Import\Report\Handler\Email\Strategy\EmailHandlerStrategy" type="Jh\Import\Report\Handler\Email\Strategy\All" />
+</config>
+<!-- Sets all instances of Jh\Import\Report\Handler\EmailHandler to use `All` strategy by default -->
+```
+
+To use a different strategy for one import (or whichever use this email handler):
+
+```xml
+<!-- in a di.xml file -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="my_email_handler" type="Jh\Import\Report\Handler\EmailHandler">
+        <arguments>
+            <argument name="recipients" xsi:type="array">
+                <item name="aydin" xsi:type="string">aydin@wearejh.com</item>            
+            </argument>
+            <argument name="fromAddress" xsi:type="string">import@wearejh.com</argument>
+            <argument name="fromName" xsi:type="string">JH Import </argument>
+            <argument name="emailHandlerStrategy" xsi:type="object">my_email_handler_strategy</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="my_email_handler_strategy" type="Jh\Import\Report\Handler\Email\Strategy\FingersCrossedMax">
+        <arguments>
+            <argument name="logLevel" xsi:type="const">Jh\Import\LogLevel::CRITICAL</argument>
+            <argument name="maxMessages" xsi:type="number">500</argument>
+        </arguments>
+    </virtualType>
+</config>
+<!-- Sets email handler `my_email_handler` to use the strategy defined as `my_email_handler_strategy` -->
 ```
 
 You would then use the name of this virtual type `my_email_handler` and add it to the `report_handlers` config of your import.
@@ -495,7 +544,7 @@ of the import, the whole import log would be emailed to aydin@wearejh.com.
 You may want to send messages to a third party logging system. In order to do that you just need to implement the interface
 `Jh\Import\Report\Handler\Handler`. See [src/Report/Handler](src/Report/Handler) for the existing implementations.
 
-If your handler if fairly generic, consider pull requesting it to this repository. If it is project specific, keep it in the 
+If your handler is fairly generic, consider pull requesting it to this repository. If it is project specific, keep it in the 
 project repository. Using your custom report handler in an import is the same as the bundled handlers. Simply reference
 the class name or a virtual type referencing the class name in the import configuration.
 
