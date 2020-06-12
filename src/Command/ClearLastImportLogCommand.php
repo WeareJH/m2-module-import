@@ -48,7 +48,7 @@ class ClearLastImportLogCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $input->setInteractive(true);
         $importName = $input->getArgument('import_name');
@@ -83,5 +83,7 @@ class ClearLastImportLogCommand extends Command
                 $importName
             )
         );
+
+        return 0;
     }
 }

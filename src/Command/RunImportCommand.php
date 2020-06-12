@@ -39,7 +39,7 @@ class RunImportCommand extends Command
             ->addArgument('import_name', InputArgument::REQUIRED, 'The import to run as defined in imports.xml');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->state->setAreaCode('crontab');
@@ -47,7 +47,8 @@ class RunImportCommand extends Command
             //no-op
         }
 
-
         $this->manager->executeImportByName($input->getArgument('import_name'));
+
+        return 0;
     }
 }

@@ -210,7 +210,7 @@ class Importer
             ->filter(function (callable $component) {
                 return $component instanceof RequiresPreparation;
             })
-            ->each(function (callable $component) use ($config) {
+            ->each(function (RequiresPreparation $component) use ($config) {
                 $component->prepare($config);
             });
     }

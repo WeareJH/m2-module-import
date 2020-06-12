@@ -23,7 +23,7 @@ class StockWriter implements Writer
     private $stockRegistryProvider;
 
     /**
-     * @var StockRepositoryInterface
+     * @var StockItemRepositoryInterface
      */
     private $stockItemRepository;
 

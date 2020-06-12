@@ -14,6 +14,7 @@ use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Eav\Model\Entity\Attribute\Source\TableFactory;
 use Magento\Eav\Model\ResourceModel\AttributeLoader;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 use Magento\Framework\Exception\StateException;
@@ -74,7 +75,7 @@ class AttributeProcessor
     private $tableFactory;
 
     /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     * @var Mysql
      */
     private $dbConnection;
 

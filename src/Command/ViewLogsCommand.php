@@ -46,7 +46,7 @@ class ViewLogsCommand extends Command
             ->addArgument('num_logs', InputArgument::OPTIONAL, 'The number of import logs to show');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $input->setInteractive(true);
         $importName = $input->getArgument('import_name');
@@ -122,5 +122,7 @@ class ViewLogsCommand extends Command
                 ];
             }, $itemLogCollection->getItems()))
             ->render();
+
+        return 0;
     }
 }
