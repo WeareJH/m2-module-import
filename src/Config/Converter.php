@@ -5,21 +5,8 @@ namespace Jh\Import\Config;
 use Illuminate\Support\Collection;
 use Magento\Framework\Config\ConverterInterface;
 
-/**
- * @author Aydin Hassan <aydin@wearejh.com>
- */
 class Converter implements ConverterInterface
 {
-//    private static $defaultValues = [
-//        'files' => [
-//            'incoming_directory' => 'jh_import/incoming',
-//            'archived_directory' => 'jh_import/archived',
-//            'failed_directory'   => 'jh_import/failed',
-//            'archive_old_files'  => false,
-//            'delete_old_files'   => false,
-//        ]
-//    ];
-
     /**
      * @var array
      */
@@ -40,7 +27,7 @@ class Converter implements ConverterInterface
         ]
     ];
 
-    public function convert($source) : array
+    public function convert($source): array
     {
         $names = collect(static::$importTypesWithRequiredFields)
             ->keys()
@@ -69,7 +56,7 @@ class Converter implements ConverterInterface
         return $names->combine($importData)->toArray();
     }
 
-    private function getOptions(\DOMElement $import, array $requiredFields, string $importType) : Collection
+    private function getOptions(\DOMElement $import, array $requiredFields, string $importType): Collection
     {
         $options = collect($requiredFields)
             ->map(function (array $spec, string $requiredField) use ($import, $importType) {
@@ -125,12 +112,12 @@ class Converter implements ConverterInterface
             ->put('report_handlers', $reportHandlers);
     }
 
-    private function castString($value) : string
+    private function castString($value): string
     {
         return (string) $value;
     }
 
-    private function castBool($value) : bool
+    private function castBool($value): bool
     {
         return $value === 'true' || $value === '1';
     }
