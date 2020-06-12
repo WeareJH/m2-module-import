@@ -20,7 +20,7 @@ class Info extends Action
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Jh_Import::config';
+    public const ADMIN_RESOURCE = 'Jh_Import::config';
 
     /**
      * @var PageFactory

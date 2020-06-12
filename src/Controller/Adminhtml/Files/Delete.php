@@ -19,7 +19,7 @@ class Delete extends Action
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Jh_Import::files';
+    public const ADMIN_RESOURCE = 'Jh_Import::files';
 
     /**
      * @var DirectoryList

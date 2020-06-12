@@ -18,7 +18,7 @@ class Import extends Action
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Jh_Import::logs';
+    public const ADMIN_RESOURCE = 'Jh_Import::logs';
 
     /**
      * @var PageFactory

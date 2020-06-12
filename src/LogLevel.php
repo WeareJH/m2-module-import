@@ -7,14 +7,14 @@ namespace Jh\Import;
  */
 class LogLevel
 {
-    const DEBUG = 'DEBUG';
-    const INFO = 'INFO';
-    const NOTICE = 'NOTICE';
-    const WARNING = 'WARNING';
-    const ERROR = 'ERROR';
-    const CRITICAL = 'CRITICAL';
-    const ALERT = 'ALERT';
-    const EMERGENCY = 'EMERGENCY';
+    public const DEBUG = 'DEBUG';
+    public const INFO = 'INFO';
+    public const NOTICE = 'NOTICE';
+    public const WARNING = 'WARNING';
+    public const ERROR = 'ERROR';
+    public const CRITICAL = 'CRITICAL';
+    public const ALERT = 'ALERT';
+    public const EMERGENCY = 'EMERGENCY';
 
     /**
      * @var array $levels Logging levels
