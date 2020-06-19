@@ -10,6 +10,7 @@ use Jh\Import\Report\Handler\CollectingHandler;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
 use Jh\Import\Writer\StockWriter;
+use Jh\Import\Writer\Utils\DisableEventObserver;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
@@ -76,7 +77,8 @@ class StockWriterTest extends TestCase
             $this->stockRegistryProvider->reveal(),
             $this->stockItemRepository->reveal(),
             $this->stockConfiguration->reveal(),
-            $this->resourceConnection->reveal()
+            $this->resourceConnection->reveal(),
+            new DisableEventObserver()
         );
     }
 
@@ -196,5 +198,23 @@ class StockWriterTest extends TestCase
         $result = $this->writer->finish($this->prophesize(Source::class)->reveal());
 
         self::assertSame([10, 11], $result->getAffectedIds());
+    }
+
+    public function testPrepareDisabledVarnishCacheFlush(): void
+    {
+        $writer = new StockWriter(
+            $this->stockRegistryProvider->reveal(),
+            $this->stockItemRepository->reveal(),
+            $this->stockConfiguration->reveal(),
+            $this->resourceConnection->reveal(),
+            $disableEventObserver = new DisableEventObserver()
+        );
+
+        $writer->prepare($this->prophesize(Source::class)->reveal());
+
+        self::assertSame(
+            ['clean_cache_by_tags' => ['invalidate_varnish']],
+            $disableEventObserver->getDisabledObservers()
+        );
     }
 }
