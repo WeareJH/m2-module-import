@@ -20,13 +20,7 @@
             <argument name="cacheId" xsi:type="string">jh_import_config_cache</argument>
         </arguments>
     </type>
-    <virtualType name="jh_console_output" type="Symfony\Component\Console\Output\ConsoleOutput">
-    </virtualType>
-    <type name="Jh\Import\Progress\CliProgress">
-        <arguments>
-            <argument name="output" xsi:type="object">jh_console_output</argument>
-        </arguments>
-    </type>
+    <preference for="Symfony\Component\Console\Output\OutputInterface" type="Symfony\Component\Console\Output\ConsoleOutput" />
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

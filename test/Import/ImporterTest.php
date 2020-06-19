@@ -7,6 +7,7 @@ use Jh\Import\Archiver\Factory;
 use Jh\Import\Config;
 use Jh\Import\Import\History;
 use Jh\Import\Import\Importer;
+use Jh\Import\Import\Indexer;
 use Jh\Import\Import\Record;
 use Jh\Import\Import\RequiresPreperation;
 use Jh\Import\Import\Result;
@@ -14,7 +15,6 @@ use Jh\Import\Locker\ImportLockedException;
 use Jh\Import\Locker\Locker;
 use Jh\Import\Progress\Progress;
 use Jh\Import\Report\Handler\CollectingHandler;
-use Jh\Import\Report\Handler\DatabaseHandler;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportFactory;
 use Jh\Import\Report\ReportPersister;
@@ -23,9 +23,6 @@ use Jh\Import\Source\Source;
 use Jh\Import\Writer\CollectingWriter;
 use Jh\Import\Writer\Writer;
 use Jh\UnitTestHelpers\ObjectHelper;
-use Magento\Framework\App\State;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Mview\View\StateInterface;
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -62,6 +59,40 @@ class ImporterTest extends TestCase
         $writer->finish(Argument::type(Source::class))->willReturn(new Result([]))->shouldBeCalled();
 
         $importer->process($config);
+    }
+
+    public function testIndexersAreDisabledAtStartAndIndexedAtEnd(): void
+    {
+        $config  = new Config('product', []);
+        $om      = $this->prophesize(ObjectManagerInterface::class);
+        $writer  = $this->prophesize(Writer::class);
+        $history = $this->prophesize(History::class);
+        $history->isImported(Argument::type(Source::class))->willReturn(false);
+
+        $indexer = $this->prophesize(Indexer::class);
+
+        $importer = $this->getObject(Importer::class, [
+            'source' => Iterator::fromCallable(function () {
+                yield [1];
+                yield [2];
+                yield [3];
+            }),
+            'reportFactory' => $this->reportFactory($config)->reveal(),
+            'archiverFactory' => new Factory($om->reveal()),
+            'history' => $history->reveal(),
+            'writer'  => $writer->reveal(),
+            'indexer' => $indexer->reveal()
+        ]);
+
+        $result = new Result([1, 2, 3]);
+
+        $writer->prepare(Argument::type(Source::class))->shouldBeCalled();
+        $writer->finish(Argument::type(Source::class))->willReturn($result)->shouldBeCalled();
+
+        $importer->process($config);
+
+        $indexer->disable($config)->shouldHaveBeenCalled();
+        $indexer->index($config, $result)->shouldHaveBeenCalled();
     }
 
     public function testProgressIsAdvancedForEachRecordWithErrors()
@@ -315,112 +346,6 @@ class ImporterTest extends TestCase
             ],
             $handler->messages
         );
-    }
-
-    public function testIndexersAreDisabledIfSpecifiedInConfig()
-    {
-        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
-        $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om              = $this->prophesize(ObjectManagerInterface::class);
-        $history         = $this->prophesize(History::class);
-        $history->isImported(Argument::type(Source::class))->willReturn(false);
-
-        $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator()),
-            'reportFactory' => $this->reportFactory($config)->reveal(),
-            'archiverFactory' => new Factory($om->reveal()),
-            'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter(),
-            'indexerRegistry' => $indexerRegistry->reveal(),
-        ]);
-
-        $indexer1 = $this->createDisableIndexerMock();
-        $indexer2 = $this->createDisableIndexerMock();
-
-        $indexerRegistry->get('My\Indexer')->willReturn($indexer1);
-        $indexerRegistry->get('My\OtherIndexer')->willReturn($indexer2);
-
-        $importer->process($config);
-    }
-
-    private function createDisableIndexerMock()
-    {
-        $state = $this->prophesize(StateInterface::class);
-        $state->setMode(StateInterface::MODE_ENABLED)->shouldBeCalled();
-
-        $view = $this->prophesize(\Magento\Framework\Mview\ViewInterface::class);
-        $view->getState()->willReturn($state);
-
-        $indexer = $this->prophesize(\Magento\Framework\Indexer\IndexerInterface::class);
-        $indexer->getView()->willReturn($view);
-
-        return $indexer;
-    }
-
-    public function testIndexersAreCalledWithAffectedIds()
-    {
-        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
-        $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om              = $this->prophesize(ObjectManagerInterface::class);
-        $history         = $this->prophesize(History::class);
-        $history->isImported(Argument::type(Source::class))->willReturn(false);
-
-        $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator()),
-            'reportFactory' => $this->reportFactory($config)->reveal(),
-            'archiverFactory' => new Factory($om->reveal()),
-            'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter(),
-            'indexerRegistry' => $indexerRegistry->reveal(),
-        ]);
-
-        $indexer1 = $this->createDisableIndexerMock();
-        $indexer2 = $this->createDisableIndexerMock();
-
-        $indexer1->reindexList([1, 2, 3, 4, 5])->shouldBeCalled();
-        $indexer2->reindexList([1, 2, 3, 4, 5])->shouldBeCalled();
-
-        $indexerRegistry->get('My\Indexer')->willReturn($indexer1);
-        $indexerRegistry->get('My\OtherIndexer')->willReturn($indexer2);
-
-        $writer->setAffectedIds([1, 2, 3, 4, 5]);
-
-        $importer->process($config);
-    }
-
-    public function testIndexersAreCalledWithChunkedAffectedIds()
-    {
-        $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);
-        $indexerRegistry = $this->prophesize(IndexerRegistry::class);
-        $om              = $this->prophesize(ObjectManagerInterface::class);
-        $history         = $this->prophesize(History::class);
-        $history->isImported(Argument::type(Source::class))->willReturn(false);
-
-        $importer = $this->getObject(Importer::class, [
-            'source' => $source = new Iterator(new \ArrayIterator()),
-            'reportFactory' => $this->reportFactory($config)->reveal(),
-            'archiverFactory' => new Factory($om->reveal()),
-            'history' => $history->reveal(),
-            'writer' => $writer = new CollectingWriter(),
-            'indexerRegistry' => $indexerRegistry->reveal(),
-        ]);
-
-        $indexer1 = $this->createDisableIndexerMock();
-        $indexer2 = $this->createDisableIndexerMock();
-
-        $indexer1->reindexList(range(0, 999))->shouldBeCalled();
-        $indexer1->reindexList(range(1000, 1999))->shouldBeCalled();
-        $indexer1->reindexList([2000])->shouldBeCalled();
-        $indexer2->reindexList(range(0, 999))->shouldBeCalled();
-        $indexer2->reindexList(range(1000, 1999))->shouldBeCalled();
-        $indexer2->reindexList([2000])->shouldBeCalled();
-
-        $indexerRegistry->get('My\Indexer')->willReturn($indexer1);
-        $indexerRegistry->get('My\OtherIndexer')->willReturn($indexer2);
-
-        $writer->setAffectedIds(range(0, 2000));
-
-        $importer->process($config);
     }
 
     private function reportFactory(Config $config): ObjectProphecy
