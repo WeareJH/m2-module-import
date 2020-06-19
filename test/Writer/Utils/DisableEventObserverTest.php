@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+namespace Jh\ImportTest\Writer\Util;
 
 use Jh\Import\Writer\Utils\DisableEventObserver;
 use Magento\Framework\Event\Config;
