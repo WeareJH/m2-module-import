@@ -12,6 +12,7 @@ class Factory
      * @var CliProgress
      */
     private $cliProgress;
+
     /**
      * @var State
      */
