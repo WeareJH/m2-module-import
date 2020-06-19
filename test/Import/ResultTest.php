@@ -5,12 +5,9 @@ namespace Jh\ImportTest\Import;
 use Jh\Import\Import\Result;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @author Aydin Hassan <aydin@hotmail.co.uk>
- */
 class ResultTest extends TestCase
 {
-    public function testGetters()
+    public function testGetters(): void
     {
         $result = new Result([]);
         self::assertEquals([], $result->getAffectedIds());
@@ -19,5 +16,11 @@ class ResultTest extends TestCase
         $result = new Result([1, 2, 3, 4]);
         self::assertEquals([1, 2, 3, 4], $result->getAffectedIds());
         self::assertTrue($result->hasAffectedIds());
+    }
+
+    public function testCount(): void
+    {
+        $result = new Result([1, 2, 4]);
+        self::assertEquals(3, $result->affectedIdsCount());
     }
 }
