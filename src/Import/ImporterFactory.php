@@ -4,9 +4,10 @@ namespace Jh\Import\Import;
 
 use Jh\Import\Archiver\Factory;
 use Jh\Import\Locker\Locker;
+use Jh\Import\Output\Factory as OutputFactory;
+use Jh\Import\Progress\Factory as ProgressFactory;
 use Jh\Import\Progress\CliProgress;
 use Jh\Import\Report\ReportFactory;
-use Jh\Import\Report\ReportPersister;
 use Jh\Import\Source\Source;
 use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
@@ -49,9 +50,14 @@ class ImporterFactory
     private $indexerRegistry;
 
     /**
-     * @var CliProgress
+     * @var ProgressFactory
      */
-    private $cliProgress;
+    private $progressFactory;
+
+    /**
+     * @var OutputFactory
+     */
+    private $outputFactory;
 
     public function __construct(
         ReportFactory $reportFactory,
@@ -60,7 +66,8 @@ class ImporterFactory
         Locker $locker,
         History $history,
         IndexerRegistry $indexerRegistry,
-        CliProgress $cliProgress
+        ProgressFactory $progressFactory,
+        OutputFactory $outputFactory
     ) {
         $this->reportFactory = $reportFactory;
         $this->archiverFactory = $archiverFactory;
@@ -68,16 +75,12 @@ class ImporterFactory
         $this->locker = $locker;
         $this->history = $history;
         $this->indexerRegistry = $indexerRegistry;
-        $this->cliProgress = $cliProgress;
+        $this->progressFactory = $progressFactory;
+        $this->outputFactory = $outputFactory;
     }
 
     public function create(Source $source, ImportSpecification $specification, Writer $writer): Importer
     {
-        $progress = null;
-        if ($this->appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
-            $progress = $this->cliProgress;
-        }
-
         return new Importer(
             $source,
             $specification,
@@ -86,8 +89,8 @@ class ImporterFactory
             $this->archiverFactory,
             $this->locker,
             $this->history,
-            $this->indexerRegistry,
-            $progress
+            new Indexer($this->indexerRegistry, $this->outputFactory->get()),
+            $this->progressFactory->get()
         );
     }
 }

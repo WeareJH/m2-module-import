@@ -6,7 +6,6 @@ use Jh\Import\Archiver\Factory as ArchiverFactory;
 use Jh\Import\Config;
 use Jh\Import\Locker\ImportLockedException;
 use Jh\Import\Locker\Locker;
-use Jh\Import\Progress\NullProgress;
 use Jh\Import\Progress\Progress;
 use Jh\Import\Report\CollectingReport;
 use Jh\Import\Report\ConsoleLoggingReportDecorator;
@@ -16,8 +15,6 @@ use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
 use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Mview\View\StateInterface;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -70,9 +67,9 @@ class Importer
     private $archiverFactory;
 
     /**
-     * @var IndexerRegistry
+     * @var Indexer
      */
-    private $indexerRegistry;
+    private $indexer;
 
     public function __construct(
         Source $source,
@@ -82,17 +79,17 @@ class Importer
         ArchiverFactory $archiverFactory,
         Locker $locker,
         History $history,
-        IndexerRegistry $indexerRegistry,
-        Progress $progress = null
+        Indexer $indexer,
+        Progress $progress
     ) {
         $this->source = $source;
         $this->writer = $writer;
-        $this->progress = $progress ?: new NullProgress();
+        $this->progress = $progress;
         $this->archiverFactory = $archiverFactory;
         $this->reportFactory = $reportFactory;
         $this->locker = $locker;
         $this->history = $history;
-        $this->indexerRegistry = $indexerRegistry;
+        $this->indexer = $indexer;
 
         $importSpecification->configure($this);
     }
@@ -157,7 +154,7 @@ class Importer
         $this->endReport($report);
     }
 
-    private function endReport(Report $report)
+    private function endReport(Report $report): void
     {
         $report->finish(new \DateTime(), memory_get_usage(true));
     }
@@ -173,7 +170,7 @@ class Importer
         return true;
     }
 
-    private function processTransformers(Record $record, ReportItem $reportItem)
+    private function processTransformers(Record $record, ReportItem $reportItem): void
     {
         foreach ($this->transformers as $transformer) {
             $transformer($record, $reportItem);
@@ -189,19 +186,7 @@ class Importer
 
         $this->writer->prepare($this->source);
 
-        //disable any indexers that may be triggered by this import
-        foreach ($config->getIndexers() as $indexerId) {
-            try {
-                $this->indexerRegistry
-                    ->get($indexerId)
-                    ->getView()
-                    ->getState()
-                    ->setMode(StateInterface::MODE_ENABLED);
-            } catch (\InvalidArgumentException $e) {
-                //if flat catalog not enabled - it will throw an exception while trying to retrieve it
-                continue;
-            }
-        }
+        $this->indexer->disable($config);
     }
 
     private function prepareComponents(Config $config, array $components): void
@@ -215,32 +200,16 @@ class Importer
             });
     }
 
-    private function finish(Config $config)
+    private function finish(Config $config): void
     {
         $result = $this->writer->finish($this->source);
 
-        //if the writer return a result with a list of affected ids
-        //we reindex all the ids using the indexers specified in the config
-        if ($result->hasAffectedIds()) {
-            $chunkedIds = array_chunk($result->getAffectedIds(), 1000);
-
-            foreach ($config->getIndexers() as $indexerId) {
-                try {
-                    $indexer = $this->indexerRegistry->get($indexerId);
-                } catch (\InvalidArgumentException $e) {
-                    continue;
-                }
-
-                foreach ($chunkedIds as $ids) {
-                    $indexer->reindexList($ids);
-                }
-            }
-        }
+        $this->indexer->index($config, $result);
 
         $this->progress->finish($this->source);
     }
 
-    private function traverseSource(Report $report, Config $config)
+    private function traverseSource(Report $report, Config $config): void
     {
         $success = function ($rowNumber, array $row) use ($report, $config) {
             $reportItem = $report->newItem($rowNumber, $config->getIdField(), $row[$config->getIdField()] ?? '');
