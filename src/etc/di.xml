@@ -39,6 +39,10 @@
         </arguments>
     </type>
 
+    <type name="Magento\Framework\Event\Config">
+        <plugin name="jh_import_event_observer_disable" type="Jh\Import\Writer\Utils\DisableEventObserver"/>
+    </type>
+
     <!-- reporting -->
     <preference for="Jh\Import\Report\Handler\Email\Strategy\EmailHandlerStrategy" type="Jh\Import\Report\Handler\Email\Strategy\FingersCrossedMax" />
 
