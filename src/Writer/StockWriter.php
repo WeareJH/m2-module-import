@@ -8,6 +8,7 @@ use Jh\Import\Import\Record;
 use Jh\Import\Import\Result;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
+use Jh\Import\Writer\Utils\DisableEventObserver;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface;
@@ -38,6 +39,11 @@ class StockWriter implements Writer
     private $adapter;
 
     /**
+     * @var DisableEventObserver
+     */
+    private $disableEventObserver;
+
+    /**
      * @var array
      */
     private $updatedIds = [];
@@ -51,12 +57,14 @@ class StockWriter implements Writer
         StockRegistryProvider $stockRegistryProvider,
         StockItemRepositoryInterface $stockItemRepository,
         StockConfigurationInterface $stockConfiguration,
-        ResourceConnection $connection
+        ResourceConnection $connection,
+        DisableEventObserver $disableEventObserver
     ) {
         $this->stockRegistryProvider = $stockRegistryProvider;
         $this->stockItemRepository = $stockItemRepository;
         $this->stockConfiguration = $stockConfiguration;
         $this->adapter = $connection->getConnection();
+        $this->disableEventObserver = $disableEventObserver;
 
         $select = $this->adapter
             ->select()
@@ -67,6 +75,8 @@ class StockWriter implements Writer
 
     public function prepare(Source $source)
     {
+        $this->disableEventObserver->disable('clean_cache_by_tags', 'invalidate_varnish');
+
         $this->updatedIds = [];
     }
 
