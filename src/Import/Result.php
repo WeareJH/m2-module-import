@@ -26,4 +26,9 @@ class Result
     {
         return count($this->affectedIds) > 0;
     }
+
+    public function affectedIdsCount(): int
+    {
+        return count($this->affectedIds);
+    }
 }
