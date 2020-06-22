@@ -26,14 +26,14 @@ class ClearLastImportLogCommand extends Command
     private $importConfig;
 
     /**
-     * @var AdapterInterface
+     * @var ResourceConnection
      */
-    private $dbAdapter;
+    private $resourceConnection;
 
     public function __construct(Data $importConfig, ResourceConnection $resourceConnection)
     {
         $this->importConfig = $importConfig;
-        $this->dbAdapter = $resourceConnection->getConnection();
+        $this->resourceConnection = $resourceConnection;
         parent::__construct();
     }
 
@@ -59,13 +59,14 @@ class ClearLastImportLogCommand extends Command
             );
         }
 
-        $select = $this->dbAdapter
-            ->select()
+        $adapter = $this->resourceConnection->getConnection();
+
+        $select = $adapter->select()
             ->from('jh_import_history', ['id'])
             ->where('import_name = ?', $importName)
             ->order('id DESC');
 
-        $results = $this->dbAdapter->fetchAll($select);
+        $results = $adapter->fetchAll($select);
 
         if (count($results) === 0) {
             throw new \RuntimeException(sprintf('No imports with name: "%s" have completed yet', $importName));
@@ -73,9 +74,9 @@ class ClearLastImportLogCommand extends Command
 
         $id = $results[0]['id'];
 
-        $this->dbAdapter->delete('jh_import_history_item_log', ['history_id = ?' => $id]);
-        $this->dbAdapter->delete('jh_import_history_log', ['history_id = ?' => $id]);
-        $this->dbAdapter->delete('jh_import_history', ['id = ?' => $id]);
+        $adapter->delete('jh_import_history_item_log', ['history_id = ?' => $id]);
+        $adapter->delete('jh_import_history_log', ['history_id = ?' => $id]);
+        $adapter->delete('jh_import_history', ['id = ?' => $id]);
 
         $output->writeln(
             sprintf(

@@ -33,6 +33,12 @@
         </arguments>
     </type>
 
+    <type name="Jh\Import\Command\ClearLastImportLogCommand">
+        <arguments>
+            <argument name="resourceConnection" xsi:type="object">Magento\Framework\App\ResourceConnectionProxy</argument>
+        </arguments>
+    </type>
+
     <type name="Magento\Framework\Event\Config">
         <plugin name="jh_import_event_observer_disable" type="Jh\Import\Writer\Utils\DisableEventObserver"/>
     </type>
