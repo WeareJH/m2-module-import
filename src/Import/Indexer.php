@@ -50,7 +50,6 @@ class Indexer
         //we reindex all the ids using the indexers specified in the config
         if ($result->hasAffectedIds()) {
             $this->output->writeln([
-               '',
                "<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>",
                ''
             ]);
