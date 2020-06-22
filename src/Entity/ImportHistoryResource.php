@@ -36,7 +36,8 @@ class ImportHistoryResource extends AbstractDb
         $select = $this->getConnection()
             ->select()
             ->from($this->getMainTable())
-            ->where('import_name', $importName)
+            ->where('finished IS NOT NULL')
+            ->where('import_name = ?', $importName)
             ->order('finished')
             ->limitPage(1, 1);
 
