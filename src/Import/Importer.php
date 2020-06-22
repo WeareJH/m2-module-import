@@ -204,9 +204,9 @@ class Importer
     {
         $result = $this->writer->finish($this->source);
 
-        $this->indexer->index($config, $result);
-
         $this->progress->finish($this->source);
+
+        $this->indexer->index($config, $result);
     }
 
     private function traverseSource(Report $report, Config $config): void
