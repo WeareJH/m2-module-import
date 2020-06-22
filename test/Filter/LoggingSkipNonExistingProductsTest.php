@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jh\ImportTest\Filter;
 
+use Jh\Import\Config;
 use Jh\Import\Filter\LoggingSkipNonExistingProducts;
 use Jh\Import\Filter\SkipNonExistingProducts;
 use Jh\Import\Import\Record;
@@ -35,6 +36,29 @@ class LoggingSkipNonExistingProductsTest extends TestCase
 
         $reportItem = new ReportItem([], '21', 'sku', 'EXISTINGSKU');
         self::assertTrue($filter->__invoke(new Record(1, ['sku' => 'EXISTINGSKU']), $reportItem));
+        self::assertTrue($reportItem->isSuccessful());
+    }
+
+    public function testSkippedProductIsLoggedWithCustomSkuField(): void
+    {
+        $connection = $this->prophesize(ResourceConnection::class);
+        $adapter   = $this->prophesize(AdapterInterface::class);
+        $select    = $this->prophesize(Select::class);
+
+        $connection->getConnection()->willReturn($adapter->reveal());
+        $adapter->select()->willReturn($select->reveal());
+        $select->from('catalog_product_entity', ['sku'])->willReturn($select->reveal());
+        $adapter->fetchCol(Argument::type(Select::class))->willReturn(['EXISTINGSKU', 'EXISTINGSKU2']);
+
+        $filter = new LoggingSkipNonExistingProducts(new SkipNonExistingProducts($connection->reveal()));
+        $filter->prepare(new Config('my-import', ['id_field' => 'sku_field']));
+
+        $reportItem = new ReportItem([], '20', 'sku_field', 'NONEXISTINGSKU');
+        self::assertFalse($filter->__invoke(new Record(1, ['sku_field' => 'NONEXISTINGSKU']), $reportItem));
+        self::assertTrue($reportItem->isSuccessful());
+
+        $reportItem = new ReportItem([], '21', 'sku_field', 'EXISTINGSKU');
+        self::assertTrue($filter->__invoke(new Record(1, ['sku_field' => 'EXISTINGSKU']), $reportItem));
         self::assertTrue($reportItem->isSuccessful());
     }
 }

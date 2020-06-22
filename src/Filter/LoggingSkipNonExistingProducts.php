@@ -28,6 +28,7 @@ class LoggingSkipNonExistingProducts implements RequiresPreparation
 
     public function prepare(Config $config): void
     {
+        $this->skipNonExistingProducts->prepare($config);
         $this->skuField = $config->getIdField();
     }
 

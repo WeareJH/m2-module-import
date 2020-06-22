@@ -7,9 +7,6 @@ use Jh\Import\Import\Record;
 use Jh\Import\Import\RequiresPreparation;
 use Magento\Framework\App\ResourceConnection;
 
-/**
- * @author Aydin Hassan <aydin@wearejh.com>
- */
 class SkipNonExistingProducts implements RequiresPreparation
 {
     /**
@@ -36,7 +33,7 @@ class SkipNonExistingProducts implements RequiresPreparation
         $this->skuField = $config->getIdField();
     }
 
-    public function __invoke(Record $record)
+    public function __invoke(Record $record): bool
     {
         return in_array($record->getColumnValue($this->skuField), $this->existingSkus, true);
     }
