@@ -35,7 +35,12 @@
 
     <type name="Jh\Import\Command\ClearLastImportLogCommand">
         <arguments>
-            <argument name="resourceConnection" xsi:type="object">Magento\Framework\App\ResourceConnectionProxy</argument>
+            <argument name="resourceConnection" xsi:type="object">Magento\Framework\App\ResourceConnection\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Jh\Import\Command\ListImportsCommand">
+        <arguments>
+            <argument name="cronConfig" xsi:type="object">Magento\Cron\Model\Config\Proxy</argument>
         </arguments>
     </type>
 
