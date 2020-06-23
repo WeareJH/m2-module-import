@@ -13,7 +13,6 @@
         "magento/module-configurable-product": "^100.3.5"
     },
     "require-dev": {
-        "magento/module-bundle": "^100.3.5",
         "phpunit/phpunit": "^8.1",
         "squizlabs/php_codesniffer": "^3.5",
         "php-mock/php-mock": "^2.0",
