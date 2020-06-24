@@ -1,16 +1,16 @@
 <div class="dashboard-container row">
     <div class="dashboard-secondary col-m-3">
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Incoming directory') ?></div>
-            <?= $this->incomingDirectory() ?>
+            <div class="dashboard-item-title" style="word-break: break-all"><?=  __('Incoming directory') ?></div>
+            <span><?= $this->incomingDirectory() ?></span>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Archived directory') ?></div>
-            <?= $this->archivedDirectory() ?>
+            <div class="dashboard-item-title" style="word-break: break-all"><?=  __('Archived directory') ?></div>
+            <span style="overflow: scroll"><?= $this->archivedDirectory() ?></span>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Failed directory: ') ?></div>
-            <?= $this->failedDirectory() ?>
+            <div class="dashboard-item-title" style="word-break: break-all"><?=  __('Failed directory: ') ?></div>
+            <span><?= $this->failedDirectory() ?></span>
         </div>
         <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Files Match') ?></div>
