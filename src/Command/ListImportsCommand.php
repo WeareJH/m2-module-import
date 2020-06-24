@@ -3,6 +3,7 @@
 namespace Jh\Import\Command;
 
 use Jh\Import\Config\Data;
+use Jh\Import\Locker\Locker;
 use Magento\Cron\Model\Config;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -24,10 +25,16 @@ class ListImportsCommand extends Command
      */
     private $cronConfig;
 
-    public function __construct(Data $importConfig, Config $cronConfig)
+    /**
+     * @var Locker
+     */
+    private $locker;
+
+    public function __construct(Data $importConfig, Config $cronConfig, Locker $locker)
     {
         $this->importConfig = $importConfig;
         $this->cronConfig = $cronConfig;
+        $this->locker = $locker;
         parent::__construct();
     }
 
@@ -49,7 +56,7 @@ class ListImportsCommand extends Command
         $jobs = $this->cronConfig->getJobs();
 
         (new Table($output))
-            ->setHeaders(['Name', 'Type', 'Match Files', 'Incoming Directory', 'Cron Expr'])
+            ->setHeaders(['Name', 'Type', 'Match Files', 'Incoming Directory', 'Cron Expr', 'Locked?'])
             ->setRows(array_map(function ($import) use ($jobs) {
                 $config = $this->importConfig->getImportConfigByName($import);
 
@@ -65,6 +72,7 @@ class ListImportsCommand extends Command
                     $config->get('match_files'),
                     $config->get('incoming_directory'),
                     $cron,
+                    $this->locker->locked($import) ? '<error>Yes</error>' : 'No'
                 ];
             }, $this->importConfig->getAllImportNames()))
             ->render();

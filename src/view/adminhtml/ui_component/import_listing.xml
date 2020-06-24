@@ -71,6 +71,15 @@
             </argument>
         </column>
 
+        <column name="lock_status">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Lock Status</item>
+                    <item name="sortOrder" xsi:type="number">70</item>
+                </item>
+            </argument>
+        </column>
+
         <actionsColumn name="actions" class="Jh\Import\Ui\Component\Listing\Column\ImportConfigActions">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

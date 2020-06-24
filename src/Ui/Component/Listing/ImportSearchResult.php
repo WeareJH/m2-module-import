@@ -3,6 +3,7 @@
 namespace Jh\Import\Ui\Component\Listing;
 
 use Jh\Import\Config\Data;
+use Jh\Import\Locker\Locker;
 use Magento\Framework\Api;
 use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Api\Search\DocumentInterface;
@@ -31,7 +32,7 @@ class ImportSearchResult extends Collection implements SearchResultInterface
      */
     private $totalCount;
 
-    public function __construct(Collection\EntityFactoryInterface $entityFactory, Data $config)
+    public function __construct(Collection\EntityFactoryInterface $entityFactory, Data $config, Locker $locker)
     {
         parent::__construct($entityFactory);
         $this->setItemObjectClass(Document::class);
@@ -44,6 +45,7 @@ class ImportSearchResult extends Collection implements SearchResultInterface
             $item = $this->getNewEmptyItem();
             $item->setData($importConfig->all());
             $item->setData('name', $importName);
+            $item->setData('lock_status', $locker->locked($importName) ? 'Locked' : 'Not locked');
 
             $this->addItem($item);
         }

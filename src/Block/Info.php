@@ -4,6 +4,7 @@ namespace Jh\Import\Block;
 
 use Jh\Import\Config;
 use Jh\Import\Config\Data;
+use Jh\Import\Locker\Locker;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 
@@ -29,20 +30,32 @@ class Info extends Template
      */
     private $cronConfig;
 
+    /**
+     * @var Locker
+     */
+    private $locker;
+
     public function __construct(
         Context $context,
         Data $config,
-        \Magento\Cron\Model\Config $cronConfig
+        \Magento\Cron\Model\Config $cronConfig,
+        Locker $locker
     ) {
         parent::__construct($context);
 
         $this->config = $config;
         $this->cronConfig = $cronConfig;
+        $this->locker = $locker;
     }
 
     public function getImport(): Config
     {
         return $this->config->getImportConfigByName($this->getRequest()->getParam('name'));
+    }
+
+    public function getLockStatus(): string
+    {
+        return $this->locker->locked($this->getImport()->getImportName()) ? 'Locked' : 'Not locked';
     }
 
     protected function _prepareLayout() //@codingStandardsIgnoreLine
