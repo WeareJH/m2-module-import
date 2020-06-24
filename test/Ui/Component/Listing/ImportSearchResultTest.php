@@ -3,6 +3,7 @@
 namespace Jh\ImportTest\Ui\Component\Listing;
 
 use Jh\Import\Config\Data;
+use Jh\Import\Locker\Locker;
 use Jh\Import\Ui\Component\Listing\ImportSearchResult;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\Search\AggregationInterface;
@@ -13,10 +14,11 @@ use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Config\ReaderInterface;
+use Prophecy\Argument;
 
 class ImportSearchResultTest extends TestCase
 {
-    public function testGetAllItems()
+    public function testGetAllItems(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -35,7 +37,11 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked('product')->willReturn(true);
+        $locker->locked('stock')->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         $items = $searchResult->getItems();
 
@@ -45,9 +51,11 @@ class ImportSearchResultTest extends TestCase
         self::assertEquals('files', $items[0]->getData('type'));
         self::assertEquals('stock', $items[1]->getData('name'));
         self::assertEquals('files', $items[1]->getData('type'));
+        self::assertEquals('Locked', $items[0]->getData('lock_status'));
+        self::assertEquals('Not locked', $items[1]->getData('lock_status'));
     }
 
-    public function testSetItemsIgnoresNullValue()
+    public function testSetItemsIgnoresNullValue(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -66,7 +74,10 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked(Argument::any())->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         $items = $searchResult->getItems();
 
@@ -87,7 +98,7 @@ class ImportSearchResultTest extends TestCase
         self::assertEquals('files', $items[1]->getData('type'));
     }
 
-    public function testSetItems()
+    public function testSetItems(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -106,7 +117,10 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked(Argument::any())->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         $items = $searchResult->getItems();
 
@@ -122,7 +136,7 @@ class ImportSearchResultTest extends TestCase
         self::assertSame([$item], $searchResult->getItems());
     }
 
-    public function testGetSetAggregations()
+    public function testGetSetAggregations(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -141,7 +155,10 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked(Argument::any())->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         $aggregation = $this->prophesize(AggregationInterface::class)->reveal();
 
@@ -149,7 +166,7 @@ class ImportSearchResultTest extends TestCase
         self::assertSame($aggregation, $searchResult->getAggregations());
     }
 
-    public function testGetSetSearchCriteria()
+    public function testGetSetSearchCriteria(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -168,7 +185,10 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked(Argument::any())->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         $searchCriteria = $this->prophesize(SearchCriteriaInterface::class)->reveal();
 
@@ -176,7 +196,7 @@ class ImportSearchResultTest extends TestCase
         self::assertSame($searchCriteria, $searchResult->getSearchCriteria());
     }
 
-    public function testGetSetTotalCount()
+    public function testGetSetTotalCount(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
         $cache  = $this->prophesize(CacheInterface::class);
@@ -195,7 +215,10 @@ class ImportSearchResultTest extends TestCase
         $entityFactory->create(Document::class)
             ->willReturn(new Document($avFactory->reveal()), new Document($avFactory->reveal()));
 
-        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config);
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked(Argument::any())->willReturn(false);
+
+        $searchResult = new ImportSearchResult($entityFactory->reveal(), $config, $locker->reveal());
 
         self::assertEquals(2, $searchResult->getTotalCount());
 

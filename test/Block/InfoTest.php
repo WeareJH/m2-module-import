@@ -6,6 +6,7 @@ use Jh\Import\Block\Info;
 use Jh\Import\Block\TypeFiles;
 use Jh\Import\Config;
 use Jh\Import\Config\Data;
+use Jh\Import\Locker\Locker;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\RequestInterface;
@@ -34,8 +35,9 @@ class InfoTest extends TestCase
         $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
+        $locker = $this->prophesize(Locker::class);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         $importConfig = $block->getImport();
 
@@ -69,8 +71,9 @@ class InfoTest extends TestCase
         $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
+        $locker = $this->prophesize(Locker::class);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->setNameInLayout('info');
 
         $refMethod = (new \ReflectionObject($block))->getMethod('_prepareLayout');
@@ -103,7 +106,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronExpression();
     }
 
@@ -130,7 +135,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronExpression();
     }
 
@@ -156,7 +163,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertEquals('*', $block->getCronExpression());
     }
@@ -181,7 +190,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertFalse($block->hasCron());
     }
@@ -206,7 +217,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertFalse($block->hasCron());
     }
@@ -233,7 +246,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertTrue($block->hasCron());
     }
@@ -261,7 +276,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronGroup();
     }
 
@@ -288,7 +305,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronGroup();
     }
 
@@ -314,7 +333,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertEquals('default', $block->getCronGroup());
     }
@@ -342,7 +363,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronCode();
     }
 
@@ -369,7 +392,9 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => []]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
         $block->getCronCode();
     }
 
@@ -395,8 +420,66 @@ class InfoTest extends TestCase
         $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
         $cron->getJobs()->willReturn(['default' => ['my-cron-code' => ['schedule' => '*']]]);
 
-        $block = new Info($context, $config, $cron->reveal());
+        $locker = $this->prophesize(Locker::class);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
 
         self::assertEquals('my-cron-code', $block->getCronCode());
+    }
+
+    public function testGetLockStatusWhenImportLocked(): void
+    {
+        $reader = $this->prophesize(ReaderInterface::class);
+        $cache  = $this->prophesize(CacheInterface::class);
+
+        $cache
+            ->load('cache-id')
+            ->willReturn(serialize(['product' => ['type' => 'files', 'cron' => 'my-cron-code']]))
+            ->shouldBeCalled();
+
+        $request = $this->prophesize(RequestInterface::class);
+        $request->getParam('name')->willReturn('product');
+        $context = $this->getObject(Context::class, [
+            'request' => $request->reveal()
+        ]);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+
+        $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
+        $cron->getJobs()->willReturn(['default' => []]);
+
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked('product')->willReturn(true);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
+
+        self::assertEquals('Locked', $block->getLockStatus());
+    }
+
+    public function testGetLockStatusWhenImportNotLocked(): void
+    {
+        $reader = $this->prophesize(ReaderInterface::class);
+        $cache  = $this->prophesize(CacheInterface::class);
+
+        $cache
+            ->load('cache-id')
+            ->willReturn(serialize(['product' => ['type' => 'files', 'cron' => 'my-cron-code']]))
+            ->shouldBeCalled();
+
+        $request = $this->prophesize(RequestInterface::class);
+        $request->getParam('name')->willReturn('product');
+        $context = $this->getObject(Context::class, [
+            'request' => $request->reveal()
+        ]);
+        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+
+        $cron = $this->prophesize(\Magento\Cron\Model\Config::class);
+        $cron->getJobs()->willReturn(['default' => []]);
+
+        $locker = $this->prophesize(Locker::class);
+        $locker->locked('product')->willReturn(false);
+
+        $block = new Info($context, $config, $cron->reveal(), $locker->reveal());
+
+        self::assertEquals('Not locked', $block->getLockStatus());
     }
 }

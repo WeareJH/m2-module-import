@@ -9,6 +9,10 @@
             <?= $this->getImport()->get('type') ?>
         </div>
         <div class="dashboard-item">
+            <div class="dashboard-item-title"><?=  __('Lock Status') ?></div>
+            <?= $this->getLockStatus() ?>
+        </div>
+        <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Indexers') ?></div>
             <?= implode(",\n", $this->getImport()->get('indexers')) ?>
         </div>
