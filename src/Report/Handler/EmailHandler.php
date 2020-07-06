@@ -60,9 +60,9 @@ class EmailHandler implements Handler
     public function __construct(
         TransportBuilder $transportBuilder,
         EmailHandlerStrategy $emailHandlerStrategy,
-        array $recipients,
         string $fromAddress,
-        string $fromName
+        string $fromName,
+        array $recipients = []
     ) {
         $this->transportBuilder = $transportBuilder;
         $this->strategy = $emailHandlerStrategy;
@@ -97,6 +97,10 @@ class EmailHandler implements Handler
         $importMessages = $this->strategy->filterImportMessages($this->messages);
 
         if (empty($itemMessages) && empty($importMessages)) {
+            return;
+        }
+
+        if (empty($this->recipients)) {
             return;
         }
 
