@@ -62,9 +62,9 @@ class EmailHandlerTest extends TestCase
         $handler = new EmailHandler(
             $transportBuilder->reveal(),
             new All(),
-            ['Aydin Hassan' => 'aydin@wearejh.com'],
             'import@wearejh.com',
-            'JH Import'
+            'JH Import',
+            ['Aydin Hassan' => 'aydin@wearejh.com']
         );
 
         $report = new Report([], 'product', 'source-id');
@@ -92,7 +92,37 @@ class EmailHandlerTest extends TestCase
         $handler = new EmailHandler(
             $transportBuilder->reveal(),
             $strategy->reveal(),
-            ['Aydin Hassan' => 'aydin@wearejh.com'],
+            'import@wearejh.com',
+            'JH Import',
+            ['Aydin Hassan' => 'aydin@wearejh.com']
+        );
+
+        $report = new Report([], 'product', 'source-id');
+        $handler->start($report, new \DateTime('23rd December 2019 10:00:03'));
+        $handler->handleMessage(new Message(LogLevel::EMERGENCY, 'Debug Info'));
+        $handler->handleItemMessage(
+            new ReportItem([], 100, 'sku', 'PROD1'),
+            new Message(LogLevel::EMERGENCY, 'Debug Info')
+        );
+
+        $handler->finish($report, new \DateTime('23rd December 2019 11:00:03'), 1024);
+
+        $transportBuilder->getTransport()->shouldNotHaveBeenCalled();
+        $transport->sendMessage()->shouldNotHaveBeenCalled();
+    }
+
+    public function testEmailIsNotSentIfNoRecipients(): void
+    {
+        $transportBuilder = $this->prophesize(TransportBuilder::class);
+        $transport = $this->prophesize(TransportInterface::class);
+
+        $strategy = $this->prophesize(EmailHandlerStrategy::class);
+        $strategy->filterItemMessages(Argument::any())->willReturn([]);
+        $strategy->filterImportMessages(Argument::any())->willReturn([]);
+
+        $handler = new EmailHandler(
+            $transportBuilder->reveal(),
+            $strategy->reveal(),
             'import@wearejh.com',
             'JH Import'
         );
