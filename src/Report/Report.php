@@ -87,17 +87,22 @@ class Report
         return $this->sourceId;
     }
 
-    public function addError(string $error)
+    public function addInfo(string $info): void
+    {
+        $this->addMessage(LogLevel::INFO, $info);
+    }
+
+    public function addError(string $error): void
     {
         $this->addMessage(LogLevel::ERROR, $error);
     }
 
-    public function addWarning(string $warning)
+    public function addWarning(string $warning): void
     {
         $this->addMessage(LogLevel::WARNING, $warning);
     }
 
-    public function addMessage(string $logLevel, $message)
+    public function addMessage(string $logLevel, $message): void
     {
         $message = new Message($logLevel, $message);
 
@@ -110,7 +115,7 @@ class Report
         }
     }
 
-    public function finish(\DateTime $finishTime = null, int $memoryUsage = null)
+    public function finish(\DateTime $finishTime = null, int $memoryUsage = null): void
     {
         $finishTime  = $finishTime ?: new \DateTime();
         $memoryUsage = $memoryUsage ?: memory_get_usage(true);

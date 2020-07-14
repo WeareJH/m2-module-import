@@ -67,22 +67,26 @@ class ImporterTest extends TestCase
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
-        $history->isImported(Argument::type(Source::class))->willReturn(false);
-
+        $reportFactory = $this->prophesize(ReportFactory::class);
         $indexer = $this->prophesize(Indexer::class);
 
+        $history->isImported(Argument::type(Source::class))->willReturn(false);
+
         $importer = $this->getObject(Importer::class, [
-            'source' => Iterator::fromCallable(function () {
+            'source' => $source = Iterator::fromCallable(function () {
                 yield [1];
                 yield [2];
                 yield [3];
             }),
-            'reportFactory' => $this->reportFactory($config)->reveal(),
+            'reportFactory' => $reportFactory->reveal(),
             'archiverFactory' => new Factory($om->reveal()),
             'history' => $history->reveal(),
             'writer'  => $writer->reveal(),
             'indexer' => $indexer->reveal()
         ]);
+
+        $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source');
+        $reportFactory->createFromSourceAndConfig($source, $config)->willReturn($report);
 
         $result = new Result([1, 2, 3]);
 
@@ -92,10 +96,10 @@ class ImporterTest extends TestCase
         $importer->process($config);
 
         $indexer->disable($config)->shouldHaveBeenCalled();
-        $indexer->index($config, $result)->shouldHaveBeenCalled();
+        $indexer->index($config, $result, $report)->shouldHaveBeenCalled();
     }
 
-    public function testProgressIsAdvancedForEachRecordWithErrors()
+    public function testProgressIsAdvancedForEachRecordWithErrors(): void
     {
         $config   = new Config('product', ['id_field' => 'sku']);
         $om       = $this->prophesize(ObjectManagerInterface::class);
@@ -123,7 +127,7 @@ class ImporterTest extends TestCase
         $importer->process($config);
     }
 
-    public function testWriterIsPassedEachRecordAndSourceIsArchived()
+    public function testWriterIsPassedEachRecordAndSourceIsArchived(): void
     {
         $config         = new Config('product', ['id_field' => 'sku']);
         $archiveFactory = $this->prophesize(Factory::class);
@@ -159,7 +163,7 @@ class ImporterTest extends TestCase
         $archiver->successful()->shouldHaveBeenCalled();
     }
 
-    public function testTransformersRunOnEveryRecord()
+    public function testTransformersRunOnEveryRecord(): void
     {
         $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
@@ -196,7 +200,7 @@ class ImporterTest extends TestCase
         );
     }
 
-    public function testFiltersRunOnEveryRecord()
+    public function testFiltersRunOnEveryRecord(): void
     {
         $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
@@ -229,7 +233,7 @@ class ImporterTest extends TestCase
         );
     }
 
-    public function testExceptionsAreAddedAsErrorsAndArchiveFailedIsInvoked()
+    public function testExceptionsAreAddedAsErrorsAndArchiveFailedIsInvoked(): void
     {
         $config          = new Config('product', ['id_field' => 'sku']);
         $archiveFactory  = $this->prophesize(Factory::class);
@@ -269,7 +273,7 @@ class ImporterTest extends TestCase
         );
     }
 
-    public function testImporterIsSkippedIfItIsLocked()
+    public function testImporterIsSkippedIfItIsLocked(): void
     {
         $config          = new Config('product', ['id_field' => 'sku']);
         $archiveFactory  = $this->prophesize(Factory::class);
@@ -309,7 +313,7 @@ class ImporterTest extends TestCase
         );
     }
 
-    public function testImportIsSkippedIfSourceAlreadyImported()
+    public function testImportIsSkippedIfSourceAlreadyImported(): void
     {
         $config          = new Config('product', ['id_field' => 'sku']);
         $reportFactory   = $this->prophesize(ReportFactory::class);

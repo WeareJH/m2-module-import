@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jh\Import\Import;
 
 use Jh\Import\Config;
+use Jh\Import\Report\Report;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Mview\View\StateInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,11 +45,12 @@ class Indexer
         }
     }
 
-    public function index(Config $config, Result $result): void
+    public function index(Config $config, Result $result, Report $report): void
     {
         //if the writer return a result with a list of affected ids
         //we reindex all the ids using the indexers specified in the config
         if ($result->hasAffectedIds()) {
+            $report->addInfo("Indexing ({$result->affectedIdsCount()}) affected item(s)");
             $this->output->writeln([
                "<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>",
                ''
@@ -56,6 +58,7 @@ class Indexer
             $chunkedIds = array_chunk($result->getAffectedIds(), 1000);
 
             foreach ($config->getIndexers() as $indexerId) {
+                $report->addInfo("Running Indexer: {$indexerId}");
                 $this->output->writeln("  <fg=magenta>Running Indexer: {$indexerId}</>");
                 try {
                     $indexer = $this->indexerRegistry->get($indexerId);
@@ -66,8 +69,10 @@ class Indexer
                 foreach ($chunkedIds as $ids) {
                     $indexer->reindexList($ids);
                 }
+                $report->addInfo("Finished Indexer: {$indexerId}");
             }
-            $this->output->writeln(['', '<bg=magenta>Finished indexing</>']);
+            $report->addInfo("Finished Indexing");
+            $this->output->writeln(['', '<bg=magenta>Finished Indexing</>']);
         }
     }
 }
