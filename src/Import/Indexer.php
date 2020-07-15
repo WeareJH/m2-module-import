@@ -51,15 +51,13 @@ class Indexer
         //we reindex all the ids using the indexers specified in the config
         if ($result->hasAffectedIds()) {
             $report->addInfo("Indexing ({$result->affectedIdsCount()}) affected item(s)");
-            $this->output->writeln([
-               "<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>",
-               ''
-            ]);
+            $this->outputMessage("<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>\n\n");
+
             $chunkedIds = array_chunk($result->getAffectedIds(), 1000);
 
             foreach ($config->getIndexers() as $indexerId) {
                 $report->addInfo("Running Indexer: {$indexerId}");
-                $this->output->writeln("  <fg=magenta>Running Indexer: {$indexerId}</>");
+                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Running Indexer: {$indexerId}</>\n");
                 try {
                     $indexer = $this->indexerRegistry->get($indexerId);
                 } catch (\InvalidArgumentException $e) {
@@ -70,9 +68,21 @@ class Indexer
                     $indexer->reindexList($ids);
                 }
                 $report->addInfo("Finished Indexer: {$indexerId}");
+
+                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Running Indexer: {$indexerId}</>\n");
             }
             $report->addInfo("Finished Indexing");
-            $this->output->writeln(['', '<bg=magenta>Finished Indexing</>']);
+            $this->outputMessage("\n<bg=magenta>Finished Indexing</>\n");
         }
+    }
+
+    private function getDate(): string
+    {
+        return (new \DateTime())->format('H:i:s');
+    }
+
+    private function outputMessage(string $message): void
+    {
+        $this->output->write($message);
     }
 }
