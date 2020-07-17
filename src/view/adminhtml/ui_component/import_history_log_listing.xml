@@ -70,6 +70,14 @@
             </argument>
         </column>
 
+        <column name="log_level">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="label" xsi:type="string" translate="true">Log Level</item>
+                </item>
+            </argument>
+        </column>
+
         <column name="message">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
