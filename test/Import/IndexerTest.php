@@ -110,9 +110,9 @@ class IndexerTest extends TestCase
             [
                 ['log_level' => 'INFO', 'message' => 'Indexing (2001) affected item(s)'],
                 ['log_level' => 'INFO', 'message' => 'Running Indexer: My\Indexer'],
-                ['log_level' => 'INFO', 'message' => 'Finished Indexer: My\Indexer'],
+                ['log_level' => 'INFO', 'message' => 'Finished Indexer: My\Indexer (elapsed: 00:00:00)'],
                 ['log_level' => 'INFO', 'message' => 'Running Indexer: My\OtherIndexer'],
-                ['log_level' => 'INFO', 'message' => 'Finished Indexer: My\OtherIndexer'],
+                ['log_level' => 'INFO', 'message' => 'Finished Indexer: My\OtherIndexer (elapsed: 00:00:00)'],
                 ['log_level' => 'INFO', 'message' => 'Finished Indexing']
             ],
             $handler->messages
