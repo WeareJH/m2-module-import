@@ -56,6 +56,7 @@ class Indexer
             $chunkedIds = array_chunk($result->getAffectedIds(), 1000);
 
             foreach ($config->getIndexers() as $indexerId) {
+                $start = new \DateTime();
                 $report->addInfo("Running Indexer: {$indexerId}");
                 $this->outputMessage("  <fg=magenta>{$this->getDate()}: Running Indexer: {$indexerId}</>\n");
                 try {
@@ -67,7 +68,9 @@ class Indexer
                 foreach ($chunkedIds as $ids) {
                     $indexer->reindexList($ids);
                 }
-                $report->addInfo("Finished Indexer: {$indexerId}");
+                $report->addInfo(
+                    "Finished Indexer: {$indexerId} - Elapsed: {$start->diff(new \DateTime())->format('%H:%I:%S')}"
+                );
 
                 $this->outputMessage("  <fg=magenta>{$this->getDate()}: Finished Indexer: {$indexerId}</>\n");
             }
