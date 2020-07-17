@@ -69,7 +69,7 @@ class Indexer
                 }
                 $report->addInfo("Finished Indexer: {$indexerId}");
 
-                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Running Indexer: {$indexerId}</>\n");
+                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Finished Indexer: {$indexerId}</>\n");
             }
             $report->addInfo("Finished Indexing");
             $this->outputMessage("\n<bg=magenta>Finished Indexing</>\n");
