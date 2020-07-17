@@ -6,7 +6,7 @@
         "php": "^7.3",
         "ext-json": "*",
         "tightenco/collect": "^7.2",
-        "trash-panda/progress-bar-log": "^1.1",
+        "trash-panda/progress-bar-log": "^1.5",
         "magento/framework": "^102",
         "magento/module-catalog": "^103.0.5",
         "magento/module-catalog-inventory": "^100.3.5",

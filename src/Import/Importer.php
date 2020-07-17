@@ -135,18 +135,28 @@ class Importer
         }
 
         try {
-            $this->traverseSource($report, $config);
+            $this->traverseSource($config, $report);
         } catch (\Exception $e) {
             $report->addError(sprintf('Could not read data from source. Error: "%s"', $e->getMessage()));
         }
 
-        $this->finish($config);
+        try {
+            $this->finish($config, $report);
+        } catch (\Exception $e) {
+            $report->addError(sprintf(
+                'An error occurred when performing post processing tasks (cleanup, indexing, etc) . Error: "%s"',
+                $e->getMessage()
+            ));
+        }
 
-        $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
-        if ($report->isSuccessful()) {
-            $archiver->successful();
-        } else {
-            $archiver->failed();
+        try {
+            $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
+            $report->isSuccessful() ? $archiver->successful() : $archiver->failed();
+        } catch (\Exception $e) {
+            $report->addError(sprintf(
+                'An error occurred when archiving the import source . Error: "%s"',
+                $e->getMessage()
+            ));
         }
 
         $this->locker->release($config->getImportName());
@@ -200,16 +210,16 @@ class Importer
             });
     }
 
-    private function finish(Config $config): void
+    private function finish(Config $config, Report $report): void
     {
         $result = $this->writer->finish($this->source);
 
         $this->progress->finish($this->source);
 
-        $this->indexer->index($config, $result);
+        $this->indexer->index($config, $result, $report);
     }
 
-    private function traverseSource(Report $report, Config $config): void
+    private function traverseSource(Config $config, Report $report): void
     {
         $success = function ($rowNumber, array $row) use ($report, $config) {
             $reportItem = $report->newItem($rowNumber, $config->getIdField(), $row[$config->getIdField()] ?? '');

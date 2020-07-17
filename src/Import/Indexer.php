@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jh\Import\Import;
 
 use Jh\Import\Config;
+use Jh\Import\Report\Report;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Mview\View\StateInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,19 +45,20 @@ class Indexer
         }
     }
 
-    public function index(Config $config, Result $result): void
+    public function index(Config $config, Result $result, Report $report): void
     {
         //if the writer return a result with a list of affected ids
         //we reindex all the ids using the indexers specified in the config
         if ($result->hasAffectedIds()) {
-            $this->output->writeln([
-               "<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>",
-               ''
-            ]);
+            $report->addInfo("Indexing ({$result->affectedIdsCount()}) affected item(s)");
+            $this->outputMessage("<bg=magenta>Indexing ({$result->affectedIdsCount()}) affected item(s)</>\n\n");
+
             $chunkedIds = array_chunk($result->getAffectedIds(), 1000);
 
             foreach ($config->getIndexers() as $indexerId) {
-                $this->output->writeln("  <fg=magenta>Running Indexer: {$indexerId}</>");
+                $start = new \DateTime();
+                $report->addInfo("Running Indexer: {$indexerId}");
+                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Running Indexer: {$indexerId}</>\n");
                 try {
                     $indexer = $this->indexerRegistry->get($indexerId);
                 } catch (\InvalidArgumentException $e) {
@@ -66,8 +68,24 @@ class Indexer
                 foreach ($chunkedIds as $ids) {
                     $indexer->reindexList($ids);
                 }
+                $report->addInfo(
+                    "Finished Indexer: {$indexerId} (elapsed: {$start->diff(new \DateTime())->format('%H:%I:%S')})"
+                );
+
+                $this->outputMessage("  <fg=magenta>{$this->getDate()}: Finished Indexer: {$indexerId}</>\n");
             }
-            $this->output->writeln(['', '<bg=magenta>Finished indexing</>']);
+            $report->addInfo("Finished Indexing");
+            $this->outputMessage("\n<bg=magenta>Finished Indexing</>\n");
         }
+    }
+
+    private function getDate(): string
+    {
+        return (new \DateTime())->format('H:i:s');
+    }
+
+    private function outputMessage(string $message): void
+    {
+        $this->output->write($message);
     }
 }

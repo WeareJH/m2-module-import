@@ -4,6 +4,7 @@ namespace Jh\Import\Progress;
 
 use Jh\Import\Config;
 use Jh\Import\Source\Source;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use TrashPanda\ProgressBarLog\ProgressBarLog;
 
@@ -54,7 +55,8 @@ class CliProgress implements Progress
         $tPad    = str_repeat(' ', 40);
         $format  = "\n <bg=blue>$tPad</>\n <bg=blue> %title:-39s%</>\n <bg=blue>$tPad</>\n\n %current%/%max% %bar% ";
         $format .= "%percent:3s%%\n\n 🏁  <fg=blue>%remaining%</> remaining. Done <fg=blue>%elapsed%</> of estimated ";
-        $format .= "<fg=blue>%estimated%</> (<info>%memory%</>)";
+        $format .= "<fg=blue>%estimated%</> (<info>%memory%</>)\n";
+        $format .= "     Total messages <fg=blue>%total_log_count%</>\n";
 
         $progressBar->setFormat($format);
         $progressBar->setRedrawFrequency(50);
