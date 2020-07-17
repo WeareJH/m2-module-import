@@ -69,7 +69,7 @@ class Indexer
                     $indexer->reindexList($ids);
                 }
                 $report->addInfo(
-                    "Finished Indexer: {$indexerId} - Elapsed: {$start->diff(new \DateTime())->format('%H:%I:%S')}"
+                    "Finished Indexer: {$indexerId} (elapsed: {$start->diff(new \DateTime())->format('%H:%I:%S')})"
                 );
 
                 $this->outputMessage("  <fg=magenta>{$this->getDate()}: Finished Indexer: {$indexerId}</>\n");
