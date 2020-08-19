@@ -31,18 +31,18 @@ class Factory
 
     public function getArchiverForSource(Source $source, Config $config): Archiver
     {
-        $class = get_class($source);
-
-        if (!isset(self::$sourceToArchiverMap[$class])) {
-            return new NullArchiver();
+        foreach (self::$sourceToArchiverMap as $class => $archiver) {
+            if (get_class($source) === $class || is_subclass_of($source, $class)) {
+                return $this->objectManager->create(
+                    $archiver,
+                    [
+                        'source' => $source,
+                        'config' => $config
+                    ]
+                );
+            }
         }
 
-        return $this->objectManager->create(
-            self::$sourceToArchiverMap[$class],
-            [
-                'source' => $source,
-                'config' => $config
-            ]
-        );
+        return new NullArchiver();
     }
 }
