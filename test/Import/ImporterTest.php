@@ -16,6 +16,7 @@ use Jh\Import\Locker\Locker;
 use Jh\Import\Progress\Progress;
 use Jh\Import\Report\Handler\CollectingHandler;
 use Jh\Import\Report\Report;
+use Jh\Import\Report\ReportItem;
 use Jh\Import\Report\ReportFactory;
 use Jh\Import\Report\ReportPersister;
 use Jh\Import\Source\Iterator;
@@ -55,7 +56,8 @@ class ImporterTest extends TestCase
             'writer'  => $writer->reveal()
         ]);
 
-        $writer->prepare(Argument::type(Source::class))->shouldBeCalled();
+        $writer->prepare(Argument::type(Source::class), $config)->shouldBeCalled();
+        $writer->write(Argument::type(Record::class), Argument::type(ReportItem::class))->shouldBeCalled();
         $writer->finish(Argument::type(Source::class))->willReturn(new Result([]))->shouldBeCalled();
 
         $importer->process($config);
@@ -63,7 +65,7 @@ class ImporterTest extends TestCase
 
     public function testIndexersAreDisabledAtStartAndIndexedAtEnd(): void
     {
-        $config  = new Config('product', []);
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
@@ -90,7 +92,8 @@ class ImporterTest extends TestCase
 
         $result = new Result([1, 2, 3]);
 
-        $writer->prepare(Argument::type(Source::class))->shouldBeCalled();
+        $writer->prepare(Argument::type(Source::class), $config)->shouldBeCalled();
+        $writer->write(Argument::type(Record::class), Argument::type(ReportItem::class))->shouldBeCalled();
         $writer->finish(Argument::type(Source::class))->willReturn($result)->shouldBeCalled();
 
         $importer->process($config);
@@ -367,7 +370,7 @@ class ImporterTest extends TestCase
 
     public function testAddFilterCallsPrepareIfNecessary(): void
     {
-        $config  = new Config('product', []);
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
@@ -385,6 +388,7 @@ class ImporterTest extends TestCase
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
+        $callable->__invoke(Argument::type(Record::class), Argument::type(ReportItem::class))->shouldBeCalled();
         $callable->prepare($config)->shouldBeCalled();
 
         $importer->filter($callable->reveal());
@@ -393,7 +397,7 @@ class ImporterTest extends TestCase
 
     public function testAddTransformerCallsPrepareIfNecessary(): void
     {
-        $config  = new Config('product', []);
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $history = $this->prophesize(History::class);
         $history->isImported(Argument::type(Source::class))->willReturn(false);
@@ -411,6 +415,7 @@ class ImporterTest extends TestCase
         ]);
 
         $callable = $this->prophesize(\Jh\ImportTest\Asset\CallablePrep::class);
+        $callable->__invoke(Argument::type(Record::class), Argument::type(ReportItem::class))->shouldBeCalled();
         $callable->prepare($config)->shouldBeCalled();
 
         $importer->transform($callable->reveal());

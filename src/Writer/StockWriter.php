@@ -8,6 +8,7 @@ use Jh\Import\Import\Record;
 use Jh\Import\Import\Result;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
+use Jh\Import\Config;
 use Jh\Import\Writer\Utils\DisableEventObserver;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
 use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
@@ -73,7 +74,7 @@ class StockWriter implements Writer
         $this->skusToIds = $this->adapter->fetchPairs($select);
     }
 
-    public function prepare(Source $source)
+    public function prepare(Source $source, Config $config)
     {
         $this->disableEventObserver->disable('clean_cache_by_tags', 'invalidate_varnish');
 

@@ -194,7 +194,7 @@ class Importer
         $this->prepareComponents($config, $this->filters);
         $this->prepareComponents($config, $this->transformers);
 
-        $this->writer->prepare($this->source);
+        $this->writer->prepare($this->source, $config);
 
         $this->indexer->disable($config);
     }

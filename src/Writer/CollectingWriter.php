@@ -6,6 +6,7 @@ use Jh\Import\Import\Record;
 use Jh\Import\Import\Result;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
+use Jh\Import\Config;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -19,7 +20,7 @@ class CollectingWriter implements Writer
 
     private $affectedIds = [];
 
-    public function prepare(Source $source)
+    public function prepare(Source $source, Config $config)
     {
         // noop
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jh\ImportTest\Writer;
 
+use Jh\Import\Config;
 use Jh\Import\Import\Record;
 use Jh\Import\Report\CollectingReport;
 use Jh\Import\Report\Handler\CollectingHandler;
@@ -210,7 +211,10 @@ class StockWriterTest extends TestCase
             $disableEventObserver = new DisableEventObserver()
         );
 
-        $writer->prepare($this->prophesize(Source::class)->reveal());
+        $writer->prepare(
+            $this->prophesize(Source::class)->reveal(),
+            $this->prophesize(Config::class)->reveal(),
+        );
 
         self::assertSame(
             ['clean_cache_by_tags' => ['invalidate_varnish']],

@@ -7,6 +7,7 @@ use Jh\Import\AttributeProcessor\AttributeProcessor;
 use Jh\Import\Import\Result;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
+use Jh\Import\Config;
 use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
@@ -212,7 +213,7 @@ class ProductWriter implements Writer
         }
     }
 
-    public function prepare(Source $source)
+    public function prepare(Source $source, Config $config)
     {
         $this->updatedProductsIds = [];
 
