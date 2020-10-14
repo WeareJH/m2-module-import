@@ -38,7 +38,7 @@ class ImporterTest extends TestCase
 
     public function testWriterIsPreparedAndFinished()
     {
-        $config  = new Config('product', []);
+        $config  = new Config('product', ['id_field' => 'sku']);
         $om      = $this->prophesize(ObjectManagerInterface::class);
         $writer  = $this->prophesize(Writer::class);
         $history = $this->prophesize(History::class);
