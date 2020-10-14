@@ -39,9 +39,4 @@ class CollectingWriter implements Writer
     {
         return $this->data;
     }
-
-    public function setAffectedIds(array $ids)
-    {
-        $this->affectedIds = $ids;
-    }
 }
