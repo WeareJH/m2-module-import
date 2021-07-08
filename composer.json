@@ -8,9 +8,9 @@
         "tightenco/collect": "^7.2",
         "trash-panda/progress-bar-log": "^1.5",
         "magento/framework": "^102",
-        "magento/module-catalog": "^103.0.5",
-        "magento/module-catalog-inventory": "^100.3.5",
-        "magento/module-configurable-product": "^100.3.5"
+        "magento/module-catalog": ">=104",
+        "magento/module-catalog-inventory": ">=100.4",
+        "magento/module-configurable-product": ">=100.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1",
