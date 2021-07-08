@@ -7,7 +7,7 @@
         "ext-json": "*",
         "tightenco/collect": "^7.2",
         "trash-panda/progress-bar-log": "^1.5",
-        "magento/framework": "^102",
+        "magento/framework": ">=103",
         "magento/module-catalog": ">=104",
         "magento/module-catalog-inventory": ">=100.4",
         "magento/module-configurable-product": ">=100.4"
