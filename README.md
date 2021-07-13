@@ -27,6 +27,7 @@ $ php bin/magento setup:upgrade
 - [Creating a new import](#creating-a-new-import)
   * [Create a module](#create-a-module)
   * [Define the import configuration](#define-the-import-configuration)
+  * [Files import type](#files-import-type)
     * [source](#source)
     * [incoming_directory](#incoming_directory)
     * [archived_directory](#archived_directory)
@@ -35,6 +36,15 @@ $ php bin/magento setup:upgrade
     * [specification](#specification)
     * [writer](#writer)
     * [id_field](#id_field)
+  * [DB import type](#db-import-type)
+      * [source](#source)
+      * [connection_name](#connection_name)
+      * [specification](#specification)
+      * [writer](#writer)
+      * [id_field](#id_field)    
+      * [source_id](#source_id)    
+      * [select_sql](#select_sql)    
+      * [count_sql](#count_sql)    
   * [Create the specification](#create-the-specification)
     * [Transformers](#transformers)
     * [Filters](#filters)
@@ -106,10 +116,13 @@ In our example that would be `app/code/MyVendor/Import/etc/imports.xml`
 </config>
 ```
 
-The `files` key here represents the type of import. In this case a files type. The files type is the only type that exists at the minute
-but future scope could be an API or a different database, etc.
+The `files` key here represents the type of import. In this case a files type. Supported import types:
+* `files`
+* `db`
 
 You can see the supported types in the `$types` property of [src/Import/Manager.php](src/Import/Manager.php).
+
+### Files import type
 
 The `name` attribute is the unique name for your import and is how you execute it from `\Jh\Import\Import\Manager`. Here we named
 it `price`.
@@ -195,6 +208,122 @@ The finished config my look like:
         <writer>MyVendor\Import\Writer\Price</writer>
         <id_field>sku</id_field>
     </files>
+</config>
+```
+
+### DB import type
+
+The `name` attribute is the unique name for your import and is how you execute it from `\Jh\Import\Import\Manager`. Here we named
+it `price`.
+
+The required configuration values for your import are:
+
+* connection_name
+* source
+* specification
+* writer
+* id_field
+* source_id
+* select_sql
+* count_sql
+
+#### connection_name
+
+Name of the DB connection to use. The connection should be specified in `app/etc/env.php`. E.g.
+```
+'db' => [
+        'table_prefix' => '',
+        'connection' => [
+            'default' => [
+                'host' => 'db',
+                'dbname' => 'docker',
+                'username' => 'docker',
+                'password' => 'docker',
+                'model' => 'mysql4',
+                'engine' => 'innodb',
+                'initStatements' => 'SET NAMES utf8;',
+                'active' => '1',
+                'driver_options' => [
+                    1014 => false
+                ]
+            ],
+            'migration' => [
+                'host' => 'db',
+                'dbname' => 'migration',
+                'username' => 'root',
+                'password' => 'docker',
+                'model' => 'mysql4',
+                'engine' => 'innodb',
+                'initStatements' => 'SET NAMES utf8;',
+                'active' => '1',
+                'driver_options' => [
+                    1014 => false
+                ]
+            ]
+        ]
+    ],
+    'resource' => [
+        'default_setup' => [
+            'connection' => 'default'
+        ],
+        'migration' => [
+            'connection' => 'migration'
+        ]
+    ],
+```
+
+#### source
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Source\Source`.
+The core source type currently available is `Jh\Import\Source\Db` for reading data from a database. It can be extended
+further to customise it. 
+
+#### specification
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Specification\ImportSpecification`.
+This is the class which takes care of manipulating the incoming data in to a generic format. This will be explained in more detail later on.
+
+#### writer
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Writer\Writer`.
+This is the class which takes care of saving the data in to Magento. This will be explained in more detail later on.
+
+#### id_field
+
+This should be the name of a field that exists in every row of the data and is unique. This is used for logging purposes. For example it would
+probably be `sku` for a product import.
+
+#### source_id
+
+A unique ID for the import type.
+
+#### select_sql
+
+SQL query used for loading data from the DB. If you need a more advanced way of loading data, overwrite the source class.
+
+#### count_sql
+
+SQL query used for counting the data to update.
+
+==================================================================================================================
+
+The finished config could look like:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <db name="customer">
+        <connection_name>migration</connection_name>
+        <source>Jh\Import\Source\Db</source>
+        <specification>MyVendor\Import\Specification\Customer</specification>
+        <writer>MyVendor\Import\Writer\Customer</writer>
+        <id_field>id_customer</id_field>
+        <source_id>customer_migration</source_id>
+        <select_sql>SELECT * FROM ps_customer</select_sql>
+        <count_sql>SELECT COUNT(1) FROM ps_customer</count_sql>
+        <indexers>
+            <indexer>customer_grid</indexer>
+        </indexers>
+    </db>
 </config>
 ```
 

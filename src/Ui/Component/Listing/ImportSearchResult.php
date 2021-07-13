@@ -3,19 +3,28 @@
 namespace Jh\Import\Ui\Component\Listing;
 
 use Jh\Import\Config\Data;
+use Jh\Import\Entity\ImportHistory;
+use Jh\Import\Entity\ImportHistoryResource;
 use Jh\Import\Locker\Locker;
 use Magento\Framework\Api;
 use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Api\Search\DocumentInterface;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
-use Magento\Framework\Data\Collection;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Magento\Framework\DataObject;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class ImportSearchResult extends Collection implements SearchResultInterface
+class ImportSearchResult extends AbstractCollection implements SearchResultInterface
 {
     /**
      * @var AggregationInterface
@@ -32,9 +41,17 @@ class ImportSearchResult extends Collection implements SearchResultInterface
      */
     private $totalCount;
 
-    public function __construct(Collection\EntityFactoryInterface $entityFactory, Data $config, Locker $locker)
-    {
-        parent::__construct($entityFactory);
+    public function __construct(
+        Data $config,
+        Locker $locker,
+        EntityFactoryInterface $entityFactory,
+        LoggerInterface $logger,
+        FetchStrategyInterface $fetchStrategy,
+        ManagerInterface $eventManager,
+        AdapterInterface $connection = null,
+        AbstractDb $resource = null
+    ) {
+        parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
         $this->setItemObjectClass(Document::class);
 
         $importNames = $config->getAllImportNames();
@@ -49,6 +66,11 @@ class ImportSearchResult extends Collection implements SearchResultInterface
 
             $this->addItem($item);
         }
+    }
+
+    public function loadWithFilter($printQuery = false, $logQuery = false)
+    {
+        return $this;
     }
 
     /**
@@ -113,5 +135,10 @@ class ImportSearchResult extends Collection implements SearchResultInterface
     {
         $this->totalCount = $totalCount;
         return $this;
+    }
+
+    protected function _construct()
+    {
+        $this->_init(ImportHistory::class, ImportHistoryResource::class);
     }
 }
