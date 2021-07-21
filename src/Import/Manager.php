@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Jh\Import\Import;
 
 use Jh\Import\Config\Data;
+use Jh\Import\Type\Db;
 use Jh\Import\Type\Files;
 use Jh\Import\Type\Type;
 use Magento\Framework\ObjectManagerInterface;
@@ -15,20 +17,21 @@ class Manager
     /**
      * @var Data
      */
-    private $config;
+    private Data $config;
 
     /**
      * @var ObjectManagerInterface
      */
-    private $objectManager;
+    private ObjectManagerInterface $objectManager;
 
     /**
      * Pull this from config
      *
      * @var array
      */
-    private $types = [
-        'files' => Files::class
+    private array $types = [
+        'files' => Files::class,
+        'db' => Db::class
     ];
 
     public function __construct(Data $config, ObjectManagerInterface $objectManager)

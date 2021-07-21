@@ -78,6 +78,26 @@ class Config
         return $this->config['cron_group'] ?? null;
     }
 
+    public function getConnectionName(): ?string
+    {
+        return $this->config['connection_name'] ?? null;
+    }
+
+    public function getSourceId(): ?string
+    {
+        return $this->config['source_id'] ?? null;
+    }
+
+    public function getSelectSql(): ?string
+    {
+        return $this->config['select_sql'] ?? null;
+    }
+
+    public function getCountSql(): ?string
+    {
+        return $this->config['count_sql'] ?? null;
+    }
+
     /**
      * @param string $key
      * @return string|null

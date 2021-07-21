@@ -24,6 +24,18 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default'],
             'archive_old_files' => ['type' => 'bool', 'default' => false],
             'delete_old_files' => ['type' => 'bool', 'default' => false],
+        ],
+        'db' => [
+            'connection_name' => ['type' => 'string'],
+            'source' => ['type' => 'string'],
+            'specification' => ['type' => 'string'],
+            'writer' => ['type' => 'string'],
+            'id_field' => ['type' => 'string'],
+            'source_id' => ['type' => 'string'],
+            'select_sql' => ['type' => 'string'],
+            'count_sql' => ['type' => 'string'],
+            'cron' => ['type' => 'string'],
+            'cron_group' => ['type' => 'string', 'default' => 'default']
         ]
     ];
 

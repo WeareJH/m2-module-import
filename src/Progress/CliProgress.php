@@ -4,7 +4,6 @@ namespace Jh\Import\Progress;
 
 use Jh\Import\Config;
 use Jh\Import\Source\Source;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use TrashPanda\ProgressBarLog\ProgressBarLog;
 
