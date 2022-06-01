@@ -6,7 +6,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "tightenco/collect": "^7.2",
+        "tightenco/collect": "^8.0||^9.0",
         "trash-panda/progress-bar-log": "^1.5",
         "magento/framework": ">=103",
         "magento/module-catalog": ">=104",
