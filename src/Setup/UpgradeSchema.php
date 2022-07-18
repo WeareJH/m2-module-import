@@ -99,7 +99,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     $setup->getFkName('jh_import_history_log', 'history_id', 'jh_import_history', 'id'),
                     'history_id',
                     'jh_import_history',
-                    'id'
+                    'id',
+                    Table::ACTION_CASCADE
                 )
                 ->addColumn(
                     'message',
@@ -138,7 +139,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     $setup->getFkName('jh_import_history_item_log', 'history_id', 'jh_import_history', 'id'),
                     'history_id',
                     'jh_import_history',
-                    'id'
+                    'id',
+                    Table::ACTION_CASCADE
                 )
                 ->addColumn(
                     'reference_line',
