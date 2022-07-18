@@ -2,10 +2,13 @@
 
 namespace Jh\Import\Progress;
 
+use Countable;
 use Jh\Import\Config;
 use Jh\Import\Source\Source;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
-use TrashPanda\ProgressBarLog\ProgressBarLog;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -13,46 +16,54 @@ use TrashPanda\ProgressBarLog\ProgressBarLog;
 class CliProgress implements Progress
 {
     /**
+     * @var int
+     */
+    private $totalLogCount = 0;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var OutputInterface
      */
     private $output;
 
     /**
-     * @var null|ProgressBarLog
+     * @var null|ProgressBar
      */
-    private $progressBarLog;
+    private $progressBar;
 
-    /**
-     * @var int
-     */
-    private $numLogsToDisplay;
-
-
-    public function __construct(OutputInterface $output, $numLogsToDisplay = 20)
+    public function __construct(LoggerInterface $logger, OutputInterface $output)
     {
         $this->output = $output;
-        $this->output->setDecorated(true);
-        $this->numLogsToDisplay = $numLogsToDisplay;
+        $this->logger = $logger;
     }
 
     public function start(Source $source, Config $config): void
     {
-        $max = null;
-        if ($source instanceof \Countable) {
-            $max = $source->count();
-        }
+        $source instanceof Countable
+            ? $max = $source->count()
+            : $max = 0;
 
-        $this->progressBarLog = new ProgressBarLog($this->numLogsToDisplay, $max);
-        $this->progressBarLog->setOutput($this->output);
+        $progressBar = new ProgressBar($this->output, (int) $max);
 
-        $progressBar = $this->progressBarLog->getProgressBar();
+        ProgressBar::setPlaceholderFormatterDefinition(
+            'total_log_count',
+            function (ProgressBar $progressBar, OutputInterface $output) {
+                return $this->getTotalLogCount();
+            }
+        );
+
         $progressBar->setBarCharacter('<fg=green>=</>');
         $progressBar->setProgressCharacter('<fg=green>></>');
         $progressBar->setBarWidth(100);
         $progressBar->setMessage('Import: ' . $config->getImportName(), 'title');
+        $this->progressBar = $progressBar;
 
-        $tPad    = str_repeat(' ', 40);
-        $format  = "\n <bg=blue>$tPad</>\n <bg=blue> %title:-39s%</>\n <bg=blue>$tPad</>\n\n %current%/%max% %bar% ";
+        $tPad = str_repeat(' ', 40);
+        $format = "\n <bg=blue>$tPad</>\n <bg=blue> %title:-39s%</>\n <bg=blue>$tPad</>\n\n %current%/%max% %bar% ";
         $format .= "%percent:3s%%\n\n 🏁  <fg=blue>%remaining%</> remaining. Done <fg=blue>%elapsed%</> of estimated ";
         $format .= "<fg=blue>%estimated%</> (<info>%memory%</>)\n";
         $format .= "     Total messages <fg=blue>%total_log_count%</>\n";
@@ -60,37 +71,43 @@ class CliProgress implements Progress
         $progressBar->setFormat($format);
         $progressBar->setRedrawFrequency(50);
 
-        $this->progressBarLog->start();
+        $this->progressBar->start();
     }
 
     public function advance(): void
     {
         $this->guardStarted();
-        $this->progressBarLog->advance();
+        $this->progressBar->advance();
     }
 
     public function addLog(string $severity, string $message): void
     {
         $this->guardStarted();
-        $this->progressBarLog->addLog(strtolower($severity), $message);
+        $this->totalLogCount++;
+        $this->logger->log($severity, $message);
     }
 
     public function finish(Source $source): void
     {
         $this->guardStarted();
-        $this->progressBarLog->finish();
+        $this->progressBar->finish();
 
         $this->output->writeln([
-            "",
-            "<bg=blue>Import finished</>",
-            ""
+            '',
+            '<bg=blue>Import finished</>',
+            ''
         ]);
     }
 
     private function guardStarted(): void
     {
-        if (null === $this->progressBarLog) {
-            throw new \RuntimeException('Progress not started');
+        if (!$this->progressBar instanceof ProgressBar) {
+            throw new RuntimeException('Progress not started');
         }
+    }
+
+    private function getTotalLogCount(): int
+    {
+        return $this->totalLogCount;
     }
 }

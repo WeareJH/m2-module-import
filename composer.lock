@@ -6108,54 +6108,6 @@
             "time": "2020-07-10T22:07:43+00:00"
         },
         {
-            "name": "trash-panda/progress-bar-log",
-            "version": "1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/AydinHassan/progress-bar-log.git",
-                "reference": "0379a60eddbf59dc5bab22c6304168414a3fc500"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/AydinHassan/progress-bar-log/zipball/0379a60eddbf59dc5bab22c6304168414a3fc500",
-                "reference": "0379a60eddbf59dc5bab22c6304168414a3fc500",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7 | ^7.1",
-                "psr/log": "^1.0",
-                "symfony/console": "^2.6 | ^3.0 | ^4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "TrashPanda\\ProgressBarLog\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aydin Hassan",
-                    "email": "aydin@hotmail.co.uk"
-                }
-            ],
-            "description": "Component to display a progress bar and last X logs at the same time",
-            "homepage": "https://github.com/AydinHassan/progress-bar-log",
-            "keywords": [
-                "cli",
-                "console",
-                "log",
-                "progress"
-            ],
-            "time": "2020-07-15T13:12:19+00:00"
-        },
-        {
             "name": "true/punycode",
             "version": "v2.1.1",
             "source": {

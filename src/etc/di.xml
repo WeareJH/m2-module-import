@@ -90,4 +90,29 @@
             <argument name="resourceModel" xsi:type="string">Jh\Import\Entity\ImportHistoryItemLogResource</argument>
         </arguments>
     </virtualType>
+
+
+    <!-- Logger section -->
+    <virtualType name="Jh\Import\Logger\AllSeverityHandler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/data-migration.log</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Jh\Import\Logger\ImportLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">Jh\Import\Logger\AllSeverityHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- End of Logger section -->
+
+    <!-- Constructor arguments section -->
+    <type name="Jh\Import\Progress\CliProgress">
+        <arguments>
+            <argument name="logger" xsi:type="object">Jh\Import\Logger\ImportLogger</argument>
+        </arguments>
+    </type>
+    <!-- End of constructor arguments section -->
 </config>
