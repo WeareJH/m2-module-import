@@ -1,0 +1,16 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <webapi name="test">
+        <source>Jh\Import\Source\Webapi</source>
+        <source_id>test_migration</source_id>
+        <specification>MyVendor\Import\Specification\Test</specification>
+        <writer>MyVendor\Import\Writer\Test</writer>
+        <id_field>id</id_field>
+        <count_request_factory>MyVendor\Import\Specification\Request\CountRequestFactory</count_request_factory>
+        <count_response_handler>MyVendor\Import\Specification\Response\CountResponseHandler</count_response_handler>
+        <data_request_factory>MyVendor\Import\Specification\Request\DataRequestFactory</data_request_factory>
+        <data_request_paging_decorator>MyVendor\Import\Specification\Request\DataRequest\PagingDecorator</data_request_paging_decorator>
+        <data_request_filter_decorator>MyVendor\Import\Specification\Request\DataRequest\FilterDecorator</data_request_filter_decorator>
+        <data_request_page_size>250</data_request_page_size>
+        <data_response_handler>MyVendor\Import\Specification\Response\DataResponseHandler</data_response_handler>
+    </webapi>
+</config>
