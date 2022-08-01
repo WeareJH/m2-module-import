@@ -3,6 +3,8 @@
 namespace Jh\Import\Command;
 
 use Magento\Framework\App\State;
+use Magento\Framework\Console\Cli;
+use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,11 +44,13 @@ class RunImportCommand extends Command
     {
         try {
             $this->state->setAreaCode('crontab');
-        } catch (LocalizedException $e) {
+        } catch (LocalizedException $exception) {
             //no-op
+            return Cli::RETURN_FAILURE;
         }
 
 
         $this->manager->executeImportByName($input->getArgument('import_name'));
+        return Cli::RETURN_SUCCESS;
     }
 }

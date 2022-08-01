@@ -2,6 +2,8 @@
 
 namespace Jh\Import;
 
+use Magento\Framework\Exception\InvalidArgumentException;
+
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
@@ -98,13 +100,57 @@ class Config
         return $this->config['count_sql'] ?? null;
     }
 
+    public function getDataRequestFactory(): string
+    {
+        return $this->getRequired('data_request_factory');
+    }
+
+    public function getDataRequestPageSize(): int
+    {
+        return $this->getRequired('data_request_page_size');
+    }
+
+    public function getDataRequestPagingDecorator(): string
+    {
+        return $this->getRequired('data_request_paging_decorator');
+    }
+
+    public function getDataRequestFilterDecorator(): ?string
+    {
+        return $this->get('data_request_filter_decorator');
+    }
+
+    public function getCountRequestFactory(): string
+    {
+        return $this->getRequired('count_request_factory');
+    }
+
+    public function getDataResponseHandler(): string
+    {
+        return $this->getRequired('data_response_handler');
+    }
+
+    public function getCountResponseHandler(): string
+    {
+        return $this->getRequired('count_response_handler');
+    }
+
     /**
      * @param string $key
      * @return string|null
      */
-    public function get(string $key)
+    public function get(string $key): ?string
     {
         return $this->config[$key] ?? null;
+    }
+
+    public function getRequired(string $key): string
+    {
+        if (empty($this->config[$key])) {
+            throw new InvalidArgumentException(__('Required config argument %1 missing', $key));
+        }
+
+        return $this->config[$key];
     }
 
     public function all(): array

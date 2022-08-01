@@ -15,6 +15,7 @@
             <argument name="idAttributes" xsi:type="array">
                 <item name="/config/db" xsi:type="string">name</item>
                 <item name="/config/files" xsi:type="string">name</item>
+                <item name="/config/webapi" xsi:type="string">name</item>
             </argument>
         </arguments>
     </virtualType>
@@ -112,6 +113,12 @@
     <type name="Jh\Import\Progress\CliProgress">
         <arguments>
             <argument name="logger" xsi:type="object">Jh\Import\Logger\ImportLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Jh\Import\Source\Webapi">
+        <arguments>
+            <argument name="httpClient" xsi:type="object">GuzzleHttp\Client</argument>
         </arguments>
     </type>
     <!-- End of constructor arguments section -->
