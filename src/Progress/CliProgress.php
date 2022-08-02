@@ -7,6 +7,7 @@ use Jh\Import\Config;
 use Jh\Import\Source\Source;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,30 +16,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CliProgress implements Progress
 {
-    /**
-     * @var int
-     */
-    private $totalLogCount = 0;
+    private int $totalLogCount = 0;
+    private LoggerInterface $logger;
+    private OutputInterface $output;
+    private ?ProgressBar $progressBar;
+    private FormatterHelper $formatterHelper;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
-     * @var null|ProgressBar
-     */
-    private $progressBar;
-
-    public function __construct(LoggerInterface $logger, OutputInterface $output)
+    public function __construct(LoggerInterface $logger, OutputInterface $output, FormatterHelper $formatterHelper)
     {
         $this->output = $output;
         $this->logger = $logger;
+        $this->formatterHelper = $formatterHelper;
     }
 
     public function start(Source $source, Config $config): void
@@ -82,7 +70,7 @@ class CliProgress implements Progress
 
     public function addLog(string $severity, string $message): void
     {
-        $this->guardStarted();
+        $this->output->writeln($this->formatterHelper->formatBlock($message, strtolower($severity)));
         $this->totalLogCount++;
         $this->logger->log($severity, $message);
     }

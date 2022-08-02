@@ -49,7 +49,6 @@ class RunImportCommand extends Command
             return Cli::RETURN_FAILURE;
         }
 
-
         $this->manager->executeImportByName($input->getArgument('import_name'));
         return Cli::RETURN_SUCCESS;
     }
