@@ -5,6 +5,7 @@ namespace Jh\ImportTest\Progress;
 use Jh\Import\Progress\CliProgress;
 use Jh\Import\Source\Source;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -12,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CliProgressTest extends TestCase
 {
-    public function testAdvanceThrowsExceptionIfNotStarted()
+    public function testAdvanceThrowsExceptionIfNotStarted(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Progress not started');
@@ -23,7 +24,7 @@ class CliProgressTest extends TestCase
         $progress->advance();
     }
 
-    public function testFinishThrowsExceptionIfNotStarted()
+    public function testFinishThrowsExceptionIfNotStarted(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Progress not started');

@@ -15,13 +15,16 @@ use PHPUnit\Framework\TestCase;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Config\ReaderInterface;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ImportSearchResultTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGetAllItems(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -29,7 +32,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -58,7 +61,7 @@ class ImportSearchResultTest extends TestCase
     public function testSetItemsIgnoresNullValue(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -66,7 +69,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -101,7 +104,7 @@ class ImportSearchResultTest extends TestCase
     public function testSetItems(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -109,7 +112,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -139,7 +142,7 @@ class ImportSearchResultTest extends TestCase
     public function testGetSetAggregations(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -147,7 +150,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -169,7 +172,7 @@ class ImportSearchResultTest extends TestCase
     public function testGetSetSearchCriteria(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -177,7 +180,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 
@@ -199,7 +202,7 @@ class ImportSearchResultTest extends TestCase
     public function testGetSetTotalCount(): void
     {
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -207,7 +210,7 @@ class ImportSearchResultTest extends TestCase
         ];
 
         $cache->load('cache-id')->willReturn(serialize($imports))->shouldBeCalled();
-        $config  = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
+        $config = new Data($reader->reveal(), $cache->reveal(), 'cache-id', new Serialize());
 
         $avFactory = $this->prophesize(AttributeValueFactory::class);
 

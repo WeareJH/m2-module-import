@@ -12,17 +12,19 @@ use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
 use Jh\UnitTestHelpers\ObjectHelper;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ImporterFactoryTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     public function testFactory(): void
     {
-        $source          = $this->prophesize(Source::class);
-        $importSpec      = $this->prophesize(ImportSpecification::class);
-        $writer          = $this->prophesize(Writer::class);
+        $source = $this->prophesize(Source::class);
+        $importSpec = $this->prophesize(ImportSpecification::class);
+        $writer = $this->prophesize(Writer::class);
 
         $outputFactory = $this->prophesize(OutputFactory::class);
         $progressFactory = $this->prophesize(ProgressFactory::class);

@@ -14,14 +14,17 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class LoggingSkipNonExistingProductsTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testSkippedProductIsLogged(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
-        $adapter   = $this->prophesize(AdapterInterface::class);
-        $select    = $this->prophesize(Select::class);
+        $adapter = $this->prophesize(AdapterInterface::class);
+        $select = $this->prophesize(Select::class);
 
         $connection->getConnection()->willReturn($adapter->reveal());
         $adapter->select()->willReturn($select->reveal());
@@ -42,8 +45,8 @@ class LoggingSkipNonExistingProductsTest extends TestCase
     public function testSkippedProductIsLoggedWithCustomSkuField(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
-        $adapter   = $this->prophesize(AdapterInterface::class);
-        $select    = $this->prophesize(Select::class);
+        $adapter = $this->prophesize(AdapterInterface::class);
+        $select = $this->prophesize(Select::class);
 
         $connection->getConnection()->willReturn($adapter->reveal());
         $adapter->select()->willReturn($select->reveal());

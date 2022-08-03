@@ -6,12 +6,17 @@ use Jh\Import\Config\Data;
 use Jh\Import\Controller\Adminhtml\Config\Info;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Serialize\Serializer\Serialize;
-use Magento\Framework\View\Result\PageFactory;
-use Prophecy\Prophecy\ObjectProphecy;
-use PHPUnit\Framework\TestCase;
 use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Config\ReaderInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Serialize\Serializer\Serialize;
+use Magento\Framework\View\Page\Config;
+use Magento\Framework\View\Page\Title;
+use Magento\Framework\View\Result\Page;
+use Magento\Framework\View\Result\PageFactory;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -19,6 +24,7 @@ use Magento\Framework\Config\ReaderInterface;
 class InfoTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var PageFactory|ObjectProphecy
@@ -37,7 +43,7 @@ class InfoTest extends TestCase
         $this->pageFactory = $this->prophesize(PageFactory::class);
 
         $reader = $this->prophesize(ReaderInterface::class);
-        $cache  = $this->prophesize(CacheInterface::class);
+        $cache = $this->prophesize(CacheInterface::class);
 
         $imports = [
             'product' => ['type' => 'files'],
@@ -54,13 +60,13 @@ class InfoTest extends TestCase
         );
     }
 
-    public function testRedirectIsReturnedIfNameParamNotPreset()
+    public function testRedirectIsReturnedIfNameParamNotPreset(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn(false);
 
-        $redirect = $this->prophesize(\Magento\Framework\Controller\Result\Redirect::class);
+        $redirect = $this->prophesize(Redirect::class);
         $redirect->setPath('*/*/index')->willReturn($redirect);
 
         $this->retrieveChildMock(Context::class, 'resultRedirectFactory')
@@ -70,13 +76,13 @@ class InfoTest extends TestCase
         self::assertSame($redirect->reveal(), $this->controller->execute());
     }
 
-    public function testRedirectIsReturnedIfImportDoesNotExist()
+    public function testRedirectIsReturnedIfImportDoesNotExist(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn('image');
 
-        $redirect = $this->prophesize(\Magento\Framework\Controller\Result\Redirect::class);
+        $redirect = $this->prophesize(Redirect::class);
         $redirect->setPath('*/*/index')->willReturn($redirect);
 
         $this->retrieveChildMock(Context::class, 'resultRedirectFactory')
@@ -86,15 +92,15 @@ class InfoTest extends TestCase
         self::assertSame($redirect->reveal(), $this->controller->execute());
     }
 
-    public function testPageIsReturnedIfImportExists()
+    public function testPageIsReturnedIfImportExists(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
             ->willReturn('product');
 
-        $page = $this->prophesize(\Magento\Framework\View\Result\Page::class);
-        $config = $this->prophesize(\Magento\Framework\View\Page\Config::class);
-        $title = $this->prophesize(\Magento\Framework\View\Page\Title::class);
+        $page = $this->prophesize(Page::class);
+        $config = $this->prophesize(Config::class);
+        $title = $this->prophesize(Title::class);
 
         $page->getConfig()->willReturn($config->reveal());
         $config->getTitle()->willReturn($title->reveal());

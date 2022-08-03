@@ -18,7 +18,7 @@ class ProductTypeTransformerTest extends TestCase
     /**
      * @dataProvider simpleValue
      */
-    public function testProductTypeWithSimple($value)
+    public function testProductTypeWithSimple($value): void
     {
         $record = new Record(11, ['type' => $value]);
 
@@ -31,7 +31,7 @@ class ProductTypeTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function simpleValue()
+    public function simpleValue(): array
     {
         return [
             ['simple'],
@@ -42,7 +42,7 @@ class ProductTypeTransformerTest extends TestCase
     /**
      * @dataProvider configValue
      */
-    public function testProductTypeWithConfig($value)
+    public function testProductTypeWithConfig($value): void
     {
         $record = new Record(11, ['type' => $value]);
 
@@ -55,7 +55,7 @@ class ProductTypeTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function configValue()
+    public function configValue(): array
     {
         return [
             ['configurable'],
@@ -63,7 +63,7 @@ class ProductTypeTransformerTest extends TestCase
         ];
     }
 
-    public function testUnknownTypeIsSetToNullAndLogged()
+    public function testUnknownTypeIsSetToNullAndLogged(): void
     {
         $record = new Record(11, ['type' => 'unknown-type']);
 

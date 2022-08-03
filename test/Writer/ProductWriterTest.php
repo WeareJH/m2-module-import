@@ -2,8 +2,8 @@
 
 namespace Jh\ImportTest\Writer;
 
-use Jh\Import\Import\Record;
 use Jh\Import\AttributeProcessor\AttributeProcessor;
+use Jh\Import\Import\Record;
 use Jh\Import\Report\CollectingReport;
 use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
@@ -17,20 +17,23 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Model\StockRegistryProvider;
-use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
+use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
+use Magento\CatalogInventory\Model\StockRegistryProvider;
 use Magento\Framework\Interception\PluginList\PluginList;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class ProductWriterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var  ProductFactory
      */
@@ -98,18 +101,18 @@ class ProductWriterTest extends TestCase
 
     public function setUp(): void
     {
-        $this->productFactory     = $this->prophesize(ProductFactory::class);
-        $this->productResource    = $this->prophesize(ProductResource::class);
-        $this->pluginList         = $this->prophesize(PluginList::class);
+        $this->productFactory = $this->prophesize(ProductFactory::class);
+        $this->productResource = $this->prophesize(ProductResource::class);
+        $this->pluginList = $this->prophesize(PluginList::class);
         $this->attributeProcessor = $this->prophesize(AttributeProcessor::class);
-        $this->configBuilder      = $this->prophesize(ConfigBuilder::class);
-        $this->websiteRepo        = $this->prophesize(WebsiteRepositoryInterface::class);
-        $this->categoryLink       = $this->prophesize(CategoryLinkManagementInterface::class);
-        $this->imageProcessor     = $this->prophesize(Processor::class);
-        $this->stock              = $this->prophesize(StockItemInterface::class);
-        $this->stockRegistryProvider        = $this->prophesize(StockRegistryProvider::class);
+        $this->configBuilder = $this->prophesize(ConfigBuilder::class);
+        $this->websiteRepo = $this->prophesize(WebsiteRepositoryInterface::class);
+        $this->categoryLink = $this->prophesize(CategoryLinkManagementInterface::class);
+        $this->imageProcessor = $this->prophesize(Processor::class);
+        $this->stock = $this->prophesize(StockItemInterface::class);
+        $this->stockRegistryProvider = $this->prophesize(StockRegistryProvider::class);
         $this->stockItemRepositoryInterface = $this->prophesize(StockItemRepositoryInterface::class);
-        $this->stockConfigurationInterface  = $this->prophesize(StockConfigurationInterface::class);
+        $this->stockConfigurationInterface = $this->prophesize(StockConfigurationInterface::class);
 
 
         $website = $this->prophesize(WebsiteInterface::class);
@@ -131,21 +134,21 @@ class ProductWriterTest extends TestCase
         );
     }
 
-    public function testSimpleProductIsSaved()
+    public function testSimpleProductIsSaved(): void
     {
         $product = $this->prophesize(Product::class);
         $this->productFactory->create()->willReturn($product->reveal());
 
         $record = new Record(10, [
-            'status'            => 1,
-            'sku'               => 'PROD1',
-            'name'              => 'Product 1',
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => 'PROD1',
+            'name' => 'Product 1',
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'simple',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5
+            'price' => 100,
+            'type' => 'simple',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5
         ]);
 
         $this->productWriter->write(
@@ -169,22 +172,22 @@ class ProductWriterTest extends TestCase
         $this->productResource->save($product->reveal())->shouldHaveBeenCalled();
     }
 
-    public function testConfigProductIsPassedToConfigBuilder()
+    public function testConfigProductIsPassedToConfigBuilder(): void
     {
         $product = $this->prophesize(Product::class);
         $this->productFactory->create()->willReturn($product->reveal());
         $this->stockRegistryProvider->getStockItem(null, null)->willReturn($this->stock->reveal());
 
         $record = new Record(10, [
-            'status'            => 1,
-            'sku'               => 'PROD1',
-            'name'              => 'Product 1',
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => 'PROD1',
+            'name' => 'Product 1',
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'configurable',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5
+            'price' => 100,
+            'type' => 'configurable',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5
         ]);
 
         $this->productWriter->write(
@@ -211,23 +214,23 @@ class ProductWriterTest extends TestCase
         $this->productResource->save($product->reveal())->shouldHaveBeenCalled();
     }
 
-    public function testSimpleProductIsSavedAndExtraAttributesArePassedToAttributeProcessor()
+    public function testSimpleProductIsSavedAndExtraAttributesArePassedToAttributeProcessor(): void
     {
         $product = $this->prophesize(Product::class);
         $this->productFactory->create()->willReturn($product->reveal());
 
         $record = new Record(10, [
-            'status'            => 1,
-            'sku'               => 'PROD1',
-            'name'              => 'Product 1',
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => 'PROD1',
+            'name' => 'Product 1',
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'simple',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5,
-            'attributes'        => [
-                'size'   => 10,
+            'price' => 100,
+            'type' => 'simple',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5,
+            'attributes' => [
+                'size' => 10,
                 'colour' => 'blue'
             ]
         ]);
@@ -259,25 +262,25 @@ class ProductWriterTest extends TestCase
         $this->productResource->save($product->reveal())->shouldHaveBeenCalled();
     }
 
-    public function testProductWithImagesAreAdded()
+    public function testProductWithImagesAreAdded(): void
     {
         $product = $this->prophesize(Product::class);
         $this->productFactory->create()->willReturn($product->reveal());
 
         $record = new Record(10, [
-            'status'            => 1,
-            'sku'               => 'PROD1',
-            'name'              => 'Product 1',
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => 'PROD1',
+            'name' => 'Product 1',
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'simple',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5,
-            'images'            => [
+            'price' => 100,
+            'type' => 'simple',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5,
+            'images' => [
                 [
-                    'path'       => 'var/images/my-image.png',
-                    'label'      => 'My Image',
+                    'path' => 'var/images/my-image.png',
+                    'label' => 'My Image',
                     'attributes' => []
                 ]
             ]
@@ -311,22 +314,22 @@ class ProductWriterTest extends TestCase
         $this->productResource->save($product->reveal())->shouldHaveBeenCalled();
     }
 
-    public function testProductWithCategories()
+    public function testProductWithCategories(): void
     {
         $product = $this->prophesize(Product::class);
         $this->productFactory->create()->willReturn($product->reveal());
 
         $record = new Record(10, [
-            'status'            => 1,
-            'sku'               => 'PROD1',
-            'name'              => 'Product 1',
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => 'PROD1',
+            'name' => 'Product 1',
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'simple',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5,
-            'categories'        => [1, 5]
+            'price' => 100,
+            'type' => 'simple',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5,
+            'categories' => [1, 5]
         ]);
 
         $this->productWriter->write(
@@ -351,7 +354,7 @@ class ProductWriterTest extends TestCase
         $this->categoryLink->assignProductToCategories('PROD1', [1, 5]);
     }
 
-    public function testFinishReturnsIdsOfCreatedProducts()
+    public function testFinishReturnsIdsOfCreatedProducts(): void
     {
         $product1 = $this->prophesize(Product::class);
         $product2 = $this->prophesize(Product::class);
@@ -391,7 +394,7 @@ class ProductWriterTest extends TestCase
         self::assertSame([56, 57, 58], $result->getAffectedIds());
     }
 
-    private function setupProductExpectationAndCreateRecord(ObjectProphecy $product, int $id, string $sku, string $name)
+    private function setupProductExpectationAndCreateRecord(ObjectProphecy $product, int $id, string $sku, string $name): Record
     {
         $product->setStatus(1)->shouldBeCalled();
         $product->setSku($sku)->shouldBeCalled();
@@ -409,15 +412,15 @@ class ProductWriterTest extends TestCase
         $product->getSku()->shouldBeCalled();
 
         return new Record($id, [
-            'status'            => 1,
-            'sku'               => $sku,
-            'name'              => $name,
-            'description'       => 'Product Description',
+            'status' => 1,
+            'sku' => $sku,
+            'name' => $name,
+            'description' => 'Product Description',
             'short_description' => 'Product Short Description',
-            'price'             => 100,
-            'type'              => 'simple',
-            'visibility'        => Visibility::VISIBILITY_BOTH,
-            'tax_class_id'      => 5
+            'price' => 100,
+            'type' => 'simple',
+            'visibility' => Visibility::VISIBILITY_BOTH,
+            'tax_class_id' => 5
         ]);
     }
 }

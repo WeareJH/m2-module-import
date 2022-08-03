@@ -2,13 +2,18 @@
 
 namespace Jh\ImportTest\Locker;
 
+use Jh\Import\Locker\ImportLockedException;
 use Jh\Import\Locker\Locker;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\Select;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class LockerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var AdapterInterface
      */
@@ -27,12 +32,12 @@ class LockerTest extends TestCase
         $this->locker = new Locker($resourceConnection->reveal());
     }
 
-    public function testLockThrowsExceptionIfAlreadyLocked()
+    public function testLockThrowsExceptionIfAlreadyLocked(): void
     {
-        $this->expectException(\Jh\Import\Locker\ImportLockedException::class);
+        $this->expectException(ImportLockedException::class);
         $this->expectExceptionMessage('Import with name "product" is locked.');
-        
-        $select = $this->prophesize(\Magento\Framework\DB\Select::class);
+
+        $select = $this->prophesize(Select::class);
 
         $this->dbAdapter->select()->willReturn($select);
 
@@ -44,9 +49,9 @@ class LockerTest extends TestCase
         $this->locker->lock('product');
     }
 
-    public function testLockInsertsDatabaseEntry()
+    public function testLockInsertsDatabaseEntry(): void
     {
-        $select = $this->prophesize(\Magento\Framework\DB\Select::class);
+        $select = $this->prophesize(Select::class);
 
         $this->dbAdapter->select()->willReturn($select);
 
@@ -60,16 +65,16 @@ class LockerTest extends TestCase
         $this->locker->lock('product');
     }
 
-    public function testReleaseDeletesDatabaseEntry()
+    public function testReleaseDeletesDatabaseEntry(): void
     {
         $this->dbAdapter->delete('jh_import_lock', ['import_name = ?' => 'product'])->shouldBeCalled();
 
         $this->locker->release('product');
     }
 
-    public function testLockedReturnsTrueIfLocked()
+    public function testLockedReturnsTrueIfLocked(): void
     {
-        $select = $this->prophesize(\Magento\Framework\DB\Select::class);
+        $select = $this->prophesize(Select::class);
 
         $this->dbAdapter->select()->willReturn($select);
 
@@ -81,9 +86,9 @@ class LockerTest extends TestCase
         self::assertTrue($this->locker->locked('product'));
     }
 
-    public function testLockedReturnsFalseIfLocked()
+    public function testLockedReturnsFalseIfLocked(): void
     {
-        $select = $this->prophesize(\Magento\Framework\DB\Select::class);
+        $select = $this->prophesize(Select::class);
 
         $this->dbAdapter->select()->willReturn($select);
 

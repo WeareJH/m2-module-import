@@ -7,15 +7,18 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class ElapsedTest extends TestCase
 {
-    public function testElapsedIsIgnoredIfBothDatesDoNotExist()
+    use ProphecyTrait;
+
+    public function testElapsedIsIgnoredIfBothDatesDoNotExist(): void
     {
-        $context            = $this->prophesize(ContextInterface::class);
+        $context = $this->prophesize(ContextInterface::class);
         $uiComponentFactory = $this->prophesize(UiComponentFactory::class);
 
         $context->getProcessor()->willReturn($this->prophesize(Processor::class)->reveal());
@@ -42,9 +45,9 @@ class ElapsedTest extends TestCase
      * @param string $expected
      * @dataProvider dateProvider
      */
-    public function testElapsedIsAddedAndCorrectWhenBothDatesExist(string $started, string $finished, string $expected)
+    public function testElapsedIsAddedAndCorrectWhenBothDatesExist(string $started, string $finished, string $expected): void
     {
-        $context            = $this->prophesize(ContextInterface::class);
+        $context = $this->prophesize(ContextInterface::class);
         $uiComponentFactory = $this->prophesize(UiComponentFactory::class);
 
         $context->getProcessor()->willReturn($this->prophesize(Processor::class)->reveal());

@@ -11,9 +11,12 @@ use Jh\Import\Source\Source;
 use Jh\Import\Source\SourceFactory;
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class SourceFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testCreateThrowsExceptionIfSourceDoesNotImplementCorrectInterface(): void
     {
         $this->expectException(\RuntimeException::class);

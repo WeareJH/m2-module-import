@@ -28,11 +28,11 @@ class FingersCrossedMaxTest extends TestCase
         $title .= ' after that (maximum 100)';
         self::assertStringContainsString($title, $html);
 
-        self::assertRegExp('/Import Name:\s+my-import/', strip_tags($html));
-        self::assertRegExp('/Source ID:\s+source-id/', strip_tags($html));
-        self::assertRegExp('/Import Started:\s+20-04-2020 10:00:01/', strip_tags($html));
-        self::assertRegExp('/Import Finished:\s+20-04-2020 10:15:10/', strip_tags($html));
-        self::assertRegExp('/Peak Memory Usage:\s+2 KB/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Name:\s+my-import/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Source ID:\s+source-id/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Started:\s+20-04-2020 10:00:01/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Finished:\s+20-04-2020 10:15:10/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Peak Memory Usage:\s+2 KB/', strip_tags($html));
     }
 
     public function testFilterItemMessagesWithNoMessagesAboveMinimumLogLevel(): void

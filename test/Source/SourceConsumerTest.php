@@ -14,11 +14,12 @@ class SourceConsumerTest extends TestCase
 {
     public function testSourceConsumer(): void
     {
-        $source = Iterator::fromCallable(function () {
-            yield ['sku' => 'PROD1', 'stock' => 10];
-            yield ['sku' => 'PROD2', 'stock' => 5];
-            yield ['sku' => 'PROD3', 'stock' => 11];
-        });
+        $source = Iterator::fromCallable(
+            function () {
+                yield ['sku' => 'PROD1', 'stock' => 10];
+                yield ['sku' => 'PROD2', 'stock' => 5];
+                yield ['sku' => 'PROD3', 'stock' => 11];
+            });
 
         $consumer = new SourceConsumer();
         $data = $consumer->toArray($source, new Config('my-stock-import', ['id_field' => 'sku']));

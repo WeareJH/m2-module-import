@@ -17,8 +17,9 @@ class ProductVisibilityTransformerTest extends TestCase
     /**
      * @dataProvider visibilityProvider
      * @param string $visibility
+     * @param $id
      */
-    public function testVisibilityTransformer(string $visibility, $id)
+    public function testVisibilityTransformer(string $visibility, $id): void
     {
         $record = new Record(11, ['visibility' => $visibility]);
 
@@ -28,7 +29,7 @@ class ProductVisibilityTransformerTest extends TestCase
         self::assertEquals($id, $record->getColumnValue('visibility'));
     }
 
-    public function visibilityProvider()
+    public function visibilityProvider(): array
     {
         return [
             ['Not Visible Individually', Visibility::VISIBILITY_NOT_VISIBLE],
@@ -38,7 +39,7 @@ class ProductVisibilityTransformerTest extends TestCase
         ];
     }
 
-    public function testUnknownVisibilityIsSetToNull()
+    public function testUnknownVisibilityIsSetToNull(): void
     {
         $record = new Record(11, ['visibility' => 'unknown-visibility']);
 
@@ -57,7 +58,7 @@ class ProductVisibilityTransformerTest extends TestCase
         );
     }
 
-    public function testDefaultValueIsUsedIfSpecifiedAndValueIsMissing()
+    public function testDefaultValueIsUsedIfSpecifiedAndValueIsMissing(): void
     {
         $record = new Record(11, ['visibility' => null]);
 

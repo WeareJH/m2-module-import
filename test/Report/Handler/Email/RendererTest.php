@@ -87,11 +87,11 @@ class RendererTest extends TestCase
             '<h3 style="background: #FF7708;color: #ffffff;padding: 5px;" class="monolog-output">CRITICAL</h3>',
             $html
         );
-        self::assertRegExp('/Reference Line:\s+100/', strip_tags($html));
-        self::assertRegExp('/ID Field:\s+sku/', strip_tags($html));
-        self::assertRegExp('/ID Value:\s+PROD1/', strip_tags($html));
-        self::assertRegExp('/Message:\s+Some critical error/', strip_tags($html));
-        self::assertRegExp('/Time:\s+20-04-2020 10:00:00/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Reference Line:\s+100/', strip_tags($html));
+        self::assertMatchesRegularExpression('/ID Field:\s+sku/', strip_tags($html));
+        self::assertMatchesRegularExpression('/ID Value:\s+PROD1/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Message:\s+Some critical error/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Time:\s+20-04-2020 10:00:00/', strip_tags($html));
     }
 
     public function testImportLogEntry(): void
@@ -104,7 +104,7 @@ class RendererTest extends TestCase
             '<h3 style="background: #FF7708;color: #ffffff;padding: 5px;" class="monolog-output">CRITICAL</h3>',
             $html
         );
-        self::assertRegExp('/Message:\s+Some critical error/', strip_tags($html));
-        self::assertRegExp('/Time:\s+20-04-2020 10:00:00/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Message:\s+Some critical error/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Time:\s+20-04-2020 10:00:00/', strip_tags($html));
     }
 }

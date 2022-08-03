@@ -2,6 +2,8 @@
 
 namespace Jh\ImportTest\Report;
 
+use DateTime;
+use InvalidArgumentException;
 use Jh\Import\Report\Message;
 use PHPUnit\Framework\TestCase;
 
@@ -10,24 +12,24 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageTest extends TestCase
 {
-    public function testExceptionIsThrownWithInvalidLogLevel()
+    public function testExceptionIsThrownWithInvalidLogLevel(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Log Level supplied: "invalid-level"');
 
         new Message('invalid-level', 'wut');
     }
 
-    public function testGetters()
+    public function testGetters(): void
     {
         $message = new Message('ERROR', 'something dun wrong');
 
         self::assertEquals('ERROR', $message->getLogLevel());
         self::assertEquals('something dun wrong', $message->getMessage());
-        self::assertInstanceOf(\DateTime::class, $message->getDateTime());
+        self::assertInstanceOf(DateTime::class, $message->getDateTime());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $message = new Message('ERROR', 'something dun wrong');
 

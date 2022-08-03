@@ -4,7 +4,6 @@ namespace Jh\ImportTest\Report;
 
 use Jh\Import\Report\CollectingReport;
 use Jh\Import\Report\Handler\CollectingHandler;
-use Jh\Import\Report\Handler\ConsoleHandler;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ReportTest extends TestCase
 {
-    public function testAddersAndGetters()
+    public function testAddersAndGetters(): void
     {
         $report = new Report([$handler = new CollectingHandler()], 'product', 'some-source-id');
 
@@ -42,13 +41,13 @@ class ReportTest extends TestCase
         );
     }
 
-    public function testReportIsSuccessfulIfNoErrors()
+    public function testReportIsSuccessfulIfNoErrors(): void
     {
         $report = new Report([], 'product', 'some-source-id');
         self::assertTrue($report->isSuccessful());
     }
 
-    public function testReportIsUnsuccessfulIfErrors()
+    public function testReportIsUnsuccessfulIfErrors(): void
     {
         $report = new Report([], 'product', 'some-source-id');
 
@@ -58,7 +57,7 @@ class ReportTest extends TestCase
         self::assertFalse($report->isSuccessful());
     }
 
-    public function testReportIsSuccessfulIfNoErrorsAndSomeWarnings()
+    public function testReportIsSuccessfulIfNoErrorsAndSomeWarnings(): void
     {
         $report = new Report([], 'product', 'some-source-id');
 
@@ -68,7 +67,7 @@ class ReportTest extends TestCase
         self::assertTrue($report->isSuccessful());
     }
 
-    public function testNewItem()
+    public function testNewItem(): void
     {
         $report = new Report([], 'product', 'some-source-id');
 

@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Jh\ImportTest\Output;
 
 use Jh\Import\Output\Factory;
+use Magento\Framework\App\State;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
-use Magento\Framework\App\State;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\NullOutput;
 
 class FactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testNullOutputIsCreatedWhenNotInDevModeOrNoTty(): void
     {
         $builder = new MockBuilder();

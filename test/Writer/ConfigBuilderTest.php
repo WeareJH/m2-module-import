@@ -11,12 +11,14 @@ use Magento\Catalog\Api\Data\ProductSearchResultsInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductRepository;
+use Magento\ConfigurableProduct\Api\Data\OptionValueInterface;
 use Magento\Eav\Api\Data\AttributeOptionInterface;
 use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\ConfigurableProduct\Api\Data\OptionValueInterfaceFactory;
 use Magento\ConfigurableProduct\Helper\Product\Options\Factory as OptionFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -34,13 +36,13 @@ class ConfigBuilderTest extends TestCase
         $this->optionValueFactory = $this->prophesize(OptionValueInterfaceFactory::class);
     }
 
-    public function testConfigBuilder()
+    public function testConfigBuilder(): void
     {
-        $productRepo           = $this->prophesize(ProductRepository::class);
+        $productRepo = $this->prophesize(ProductRepository::class);
         $searchCriteriaBuilder = $this->prophesize(SearchCriteriaBuilder::class);
-        $searchCriteria        = $this->prophesize(SearchCriteria::class);
-        $optionFactory         = $this->prophesize(OptionFactory::class);
-        $attributeRepo         = $this->prophesize(ProductAttributeRepositoryInterface::class);
+        $searchCriteria = $this->prophesize(SearchCriteria::class);
+        $optionFactory = $this->prophesize(OptionFactory::class);
+        $attributeRepo = $this->prophesize(ProductAttributeRepositoryInterface::class);
 
         $configBuilder = new ConfigBuilder(
             $productRepo->reveal(),
@@ -128,7 +130,7 @@ class ConfigBuilderTest extends TestCase
         );
     }
 
-    private function mockAttribute(string $label, string $code, int $id, array $options = [])
+    private function mockAttribute(string $label, string $code, int $id, array $options = []): ObjectProphecy
     {
         $attribute = $this->prophesize(ProductAttributeInterface::class);
         $attribute->getAttributeId()->willReturn($id);
@@ -147,9 +149,9 @@ class ConfigBuilderTest extends TestCase
         return $attribute;
     }
 
-    private function createExpectationForOptionValueFactory(int $value)
+    private function createExpectationForOptionValueFactory(int $value): void
     {
-        $optionValue = $this->prophesize(\Magento\ConfigurableProduct\Api\Data\OptionValueInterface::class);
+        $optionValue = $this->prophesize(OptionValueInterface::class);
         $optionValue->setValueIndex($value)
             ->will(function ($args, $mock) {
                 $mock->getValueIndex()->willReturn($args[0]);

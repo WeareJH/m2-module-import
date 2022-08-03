@@ -16,6 +16,7 @@ use Magento\Framework\ObjectManagerInterface;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Output\NullOutput;
 
 /**
@@ -23,11 +24,12 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class ReportFactoryTest extends TestCase
 {
+    use ProphecyTrait;
 
     /**
      * @runInSeparateProcess
      */
-    public function testReportIsCreatedWithoutConsoleHandlerWhenNotInDevModeOrNoTty()
+    public function testReportIsCreatedWithoutConsoleHandlerWhenNotInDevModeOrNoTty(): void
     {
         $builder = new MockBuilder();
         $builder->setNamespace('Jh\Import\Report')
@@ -63,7 +65,7 @@ class ReportFactoryTest extends TestCase
         $mock->disable();
     }
 
-    public function testReportIsCreatedWithConsoleHandlerIfInDevMode()
+    public function testReportIsCreatedWithConsoleHandlerIfInDevMode(): void
     {
         $appState  = $this->prophesize(State::class);
         $appState->getMode()->willReturn(State::MODE_DEVELOPER);
@@ -95,7 +97,7 @@ class ReportFactoryTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testReportIsCreatedWithConsoleHandlerWhenTty()
+    public function testReportIsCreatedWithConsoleHandlerWhenTty(): void
     {
         $builder = new MockBuilder();
         $builder->setNamespace('Jh\Import\Report')
@@ -138,7 +140,7 @@ class ReportFactoryTest extends TestCase
         $mock->disable();
     }
 
-    public function testExceptionIsThrownIfAdditionalHandlerDoesNotImplementCorrectInterface()
+    public function testExceptionIsThrownIfAdditionalHandlerDoesNotImplementCorrectInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Report handler must implement "Jh\Import\Report\Handler\Handler"');
@@ -167,7 +169,7 @@ class ReportFactoryTest extends TestCase
         $factory->createFromSourceAndConfig(new Iterator(new \ArrayIterator([])), $config);
     }
 
-    public function testAdditionalReportHandlersAreAddedToReport()
+    public function testAdditionalReportHandlersAreAddedToReport(): void
     {
         $appState  = $this->prophesize(State::class);
         $appState->getMode()->willReturn(State::MODE_DEVELOPER);

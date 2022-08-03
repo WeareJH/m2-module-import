@@ -7,20 +7,23 @@ use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class MemoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @param string $bytes
      * @param string $expected
      * @dataProvider bytesProvider
      */
-    public function testMemoryIsFormattedFromBytes(string $bytes, string $expected)
+    public function testMemoryIsFormattedFromBytes(string $bytes, string $expected): void
     {
-        $context            = $this->prophesize(ContextInterface::class);
+        $context = $this->prophesize(ContextInterface::class);
         $uiComponentFactory = $this->prophesize(UiComponentFactory::class);
 
         $context->getProcessor()->willReturn($this->prophesize(Processor::class)->reveal());

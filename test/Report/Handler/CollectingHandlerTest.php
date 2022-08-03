@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CollectingHandlerTest extends TestCase
 {
-    public function testMessagesAreCollected()
+    public function testMessagesAreCollected(): void
     {
         $handler = new CollectingHandler();
         $handler->handleMessage(new Message(LogLevel::CRITICAL, 'Message 1'));

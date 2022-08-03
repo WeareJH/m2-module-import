@@ -11,15 +11,18 @@ use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 use Magento\Framework\App\Area;
 use Magento\Framework\Mail\AddressFactory;
+use Magento\Framework\Mail\EmailMessageInterfaceFactory;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Mail\TransportInterface;
-use Magento\Framework\Mail\EmailMessageInterfaceFactory;
 use Magento\Store\Model\Store;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class EmailHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testEmailIsSentAndWithCorrectData(): void
     {
         $transportBuilder = $this->prophesize(TransportBuilder::class);

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class CollectingWriterTest extends TestCase
 {
-    public function testCollectingWriter()
+    public function testCollectingWriter(): void
     {
         $record1 = new Record(1, ['col1' => 'row1col1value', 'col2' => 'row1col2value']);
         $record2 = new Record(2, ['col1' => 'row2col1value', 'col2' => 'row2col2value']);

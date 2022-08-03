@@ -9,10 +9,13 @@ use Jh\Import\Progress\Factory;
 use Jh\Import\Progress\NullProgress;
 use Magento\Framework\App\State;
 use phpmock\MockBuilder;
+use Prophecy\PhpUnit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 
 class FactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @runInSeparateProcess
      */

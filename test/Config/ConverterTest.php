@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ConverterTest extends TestCase
 {
-    public function testConvert()
+    public function testConvert(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -55,7 +55,7 @@ END;
         );
     }
 
-    public function testConvertWithOptionalIndexers()
+    public function testConvertWithOptionalIndexers(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -107,7 +107,7 @@ END;
         );
     }
 
-    public function testConvertWithNoAdditionalReportHandlers()
+    public function testConvertWithNoAdditionalReportHandlers(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -152,7 +152,7 @@ END;
         );
     }
 
-    public function testConvertWithOptionalReportHandlers()
+    public function testConvertWithOptionalReportHandlers(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -204,7 +204,7 @@ END;
         );
     }
 
-    public function testConvertNoDirectoriesUsesDefaults()
+    public function testConvertNoDirectoriesUsesDefaults(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -246,7 +246,7 @@ END;
         );
     }
 
-    public function testConvertWithNoCron()
+    public function testConvertWithNoCron(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -288,7 +288,7 @@ END;
         );
     }
 
-    public function testConvertWithCustomCronGroup()
+    public function testConvertWithCustomCronGroup(): void
     {
         $xml = <<<'END'
 <?xml version="1.0"?>
@@ -339,7 +339,7 @@ END;
      * @param $archiveOldFiles
      * @param $deleteOldFiles
      */
-    public function testConvertWithTruthyValuesForCleanUp($archiveOldFiles, $deleteOldFiles)
+    public function testConvertWithTruthyValuesForCleanUp($archiveOldFiles, $deleteOldFiles): void
     {
         $xml = <<<END
 <?xml version="1.0"?>

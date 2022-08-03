@@ -6,6 +6,7 @@ use Jh\Import\Entity\ImportHistory;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -13,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ImportHistoryTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     public function testGetStartedAt(): void
     {

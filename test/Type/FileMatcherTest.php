@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileMatcherTest extends TestCase
 {
-    public function testFilesImportWithSingleFileMatch()
+    public function testFilesImportWithSingleFileMatch(): void
     {
         $files = [
             '/var/www/import/file1.csv',
@@ -23,7 +23,7 @@ class FileMatcherTest extends TestCase
         self::assertEquals(['/var/www/import/other.txt'], $matched);
     }
 
-    public function testFilesImportWithRegexFolderMatch()
+    public function testFilesImportWithRegexFolderMatch(): void
     {
         $files = [
             '/var/www/import/file1.csv',
@@ -46,7 +46,7 @@ class FileMatcherTest extends TestCase
         );
     }
 
-    public function testFilesImportWithAllFilesMatch()
+    public function testFilesImportWithAllFilesMatch(): void
     {
         $files = [
             '/var/www/import/file1.csv',
@@ -70,7 +70,7 @@ class FileMatcherTest extends TestCase
         );
     }
 
-    public function testMatchesWithSingleFile()
+    public function testMatchesWithSingleFile(): void
     {
         $matcher = new FileMatcher();
 

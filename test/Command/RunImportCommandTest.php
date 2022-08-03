@@ -6,6 +6,7 @@ use Jh\Import\Command\RunImportCommand;
 use Jh\Import\Import\Manager;
 use Magento\Framework\App\State;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -13,10 +14,12 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class RunImportCommandTest extends TestCase
 {
-    public function testCronExecutesCorrectImport()
+    use ProphecyTrait;
+
+    public function testCronExecutesCorrectImport(): void
     {
         $manager = $this->prophesize(Manager::class);
-        $state   = $this->prophesize(State::class);
+        $state = $this->prophesize(State::class);
 
         $commandTester = new CommandTester(new RunImportCommand($manager->reveal(), $state->reveal()));
         $commandTester->execute(['import_name' => 'product']);
@@ -24,10 +27,10 @@ class RunImportCommandTest extends TestCase
         $manager->executeImportByName('product')->shouldHaveBeenCalled();
     }
 
-    public function testCronSetsStateToCronAndExecutesCorrectImport()
+    public function testCronSetsStateToCronAndExecutesCorrectImport(): void
     {
         $manager = $this->prophesize(Manager::class);
-        $state   = $this->prophesize(State::class);
+        $state = $this->prophesize(State::class);
 
         $commandTester = new CommandTester(new RunImportCommand($manager->reveal(), $state->reveal()));
         $commandTester->execute(['import_name' => 'product']);

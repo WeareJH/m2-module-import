@@ -8,9 +8,12 @@ use Jh\Import\Writer\Utils\DisableEventObserver;
 use Magento\Framework\Event\Config;
 use Magento\Framework\Event\Config\Data;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class DisableEventObserverTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testDisableEventObserverDisablesObserverIfRegistered(): void
     {
         $disableEventObserver = new DisableEventObserver();

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 class IteratorTest extends TestCase
 {
-    public function testCount()
+    public function testCount(): void
     {
         $source = new Iterator(new \ArrayIterator([1, 2, 3]));
         $source->traverse(
@@ -26,7 +26,7 @@ class IteratorTest extends TestCase
         self::assertEquals(3, $source->count());
     }
 
-    public function testTraverseCallsCallableForEachRow()
+    public function testTraverseCallsCallableForEachRow(): void
     {
         $expectedData = [
             1 => ['column1' => 'row1column1value', 'column2' => 'row1column2value', 'column3' => 'row1column3value'],
@@ -49,7 +49,7 @@ class IteratorTest extends TestCase
         self::assertEquals($expectedData, $parsed);
     }
 
-    public function testTraverseCallsCallableForEachRowUsingGenerator()
+    public function testTraverseCallsCallableForEachRowUsingGenerator(): void
     {
         $expectedData = [
             1 => ['column1' => 'row1column1value', 'column2' => 'row1column2value', 'column3' => 'row1column3value'],
@@ -76,7 +76,7 @@ class IteratorTest extends TestCase
         self::assertEquals($expectedData, $parsed);
     }
 
-    public function testSourceIdReturnsDifferentIdForDifferentIterator()
+    public function testSourceIdReturnsDifferentIdForDifferentIterator(): void
     {
         $source1 = Iterator::fromCallable(function () {
             foreach ([1, 2, 3] as $key => $value) {
@@ -93,7 +93,7 @@ class IteratorTest extends TestCase
         self::assertNotEquals($source1->getSourceId(), $source2->getSourceId());
     }
 
-    public function testSourceIdReturnsSameIdForSameFile()
+    public function testSourceIdReturnsSameIdForSameFile(): void
     {
         $source = Iterator::fromCallable(function () {
             foreach ([1, 2, 3] as $key => $value) {

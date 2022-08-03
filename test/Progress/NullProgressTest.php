@@ -5,6 +5,7 @@ namespace Jh\ImportTest\Progress;
 use Jh\Import\Config;
 use Jh\Import\Progress\NullProgress;
 use Jh\Import\Source\Source;
+use Prophecy\PhpUnit\ProphecyTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,9 @@ use PHPUnit\Framework\TestCase;
  */
 class NullProgressTest extends TestCase
 {
-    public function testNullProgressDoesNothing()
+    use ProphecyTrait;
+
+    public function testNullProgressDoesNothing(): void
     {
         $this->expectOutputString('');
 

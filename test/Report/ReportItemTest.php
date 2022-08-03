@@ -3,7 +3,6 @@
 namespace Jh\ImportTest\Report;
 
 use Jh\Import\Report\Handler\CollectingHandler;
-use Jh\Import\Report\Handler\ConsoleHandler;
 use Jh\Import\Report\ReportItem;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ReportItemTest extends TestCase
 {
-    public function testAddersAndGetters()
+    public function testAddersAndGetters(): void
     {
         $report = new ReportItem([$handler = new CollectingHandler()], 33, 'sku', 'PROD1');
 
