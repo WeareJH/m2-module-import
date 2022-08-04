@@ -8,6 +8,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -15,11 +16,12 @@ use PHPUnit\Framework\TestCase;
 class ImportHistoryActionsTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
-    public function testEditLinksAreAdded()
+    public function testEditLinksAreAdded(): void
     {
         $urlBuilder = $this->prophesize(UrlInterface::class);
-        $context    = $this->prophesize(ContextInterface::class);
+        $context = $this->prophesize(ContextInterface::class);
         $context->getProcessor()->willReturn($this->prophesize(Processor::class)->reveal());
 
         $actions = $this->getObject(

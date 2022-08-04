@@ -5,21 +5,22 @@ namespace Jh\ImportTest\Controller\Adminhtml\Files;
 use Jh\Import\Config\Data;
 use Jh\Import\Controller\Adminhtml\Files\Delete;
 use Jh\UnitTestHelpers\ObjectHelper;
-use Magento\Framework\Config\CacheInterface;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Config\ReaderInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Config\CacheInterface;
+use Magento\Framework\Config\ReaderInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var string
@@ -75,7 +76,7 @@ class DeleteTest extends TestCase
         (new Filesystem())->remove($this->tempDirectory);
     }
 
-    public function testRedirectIsReturnedIfNameParamNotPreset()
+    public function testRedirectIsReturnedIfNameParamNotPreset(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
@@ -91,7 +92,7 @@ class DeleteTest extends TestCase
         self::assertSame($redirect->reveal(), $this->controller->execute());
     }
 
-    public function testRedirectIsReturnedIfImportDoesNotExist()
+    public function testRedirectIsReturnedIfImportDoesNotExist(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
@@ -107,7 +108,7 @@ class DeleteTest extends TestCase
         self::assertSame($redirect->reveal(), $this->controller->execute());
     }
 
-    public function testFileIsDeletedAndUserRedirected()
+    public function testFileIsDeletedAndUserRedirected(): void
     {
         $this->retrieveChildMock(Context::class, 'request')
             ->getParam('name')
@@ -137,6 +138,6 @@ class DeleteTest extends TestCase
             ->willReturn($redirect->reveal());
 
         self::assertSame($redirect->reveal(), $this->controller->execute());
-        self::assertFileNotExists($this->tempDirectory . '/jh_import/failed/my-file.csv');
+        self::assertFileDoesNotExist($this->tempDirectory . '/jh_import/failed/my-file.csv');
     }
 }

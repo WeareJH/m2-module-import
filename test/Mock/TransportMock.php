@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Jh\ImportTest\Mock;
 
 use Magento\Framework\Mail\EmailMessageInterface;
+use Magento\Framework\Mail\TransportInterface;
 
-class TransportMock implements \Magento\Framework\Mail\TransportInterface
+class TransportMock implements TransportInterface
 {
     /**
      * @var EmailMessageInterface|null
@@ -18,12 +19,12 @@ class TransportMock implements \Magento\Framework\Mail\TransportInterface
         $this->message = $message;
     }
 
-    public function sendMessage()
+    public function sendMessage(): void
     {
         //noop
     }
 
-    public function getMessage()
+    public function getMessage(): ?EmailMessageInterface
     {
         return $this->message;
     }

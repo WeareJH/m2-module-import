@@ -16,6 +16,7 @@ use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -24,6 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class FilesTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var string
@@ -51,19 +53,19 @@ class FilesTest extends TestCase
         (new Filesystem())->remove($this->tempDirectory);
     }
 
-    public function testFilesTypeCreatesAndRunsImportForEachMatchesFileInIncomingDirectory()
+    public function testFilesTypeCreatesAndRunsImportForEachMatchesFileInIncomingDirectory(): void
     {
         $config = new Config('product', [
-            'specification'      => 'MySpecification',
-            'writer'             => 'MyWriter',
-            'source'             => 'MySource',
+            'specification' => 'MySpecification',
+            'writer' => 'MyWriter',
+            'source' => 'MySource',
             'incoming_directory' => 'import',
-            'match_files'        => '*',
+            'match_files' => '*',
         ]);
 
         $importFactory = $this->prophesize(ImporterFactory::class);
         $specification = $this->prophesize(ImportSpecification::class);
-        $writer        = $this->prophesize(Writer::class);
+        $writer = $this->prophesize(Writer::class);
 
         $objectManager = $this->prophesize(ObjectManagerInterface::class);
         $objectManager->get('MySpecification')->willReturn($specification);

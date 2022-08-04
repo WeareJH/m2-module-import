@@ -9,23 +9,26 @@ use Jh\Import\Transformer\CategoryPathTransformer;
 use Magento\Catalog\Api\Data\CategoryTreeInterface;
 use Magento\Catalog\Model\CategoryManagement;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class CategoryPathTransformerTest extends TestCase
 {
-    public function testTransformCategoryPath()
+    use ProphecyTrait;
+
+    public function testTransformCategoryPath(): void
     {
         $categoryManagement = $this->prophesize(CategoryManagement::class);
-        $categoryTree       = $this->prophesize(CategoryTreeInterface::class);
+        $categoryTree = $this->prophesize(CategoryTreeInterface::class);
 
         $categoryManagement->getTree()->willReturn($categoryTree);
 
-        $level1       = $this->prophesize(CategoryTreeInterface::class);
+        $level1 = $this->prophesize(CategoryTreeInterface::class);
         $level1->getName()->willReturn('level1');
 
-        $level2       = $this->prophesize(CategoryTreeInterface::class);
+        $level2 = $this->prophesize(CategoryTreeInterface::class);
         $level2->getName()->willReturn('level2');
 
         $someCategory = $this->prophesize(CategoryTreeInterface::class);
@@ -45,17 +48,17 @@ class CategoryPathTransformerTest extends TestCase
         self::assertCount(0, $handler->itemMessages);
     }
 
-    public function testTransformCategoryLogsIfCategoryDoesNotExist()
+    public function testTransformCategoryLogsIfCategoryDoesNotExist(): void
     {
         $categoryManagement = $this->prophesize(CategoryManagement::class);
-        $categoryTree       = $this->prophesize(CategoryTreeInterface::class);
+        $categoryTree = $this->prophesize(CategoryTreeInterface::class);
 
         $categoryManagement->getTree()->willReturn($categoryTree);
 
-        $level1       = $this->prophesize(CategoryTreeInterface::class);
+        $level1 = $this->prophesize(CategoryTreeInterface::class);
         $level1->getName()->willReturn('level1');
 
-        $level2       = $this->prophesize(CategoryTreeInterface::class);
+        $level2 = $this->prophesize(CategoryTreeInterface::class);
         $level2->getName()->willReturn('level2');
 
         $categoryTree->getChildrenData()->willReturn([$level1->reveal()]);

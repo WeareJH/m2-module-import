@@ -17,10 +17,12 @@ use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class DownloadTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var FileFactory|ObjectProphecy

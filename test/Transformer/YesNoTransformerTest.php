@@ -5,6 +5,7 @@ namespace Jh\ImportTest\Transformer;
 use Jh\Import\Import\Record;
 use Jh\Import\Transformer\YesNoTransformer;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -14,7 +15,7 @@ class YesNoTransformerTest extends TestCase
     /**
      * @dataProvider truthyValue
      */
-    public function testyesNoWithTruthyValueIsSetToEnabled($value)
+    public function testyesNoWithTruthyValueIsSetToEnabled($value): void
     {
         $record = new Record(11, ['is_cool_product' => $value]);
 
@@ -27,7 +28,7 @@ class YesNoTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function truthyValue()
+    public function truthyValue(): array
     {
         return [
             ['Yes'],
@@ -42,7 +43,7 @@ class YesNoTransformerTest extends TestCase
     /**
      * @dataProvider falseyValue
      */
-    public function testYesNoWithFalseyValueIsSetToDisabled($value)
+    public function testYesNoWithFalseyValueIsSetToDisabled($value): void
     {
         $record = new Record(11, ['is_cool_product' => $value]);
 
@@ -55,7 +56,7 @@ class YesNoTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function falseyValue()
+    public function falseyValue(): array
     {
         return [
             ['No'],
@@ -67,9 +68,9 @@ class YesNoTransformerTest extends TestCase
         ];
     }
 
-    public function testYesNoWithUnknownValueIsSetToNo()
+    public function testYesNoWithUnknownValueIsSetToNo(): void
     {
-        $record = new Record(11, ['is_cool_product' => new \stdClass()]);
+        $record = new Record(11, ['is_cool_product' => new stdClass()]);
 
         $transformer = new YesNoTransformer('is_cool_product');
         $transformer->__invoke($record);

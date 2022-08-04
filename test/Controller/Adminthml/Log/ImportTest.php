@@ -17,12 +17,15 @@ use Magento\Backend\Model\View\Result\RedirectFactory;
 use Magento\Backend\Model\View\Result\Redirect;
 use Prophecy\Prophecy\ObjectProphecy;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class ImportTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Context|ObjectProphecy
      */
@@ -85,16 +88,16 @@ class ImportTest extends TestCase
 
     public function setUp(): void
     {
-        $this->context        = $this->prophesize(Context::class);
-        $this->pageFactory    = $this->prophesize(PageFactory::class);
+        $this->context = $this->prophesize(Context::class);
+        $this->pageFactory = $this->prophesize(PageFactory::class);
         $this->messageManager = $this->prophesize(MessageManager::class);
-        $this->response       = $this->prophesize(ResponseInterface::class);
-        $this->request        = $this->prophesize(Http::class);
-        $this->resultFactory  = $this->prophesize(ResultFactory::class);
-        $this->objectManager  = $this->prophesize(ObjectManager::class);
-        $this->eventManager   = $this->prophesize(EventManager::class);
+        $this->response = $this->prophesize(ResponseInterface::class);
+        $this->request = $this->prophesize(Http::class);
+        $this->resultFactory = $this->prophesize(ResultFactory::class);
+        $this->objectManager = $this->prophesize(ObjectManager::class);
+        $this->eventManager = $this->prophesize(EventManager::class);
         $this->resultRedirect = $this->prophesize(Redirect::class);
-        $this->resultRedirectFactory  = $this->prophesize(RedirectFactory::class);
+        $this->resultRedirectFactory = $this->prophesize(RedirectFactory::class);
 
         $this->resultRedirect->setPath('*/*/')->willReturn($this->resultRedirect->reveal());
         $this->resultRedirectFactory->create()->willReturn($this->resultRedirect->reveal());
@@ -128,7 +131,7 @@ class ImportTest extends TestCase
         );
     }
 
-    public function testRedirectIsReturnedIfNoHistoryId()
+    public function testRedirectIsReturnedIfNoHistoryId(): void
     {
         $this->request->getParam('history_id')->willReturn(null);
         $redirect = $this->prophesize(\Magento\Framework\Controller\Result\Redirect::class);
@@ -138,7 +141,7 @@ class ImportTest extends TestCase
         self::assertSame($redirect->reveal(), $this->import->execute());
     }
 
-    public function testRedirectIsReturnedIfHistoryDoesNotExist()
+    public function testRedirectIsReturnedIfHistoryDoesNotExist(): void
     {
         $this->request->getParam('history_id')->willReturn(33);
 
@@ -155,7 +158,7 @@ class ImportTest extends TestCase
         self::assertSame($redirect->reveal(), $this->import->execute());
     }
 
-    public function testWithExistingImportHistory()
+    public function testWithExistingImportHistory(): void
     {
         $this->request->getParam('history_id')->willReturn(33);
 

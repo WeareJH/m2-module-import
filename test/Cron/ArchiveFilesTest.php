@@ -4,18 +4,21 @@ namespace Jh\ImportTest\Cron;
 
 use Jh\Import\Config\Data;
 use Jh\Import\Cron\ArchiveFiles;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Config\CacheInterface;
+use Magento\Framework\Config\ReaderInterface;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
+use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem\Directory\WriteFactory;
-use Magento\Framework\Filesystem\DriverPool;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
-use Magento\Framework\Config\ReaderInterface;
-use Magento\Framework\Config\CacheInterface;
 
 class ArchiveFilesTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var string
      */
@@ -30,7 +33,7 @@ class ArchiveFilesTest extends TestCase
      * @var WriteFactory
      */
     private $writeFactory;
-    
+
     public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
@@ -71,8 +74,8 @@ class ArchiveFilesTest extends TestCase
     {
         (new Filesystem())->remove($this->tempDirectory);
     }
-    
-    public function testNoZipIsCreatedIfNoFiles()
+
+    public function testNoZipIsCreatedIfNoFiles(): void
     {
         $this->getCron()->execute();
 
@@ -83,7 +86,7 @@ class ArchiveFilesTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testNoZipCreatedIfFilesNotOlderThan3Days()
+    public function testNoZipCreatedIfFilesNotOlderThan3Days(): void
     {
         touch($this->tempDirectory . '/failed/file1.txt');
         touch($this->tempDirectory . '/archived/file1.txt');
@@ -123,7 +126,7 @@ class ArchiveFilesTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testOldFilesZipped()
+    public function testOldFilesZipped(): void
     {
         touch($this->tempDirectory . '/failed/file1.txt');
         touch($this->tempDirectory . '/failed/file2.txt');
@@ -154,9 +157,9 @@ class ArchiveFilesTest extends TestCase
         $fileCTimeMock->disable();
         $timeMock->disable();
 
-        self::assertFileNotExists($this->tempDirectory . '/failed/file1.txt');
-        self::assertFileNotExists($this->tempDirectory . '/failed/file2.txt');
-        self::assertFileNotExists($this->tempDirectory . '/archived/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file2.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/archived/file1.txt');
 
         self::assertFileExists($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
         self::assertFileExists($this->tempDirectory . '/archived/archived-14-06-2017-10-00.zip');
@@ -185,7 +188,7 @@ class ArchiveFilesTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testOnlyFilesOlderThan3DaysIncludedInZip()
+    public function testOnlyFilesOlderThan3DaysIncludedInZip(): void
     {
         touch($this->tempDirectory . '/failed/file1.txt');
         touch($this->tempDirectory . '/failed/file2.txt');
@@ -220,7 +223,7 @@ class ArchiveFilesTest extends TestCase
         $fileCTimeMock->disable();
         $timeMock->disable();
 
-        self::assertFileNotExists($this->tempDirectory . '/failed/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file1.txt');
         self::assertFileExists($this->tempDirectory . '/failed/file2.txt');
         self::assertFileExists($this->tempDirectory . '/failed/failed-14-06-2017-10-00.zip');
 
@@ -239,7 +242,7 @@ class ArchiveFilesTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testOnlyImportWithArchiveOldFilesFlagAreArchived()
+    public function testOnlyImportWithArchiveOldFilesFlagAreArchived(): void
     {
         $config = [
             'product' => [

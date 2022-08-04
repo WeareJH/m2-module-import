@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LevelOptionsTest extends TestCase
 {
-    public function testLogLevelOptions()
+    public function testLogLevelOptions(): void
     {
         self::assertEquals([
             [

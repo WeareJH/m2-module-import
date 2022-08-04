@@ -1,6 +1,6 @@
 <?php
 
-namespace Jh\ImportTest\Import;
+namespace Jh\ImportTest\Filter;
 
 use Jh\Import\Filter\SkipExistingProducts;
 use Jh\Import\Import\Record;
@@ -9,17 +9,20 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class SkipExistingProductsTest extends TestCase
 {
-    public function testExistingProductsAreSkipped()
+    use ProphecyTrait;
+
+    public function testExistingProductsAreSkipped(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
-        $adapter   = $this->prophesize(AdapterInterface::class);
-        $select    = $this->prophesize(Select::class);
+        $adapter = $this->prophesize(AdapterInterface::class);
+        $select = $this->prophesize(Select::class);
 
         $connection->getConnection()->willReturn($adapter->reveal());
         $adapter->select()->willReturn($select->reveal());

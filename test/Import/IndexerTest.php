@@ -16,9 +16,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Output\NullOutput;
 use Magento\Framework\Mview\View\StateInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class IndexerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testIndexersAreDisabledIfSpecifiedInConfig(): void
     {
         $config = new Config('product', ['id_field' => 'sku', 'indexers' => ['My\Indexer', 'My\OtherIndexer']]);

@@ -6,6 +6,7 @@ use Jh\Import\Import\Record;
 use Jh\Import\Transformer\ProductStatusTransformer;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -15,7 +16,7 @@ class ProductStatusTransformerTest extends TestCase
     /**
      * @dataProvider truthyValue
      */
-    public function testProductStatusWithTruthyValueIsSetToEnabled($value)
+    public function testProductStatusWithTruthyValueIsSetToEnabled($value): void
     {
         $record = new Record(11, ['status' => $value]);
 
@@ -28,7 +29,7 @@ class ProductStatusTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function truthyValue()
+    public function truthyValue(): array
     {
         return [
             ['Enabled'],
@@ -45,7 +46,7 @@ class ProductStatusTransformerTest extends TestCase
     /**
      * @dataProvider falseyValue
      */
-    public function testProductStatusWithFalseyValueIsSetToDisabled($value)
+    public function testProductStatusWithFalseyValueIsSetToDisabled($value): void
     {
         $record = new Record(11, ['status' => $value]);
 
@@ -58,7 +59,7 @@ class ProductStatusTransformerTest extends TestCase
     /**
      * @return array
      */
-    public function falseyValue()
+    public function falseyValue(): array
     {
         return [
             ['Disabled'],
@@ -72,9 +73,9 @@ class ProductStatusTransformerTest extends TestCase
         ];
     }
 
-    public function testProductStatusWithUnknownValueIsSetToDisabled()
+    public function testProductStatusWithUnknownValueIsSetToDisabled(): void
     {
-        $record = new Record(11, ['status' => new \stdClass()]);
+        $record = new Record(11, ['status' => new stdClass()]);
 
         $transformer = new ProductStatusTransformer('status');
         $transformer->__invoke($record);

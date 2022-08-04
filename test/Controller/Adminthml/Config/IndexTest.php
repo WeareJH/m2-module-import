@@ -5,9 +5,13 @@ namespace Jh\ImportTest\Controller\Adminhtml\Config;
 use Jh\Import\Controller\Adminhtml\Config\Index;
 use Jh\UnitTestHelpers\ObjectHelper;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Page\Config;
+use Magento\Framework\View\Page\Title;
+use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use Prophecy\Prophecy\ObjectProphecy;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -15,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 class IndexTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var PageFactory|ObjectProphecy
@@ -38,12 +43,11 @@ class IndexTest extends TestCase
         );
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
-
-        $page = $this->prophesize(\Magento\Framework\View\Result\Page::class);
-        $config = $this->prophesize(\Magento\Framework\View\Page\Config::class);
-        $title = $this->prophesize(\Magento\Framework\View\Page\Title::class);
+        $page = $this->prophesize(Page::class);
+        $config = $this->prophesize(Config::class);
+        $title = $this->prophesize(Title::class);
 
         $page->getConfig()->willReturn($config->reveal());
         $config->getTitle()->willReturn($title->reveal());

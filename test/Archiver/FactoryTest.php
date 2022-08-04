@@ -11,12 +11,15 @@ use Jh\Import\Source\Csv;
 use Jh\Import\Source\Source;
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class FactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testCsvSourceProducesCsvArchiver()
     {
         $archiver = $this->prophesize(Archiver::class)->reveal();

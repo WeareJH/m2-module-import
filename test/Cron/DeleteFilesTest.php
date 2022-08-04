@@ -3,20 +3,22 @@
 namespace Jh\ImportTest\Cron;
 
 use Jh\Import\Config\Data;
-use Jh\Import\Cron\ArchiveFiles;
 use Jh\Import\Cron\DeleteFiles;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Config\CacheInterface;
+use Magento\Framework\Config\ReaderInterface;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
+use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\TestCase;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem\Directory\WriteFactory;
-use Magento\Framework\Filesystem\DriverPool;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
-use Magento\Framework\Config\ReaderInterface;
-use Magento\Framework\Config\CacheInterface;
 
 class DeleteFilesTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var string
      */
@@ -31,7 +33,7 @@ class DeleteFilesTest extends TestCase
      * @var WriteFactory
      */
     private $writeFactory;
-    
+
     public function setUp(): void
     {
         $this->tempDirectory = sprintf('%s/%s/var', realpath(sys_get_temp_dir()), $this->getName());
@@ -72,14 +74,6 @@ class DeleteFilesTest extends TestCase
     {
         (new Filesystem())->remove($this->tempDirectory);
     }
-    
-//    public function testNoZipIsCreatedIfNoFiles()
-//    {
-//        $this->getCron()->execute();
-//
-//        self::assertCount(0, array_diff(scandir($this->tempDirectory . '/failed', SCANDIR_SORT_NONE), ['..', '.']));
-//        self::assertCount(0, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
-//    }
 
     public function testNoFilesRemoveIfNonOlderThan3Days()
     {
@@ -149,9 +143,9 @@ class DeleteFilesTest extends TestCase
         $fileCTimeMock->disable();
         $timeMock->disable();
 
-        self::assertFileNotExists($this->tempDirectory . '/failed/file1.txt');
-        self::assertFileNotExists($this->tempDirectory . '/failed/file2.txt');
-        self::assertFileNotExists($this->tempDirectory . '/archived/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file2.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/archived/file1.txt');
 
         self::assertCount(0, array_diff(scandir($this->tempDirectory . '/failed', SCANDIR_SORT_NONE), ['..', '.']));
         self::assertCount(0, array_diff(scandir($this->tempDirectory . '/archived', SCANDIR_SORT_NONE), ['..', '.']));
@@ -192,7 +186,7 @@ class DeleteFilesTest extends TestCase
         $fileCTimeMock->disable();
         $timeMock->disable();
 
-        self::assertFileNotExists($this->tempDirectory . '/failed/file1.txt');
+        self::assertFileDoesNotExist($this->tempDirectory . '/failed/file1.txt');
         self::assertFileExists($this->tempDirectory . '/failed/file2.txt');
 
         self::assertCount(1, array_diff(scandir($this->tempDirectory . '/failed', SCANDIR_SORT_NONE), ['..', '.']));

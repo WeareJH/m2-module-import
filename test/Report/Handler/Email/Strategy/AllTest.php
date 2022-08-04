@@ -7,7 +7,6 @@ namespace Jh\ImportTest\Report\Handler\Email\Strategy;
 use DateTime;
 use Jh\Import\LogLevel;
 use Jh\Import\Report\Handler\Email\Strategy\All;
-use Jh\Import\Report\Handler\Email\Strategy\FingersCrossed;
 use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
@@ -30,11 +29,11 @@ class AllTest extends TestCase
             $html
         );
 
-        self::assertRegExp('/Import Name:\s+my-import/', strip_tags($html));
-        self::assertRegExp('/Source ID:\s+source-id/', strip_tags($html));
-        self::assertRegExp('/Import Started:\s+20-04-2020 10:00:01/', strip_tags($html));
-        self::assertRegExp('/Import Finished:\s+20-04-2020 10:15:10/', strip_tags($html));
-        self::assertRegExp('/Peak Memory Usage:\s+2 KB/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Name:\s+my-import/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Source ID:\s+source-id/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Started:\s+20-04-2020 10:00:01/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Import Finished:\s+20-04-2020 10:15:10/', strip_tags($html));
+        self::assertMatchesRegularExpression('/Peak Memory Usage:\s+2 KB/', strip_tags($html));
     }
 
     public function testFilterItemMessagesReturnsAllMessages(): void

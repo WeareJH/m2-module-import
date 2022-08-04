@@ -1,6 +1,6 @@
 <?php
 
-namespace Jh\ImportTest\Import;
+namespace Jh\ImportTest\Filter;
 
 use Jh\Import\Filter\Limit;
 use Jh\Import\Import\Record;
@@ -19,13 +19,13 @@ class LimitTest extends TestCase
      *
      * @dataProvider limitProvider
      */
-    public function testLimit(int $limit, int $recordNumber, bool $expected)
+    public function testLimit(int $limit, int $recordNumber, bool $expected): void
     {
         $record = new Record($recordNumber, []);
         self::assertEquals($expected, (new Limit($limit))->__invoke($record));
     }
 
-    public function limitProvider()
+    public function limitProvider(): array
     {
         return [
             [100, 99, true],

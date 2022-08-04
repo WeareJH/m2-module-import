@@ -8,12 +8,15 @@ use Magento\Framework\Config\CacheInterface;
 use Magento\Framework\Config\ReaderInterface;
 use Magento\Framework\Serialize\Serializer\Serialize;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class DataTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ReaderInterface
      */
@@ -41,10 +44,10 @@ class DataTest extends TestCase
     public function setUp(): void
     {
         $this->reader = $this->prophesize(ReaderInterface::class);
-        $this->cache  = $this->prophesize(CacheInterface::class);
+        $this->cache = $this->prophesize(CacheInterface::class);
     }
 
-    public function testCacheIsSavedIfNotCached()
+    public function testCacheIsSavedIfNotCached(): void
     {
         $this->cache->load('cache-id')->willReturn(false)->shouldBeCalled();
         $this->reader->read()->willReturn(static::$testData)->shouldBeCalled();
@@ -53,14 +56,15 @@ class DataTest extends TestCase
         new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize());
     }
 
-    public function testDataIsRetrievedFromCacheIfExists()
+    public function testDataIsRetrievedFromCacheIfExists(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
 
         new Data($this->reader->reveal(), $this->cache->reveal(), 'cache-id', new Serialize());
     }
-    public function testHasImportReturnsTrueIfImportExists()
+
+    public function testHasImportReturnsTrueIfImportExists(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -69,7 +73,7 @@ class DataTest extends TestCase
         self::assertTrue($config->hasImport('product'));
     }
 
-    public function testHasImportReturnsFalseIfImportNotExists()
+    public function testHasImportReturnsFalseIfImportNotExists(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -78,7 +82,7 @@ class DataTest extends TestCase
         self::assertFalse($config->hasImport('stock'));
     }
 
-    public function testGetImportConfigByName()
+    public function testGetImportConfigByName(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -88,7 +92,7 @@ class DataTest extends TestCase
         self::assertInstanceOf(Config::class, $config->getImportConfigByName('product'));
     }
 
-    public function testGetImportConfigByNameReturnsNullIfImportNotExists()
+    public function testGetImportConfigByNameReturnsNullIfImportNotExists(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -97,7 +101,7 @@ class DataTest extends TestCase
         self::assertNull($config->getImportConfigByName('stock'));
     }
 
-    public function testGetImportType()
+    public function testGetImportType(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -106,7 +110,7 @@ class DataTest extends TestCase
         self::assertEquals('files', $config->getImportType('product'));
     }
 
-    public function testGetImportTypeReturnsNullIfImportNotExists()
+    public function testGetImportTypeReturnsNullIfImportNotExists(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();
@@ -115,7 +119,7 @@ class DataTest extends TestCase
         self::assertNull($config->getImportType('stock'));
     }
 
-    public function testGetAllImportNames()
+    public function testGetAllImportNames(): void
     {
         $this->cache->load('cache-id')->willReturn(serialize(static::$testData))->shouldBeCalled();
         $this->reader->read()->shouldNotBeCalled();

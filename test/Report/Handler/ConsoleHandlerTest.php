@@ -7,13 +7,16 @@ use Jh\Import\Progress\CliProgress;
 use Jh\Import\Report\Handler\ConsoleHandler;
 use Jh\Import\Report\Message;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
 class ConsoleHandlerTest extends TestCase
 {
-    public function testMessageBelowMinErrorLevelIsNotWritten()
+    use ProphecyTrait;
+
+    public function testMessageBelowMinErrorLevelIsNotWritten(): void
     {
         $cliProgress = $this->prophesize(CliProgress::class);
         $handler = new ConsoleHandler($cliProgress->reveal(), LogLevel::ERROR);
@@ -23,7 +26,7 @@ class ConsoleHandlerTest extends TestCase
         $cliProgress->addLog()->shouldNotHaveBeenCalled();
     }
 
-    public function testMessageAtMinErrorLevelIsWritten()
+    public function testMessageAtMinErrorLevelIsWritten(): void
     {
         $cliProgress = $this->prophesize(CliProgress::class);
         $handler = new ConsoleHandler($cliProgress->reveal(), LogLevel::ERROR);
@@ -35,7 +38,7 @@ class ConsoleHandlerTest extends TestCase
         $cliProgress->addLog('ERROR', 'Do show me')->shouldHaveBeenCalled();
     }
 
-    public function testMessageAboveMinErrorLevelIsWritten()
+    public function testMessageAboveMinErrorLevelIsWritten(): void
     {
         $cliProgress = $this->prophesize(CliProgress::class);
         $handler = new ConsoleHandler($cliProgress->reveal(), LogLevel::ERROR);

@@ -13,10 +13,12 @@ use Magento\Framework\Filesystem\Directory\WriteFactory;
 use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\View\LayoutInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class TypeFilesTest extends TestCase
 {
     use ObjectHelper;
+    use ProphecyTrait;
 
     /**
      * @var string

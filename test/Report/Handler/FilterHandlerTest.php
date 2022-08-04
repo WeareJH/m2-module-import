@@ -9,10 +9,13 @@ use Jh\Import\Report\Message;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportItem;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class FilterHandlerTest extends TestCase
 {
-    public function testStartDelegatesToWrapped()
+    use ProphecyTrait;
+
+    public function testStartDelegatesToWrapped(): void
     {
         $wrapped = $this->prophesize(Handler::class);
 
@@ -24,7 +27,7 @@ class FilterHandlerTest extends TestCase
         $wrapped->start($report, $startTime)->shouldHaveBeenCalled();
     }
 
-    public function testFinishDelegatesToWrapped()
+    public function testFinishDelegatesToWrapped(): void
     {
         $wrapped = $this->prophesize(Handler::class);
 
@@ -36,7 +39,7 @@ class FilterHandlerTest extends TestCase
         $wrapped->finish($report, $finishTime, 1024)->shouldHaveBeenCalled();
     }
 
-    public function testMessageWithLowerLogLevelIsNotPassedToWrappedHandler()
+    public function testMessageWithLowerLogLevelIsNotPassedToWrappedHandler(): void
     {
         $wrapped = $this->prophesize(Handler::class);
 
@@ -52,7 +55,7 @@ class FilterHandlerTest extends TestCase
         $wrapped->handleItemMessage($item, $itemMessage)->shouldNotHaveBeenCalled();
     }
 
-    public function testMessageWithSameLogLevelIsPassedToWrappedHandler()
+    public function testMessageWithSameLogLevelIsPassedToWrappedHandler(): void
     {
         $wrapped = $this->prophesize(Handler::class);
 
@@ -68,7 +71,7 @@ class FilterHandlerTest extends TestCase
         $wrapped->handleItemMessage($item, $itemMessage)->shouldHaveBeenCalled();
     }
 
-    public function testMessageWithHigherLogLevelIsPassedToWrappedHandler()
+    public function testMessageWithHigherLogLevelIsPassedToWrappedHandler(): void
     {
         $wrapped = $this->prophesize(Handler::class);
 

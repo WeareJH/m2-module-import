@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SchemaLocatorTest extends TestCase
 {
-    public function testSchemaLocator()
+    public function testSchemaLocator(): void
     {
         $urnResolver = new UrnResolver();
         $locator = new SchemaLocator($urnResolver);

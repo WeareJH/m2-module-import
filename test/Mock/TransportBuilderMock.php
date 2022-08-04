@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Jh\ImportTest\Mock;
 
 use Magento\Framework\Mail\EmailMessage;
+use Magento\Framework\Mail\Template\TransportBuilder;
 
-class TransportBuilderMock extends \Magento\Framework\Mail\Template\TransportBuilder
+class TransportBuilderMock extends TransportBuilder
 {
     /**
      * @var EmailMessage
      */
     private $sentMessage;
 
-    protected function reset()
+    protected function reset(): self
     {
         $this->sentMessage = $this->message;
         parent::reset();
@@ -25,7 +26,7 @@ class TransportBuilderMock extends \Magento\Framework\Mail\Template\TransportBui
         return $this->sentMessage;
     }
 
-    public function getTransport()
+    public function getTransport(): TransportMock
     {
         $this->prepareMessage();
         $this->reset();

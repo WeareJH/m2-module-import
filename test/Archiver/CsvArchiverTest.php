@@ -9,6 +9,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -16,6 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class CsvArchiverTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var string
      */
@@ -100,7 +103,7 @@ class CsvArchiverTest extends TestCase
         $this->archiver->failed();
 
         self::assertFileExists(sprintf('%s/var/jh_import/failed/my-file-02032017101500.csv', $this->tempRoot));
-        self::assertFileNotExists($this->testFileLocation);
+        self::assertFileDoesNotExist($this->testFileLocation);
 
         $this->db
             ->insert(
@@ -118,7 +121,7 @@ class CsvArchiverTest extends TestCase
         $this->archiver->failed();
 
         self::assertFileExists(sprintf('%s/var/jh_import/failed/my-file-02032017101500.csv', $this->tempRoot));
-        self::assertFileNotExists($this->testFileLocation);
+        self::assertFileDoesNotExist($this->testFileLocation);
 
         $this->db
             ->insert(
@@ -138,7 +141,7 @@ class CsvArchiverTest extends TestCase
         $this->archiver->successful();
 
         self::assertFileExists(sprintf('%s/var/jh_import/archived/my-file-02032017101500.csv', $this->tempRoot));
-        self::assertFileNotExists($this->testFileLocation);
+        self::assertFileDoesNotExist($this->testFileLocation);
 
         $this->db
             ->insert(
@@ -156,7 +159,7 @@ class CsvArchiverTest extends TestCase
         $this->archiver->successful();
 
         self::assertFileExists(sprintf('%s/var/jh_import/archived/my-file-02032017101500.csv', $this->tempRoot));
-        self::assertFileNotExists($this->testFileLocation);
+        self::assertFileDoesNotExist($this->testFileLocation);
 
         $this->db
             ->insert(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jh\ImportTest\Import;
+namespace Jh\ImportTest\Filter;
 
 use Jh\Import\Config;
 use Jh\Import\Filter\SkipNonExistingProducts;
@@ -10,17 +10,20 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
 class SkipNonExistingProductsTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testNonExistingProductsAreSkipped(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
-        $adapter   = $this->prophesize(AdapterInterface::class);
-        $select    = $this->prophesize(Select::class);
+        $adapter = $this->prophesize(AdapterInterface::class);
+        $select = $this->prophesize(Select::class);
 
         $connection->getConnection()->willReturn($adapter->reveal());
         $adapter->select()->willReturn($select->reveal());
@@ -36,8 +39,8 @@ class SkipNonExistingProductsTest extends TestCase
     public function testNonExistingProductsAreSkippedWithCustomSkuField(): void
     {
         $connection = $this->prophesize(ResourceConnection::class);
-        $adapter   = $this->prophesize(AdapterInterface::class);
-        $select    = $this->prophesize(Select::class);
+        $adapter = $this->prophesize(AdapterInterface::class);
+        $select = $this->prophesize(Select::class);
 
         $connection->getConnection()->willReturn($adapter->reveal());
         $adapter->select()->willReturn($select->reveal());
