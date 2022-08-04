@@ -5,6 +5,7 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element name="files" type="filesType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="db" type="dbType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="webapi" type="webapiType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
@@ -59,6 +60,44 @@
             <xs:element name="source_id" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="select_sql" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="count_sql" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron_group" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="indexers" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="indexer" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="report_handlers" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="report_handler" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="webapiType" >
+        <xs:annotation>
+            <xs:documentation>
+                An import who's source is a webapi
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="source" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="source_id" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="specification" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="writer" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="id_field" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="count_request_factory" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="count_response_handler" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="data_request_factory" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="data_request_page_size" minOccurs="1" maxOccurs="1" type="xs:int"/>
+            <xs:element name="data_request_paging_decorator" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="data_request_filter_decorator" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="data_response_handler" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="cron_group" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="indexers" minOccurs="0" maxOccurs="1">

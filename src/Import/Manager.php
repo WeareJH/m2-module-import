@@ -3,11 +3,15 @@ declare(strict_types=1);
 
 namespace Jh\Import\Import;
 
+use InvalidArgumentException;
 use Jh\Import\Config\Data;
 use Jh\Import\Type\Db;
 use Jh\Import\Type\Files;
 use Jh\Import\Type\Type;
+use Jh\Import\Type\Webapi;
 use Magento\Framework\ObjectManagerInterface;
+use RuntimeException;
+use function get_class;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -31,7 +35,8 @@ class Manager
      */
     private array $types = [
         'files' => Files::class,
-        'db' => Db::class
+        'db' => Db::class,
+        'webapi' => Webapi::class
     ];
 
     public function __construct(Data $config, ObjectManagerInterface $objectManager)
@@ -43,7 +48,7 @@ class Manager
     public function executeImportByName(string $importName)
     {
         if (!$this->config->hasImport($importName)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('Cannot find configuration for import with name: "%s"', $importName)
             );
         }
@@ -51,7 +56,7 @@ class Manager
         $type = $this->config->getImportType($importName);
 
         if (!isset($this->types[$type])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Import configuration specified invalid type: "%s". Valid types are: "%s"',
                     $type,
@@ -63,7 +68,7 @@ class Manager
         $typeInstance = $this->objectManager->get($this->types[$type]);
 
         if (!$typeInstance instanceof Type) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Import type: "%s" does not implement require interface: "%s"',
                     get_class($typeInstance),

@@ -44,7 +44,13 @@ $ php bin/magento setup:upgrade
       * [id_field](#id_field)    
       * [source_id](#source_id)    
       * [select_sql](#select_sql)    
-      * [count_sql](#count_sql)    
+      * [count_sql](#count_sql)
+  * [Webapi import type](#webapi-import-type)
+      * [source](#source)
+      * [specification](#specification)
+      * [writer](#writer)
+      * [id_field](#id_field)    
+      * [source_id](#source_id)
   * [Create the specification](#create-the-specification)
     * [Transformers](#transformers)
     * [Filters](#filters)
@@ -119,6 +125,7 @@ In our example that would be `app/code/MyVendor/Import/etc/imports.xml`
 The `files` key here represents the type of import. In this case a files type. Supported import types:
 * `files`
 * `db`
+* `webapi`
 
 You can see the supported types in the `$types` property of [src/Import/Manager.php](src/Import/Manager.php).
 
@@ -326,6 +333,116 @@ The finished config could look like:
     </db>
 </config>
 ```
+
+### Webapi import type
+
+The `name` attribute is the unique name for your import and is how you execute it from `\Jh\Import\Import\Manager`. Here we named
+it `test`.
+
+The configuration values for your import are:
+
+* source
+* specification
+* writer
+* id_field
+* source_id
+* count_request_factory
+* count_response_handler
+* data_request_factory
+* data_request_paging_decorator
+* data_request_filter_decorator
+* data_request_page_decorator
+* data_request_filter_decorator (optional)
+* data_request_response_handler
+
+#### source
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Source\Source`.
+The core source type currently available is `Jh\Import\Source\Webapi` for reading data from a database. It can be extended
+further to customise it. 
+
+#### specification
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Specification\ImportSpecification`.
+This is the class which takes care of manipulating the incoming data in to a generic format. This will be explained in more detail later on.
+
+#### writer
+
+This should be the name of a class or a virtual type. It should point to a class which implements `Jh\Import\Writer\Writer`.
+This is the class which takes care of saving the data in to Magento. This will be explained in more detail later on.
+
+#### id_field
+
+This should be the name of a field that exists in every row of the data and is unique. This is used for logging purposes. For example it would
+probably be `sku` for a product import.
+
+#### source_id
+
+A unique ID for the import type.
+
+#### count_request_factory
+
+This should be a class implementing `Jh\Import\Source\Webapi\RequestFactoryInterface`. It should return object of `Psr\Http\Message\RequestInterface` built
+to be sent to get entities amount. This building process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module (open-closed principle).
+
+#### count_response_handler
+
+This should be a class implementing `Jh\Import\Source\Webapi\CountResponseHandlerInterface`. It should return integer telling how many entites do we have to migrate. 
+The handling process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module. (open-closed principle)
+
+#### data_request_factory
+
+This should be a class implementing `Jh\Import\Source\Webapi\RequestFactoryInterface`. It should return object of `Psr\Http\Message\RequestInterface` built
+to be sent to get actual data. This building process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module (open-closed principle).
+
+#### data_request_paging_decorator
+
+This should be a class implementing `Jh\Import\Source\Webapi\DataRequest\PagingDecoratorInterface`. It should return object of `Psr\Http\Message\RequestInterface` built
+which is modified to contain paging parameters. This building process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module (open-closed principle).
+
+#### data_request_filter_decorator (optional)
+
+This should be a class implementing `Jh\Import\Source\Webapi\DataRequest\FilterDecoratorInterface`. It should return object of `Psr\Http\Message\RequestInterface` built
+which is modified to contain filtering parameters. This building process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module (open-closed principle).
+
+#### data_request_page_size
+This should be integer telling how many entities should be retrieved in one page from webapi.
+
+#### data_response_handler
+
+This should be a class implementing `Jh\Import\Source\Webapi\DataResponseHandlerInterface`. It should return iterable, so data can be iterated and persisted into db.
+The handling process is encapsulated inside object, so it can be implemented inside migration module
+and prevent changing abstraction by import module. (open-closed principle).
+
+==================================================================================================================
+
+The finished config could look like:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <webapi name="test">
+      <source>Jh\Import\Source\Webapi</source>
+      <source_id>test_migration</source_id>
+      <specification>MyVendor\Import\Specification\Test</specification>
+      <writer>MyVendor\Import\Writer\Test</writer>
+      <id_field>id</id_field>
+      <count_request_factory>MyVendor\Import\Specification\Request\CountRequestFactory</count_request_factory>
+      <count_response_handler>MyVendor\Import\Specification\Response\CountResponseHandler</count_response_handler>
+      <data_request_factory>MyVendor\Import\Specification\Request\DataRequestFactory</data_request_factory>
+      <data_request_paging_decorator>MyVendor\Import\Specification\Request\DataRequest\PagingDecorator</data_request_paging_decorator>
+      <data_request_filter_decorator>MyVendor\Import\Specification\Request\DataRequest\FilterDecorator</data_request_filter_decorator>
+      <data_request_page_size>250</data_request_page_size>
+      <data_response_handler>MyVendor\Import\Specification\Response\DataResponseHandler</data_response_handler>
+    </webapi>
+</config>
+```
+
+Example module can be found in [examples](examples/webapi).
 
 ### Create the specification
 

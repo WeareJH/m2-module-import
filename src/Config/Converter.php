@@ -36,6 +36,22 @@ class Converter implements ConverterInterface
             'count_sql' => ['type' => 'string'],
             'cron' => ['type' => 'string'],
             'cron_group' => ['type' => 'string', 'default' => 'default']
+        ],
+        'webapi' => [
+            'source' => ['type' => 'string'],
+            'source_id' => ['type' => 'string'],
+            'specification' => ['type' => 'string'],
+            'writer' => ['type' => 'string'],
+            'id_field' => ['type' => 'string'],
+            'count_request_factory' => ['type' => 'string'],
+            'count_response_handler' => ['type' => 'string'],
+            'data_request_factory' => ['type' => 'string'],
+            'data_request_page_size' => ['type' => 'int'],
+            'data_request_paging_decorator' => ['type' => 'string'],
+            'data_request_filter_decorator' => ['type' => 'string'],
+            'data_response_handler' => ['type' => 'string'],
+            'cron' => ['type' => 'string'],
+            'cron_group' => ['type' => 'string', 'default' => 'default']
         ]
     ];
 

@@ -2,6 +2,7 @@
 
 namespace Jh\Import\Import;
 
+use Countable;
 use Jh\Import\Archiver\Factory as ArchiverFactory;
 use Jh\Import\Config;
 use Jh\Import\Locker\ImportLockedException;
@@ -111,6 +112,11 @@ class Importer
             return false;
         }
 
+        if ($this->source instanceof Countable && $this->source->count() === 0) {
+            $report->addError('Source is empty - no data to be imported.');
+            return false;
+        }
+
         try {
             //check if an import by this name is already running
             $this->locker->lock($importName);
@@ -127,12 +133,12 @@ class Importer
         $report = $this->reportFactory->createFromSourceAndConfig($this->source, $config);
         $report->start();
 
-        $this->prepare($config);
-
         if (!$this->canImport($config->getImportName(), $report)) {
             $this->endReport($report);
             return;
         }
+
+        $this->prepare($config);
 
         try {
             $this->traverseSource($config, $report);
