@@ -54,7 +54,7 @@ class Db implements Source, Countable
         return $this->sourceId;
     }
 
-    public function count()
+    public function count(): int
     {
         $connection = $this->resourceConnection->getConnection($this->connectionName);
         $count = $connection->fetchOne($this->countSql);
