@@ -107,7 +107,7 @@ class Config
 
     public function getDataRequestPageSize(): int
     {
-        return $this->getRequired('data_request_page_size');
+        return (int) $this->getRequired('data_request_page_size');
     }
 
     public function getDataRequestPagingDecorator(): string
@@ -137,14 +137,19 @@ class Config
 
     /**
      * @param string $key
-     * @return string|null
+     * @return string|int|bool|array|null
      */
-    public function get(string $key): ?string
+    public function get(string $key)
     {
         return $this->config[$key] ?? null;
     }
 
-    public function getRequired(string $key): string
+    /**
+     * @param string $key
+     * @return string|int|bool|array
+     * @throws InvalidArgumentException
+     */
+    public function getRequired(string $key)
     {
         if (empty($this->config[$key])) {
             throw new InvalidArgumentException(__('Required config argument %1 missing', $key));
