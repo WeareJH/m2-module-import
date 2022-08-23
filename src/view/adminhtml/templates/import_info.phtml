@@ -6,7 +6,7 @@
         </div>
         <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Import Type') ?></div>
-            <?= $this->getImport()->get('type') ?>
+            <?= $this->getImport()->getType() ?>
         </div>
         <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Lock Status') ?></div>
@@ -14,11 +14,11 @@
         </div>
         <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Indexers') ?></div>
-            <?= implode(",\n", $this->getImport()->get('indexers')) ?>
+            <?= implode(",\n", $this->getImport()->getIndexers()) ?>
         </div>
         <div class="dashboard-item">
             <div class="dashboard-item-title"><?=  __('Report Handlers') ?></div>
-            <?= implode(",\n", $this->getImport()->get('report_handlers')) ?>
+            <?= implode(",\n", $this->getImport()->getReportHandlers()) ?>
         </div>
         <?php if ($this->hasCron()): ?>
             <div class="dashboard-item">
