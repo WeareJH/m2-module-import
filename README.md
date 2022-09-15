@@ -875,7 +875,7 @@ Where `vendor_import_product` is the cron job code specified in `crontab.xml`, f
 ### Running an import manually
 
 The import module provides a console command which allows to manually run an import, useful for testing and on-demand imports. To use it simply run
-`php bin/magento import:run <import-name>` substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`. Eg: `price
+`php bin/magento jh-import:run <import-name>` substituting <import-name> for the name of the import you want to run defined in `app/code/MyVendor/Import/etc/imports.xml`. Eg: `price
 .
 You will get real time progress updates and live scrolling log including eta's and memory usage.
 
