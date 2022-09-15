@@ -24,7 +24,7 @@ class Factory
 
     public function get(): OutputInterface
     {
-        if ($this->appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
+        if ($this->appState->getMode() === State::MODE_DEVELOPER || PHP_SAPI === 'cli') {
             return $this->getConsoleOutput();
         }
 

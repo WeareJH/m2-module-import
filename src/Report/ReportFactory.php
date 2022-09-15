@@ -34,7 +34,7 @@ class ReportFactory
 
         $appState = $this->objectManager->get(State::class);
 
-        if ($appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
+        if ($appState->getMode() === State::MODE_DEVELOPER || PHP_SAPI === 'cli') {
             $handlers[] = $this->objectManager->create(ConsoleHandler::class, [
                 'minErrorLevel' => LogLevel::WARNING
             ]);
