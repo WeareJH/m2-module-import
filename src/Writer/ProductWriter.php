@@ -218,13 +218,13 @@ class ProductWriter implements Writer
         $this->updatedProductsIds = [];
 
         //force load of plugins
-        $this->pluginList->getNext(Product::class, 'save');
+        $this->pluginList->getNext(ProductResource::class, 'save');
 
         $r = new \ReflectionProperty(PluginList::class, '_processed');
         $r->setAccessible(true);
 
         $processed     = $r->getValue($this->pluginList);
-        $methodKey     = sprintf('%s_save___self', Product::class);
+        $methodKey     = sprintf('%s_save___self', ProductResource::class);
         $pluginNameKey = array_search('clean_cache', $processed[$methodKey], true);
         unset($processed[$methodKey][$pluginNameKey]);
         $r->setValue($this->pluginList, $processed);
