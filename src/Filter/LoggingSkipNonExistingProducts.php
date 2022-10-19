@@ -19,7 +19,7 @@ class LoggingSkipNonExistingProducts implements RequiresPreparation
     /**
      * @var string
      */
-    private $skuField = 'sku';
+    private $idField = '';
 
     public function __construct(SkipNonExistingProducts $skipNonExistingProducts)
     {
@@ -29,7 +29,7 @@ class LoggingSkipNonExistingProducts implements RequiresPreparation
     public function prepare(Config $config): void
     {
         $this->skipNonExistingProducts->prepare($config);
-        $this->skuField = $config->getIdField();
+        $this->idField = $config->getIdField();
     }
 
     public function __invoke(Record $record, ReportItem $reportItem): bool
@@ -39,7 +39,7 @@ class LoggingSkipNonExistingProducts implements RequiresPreparation
         if (!$found) {
             //TODO: Make level configurable so we can cause import to fail
             //warning will not cause a fail, whereas errror will
-            $reportItem->addWarning(sprintf('Product: "%s" does not exist.', $record->getColumnValue($this->skuField)));
+            $reportItem->addWarning(sprintf('Product: "%s" does not exist.', $record->getColumnValue($this->idField)));
         }
 
         return $found;

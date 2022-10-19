@@ -17,7 +17,7 @@ class SkipExistingProducts implements RequiresPreparation
     /**
      * @var string
      */
-    private $skuField = 'sku';
+    private $idField = '';
 
     public function __construct(ResourceConnection $connection)
     {
@@ -30,11 +30,11 @@ class SkipExistingProducts implements RequiresPreparation
 
     public function prepare(Config $config): void
     {
-        $this->skuField = $config->getIdField();
+        $this->idField = $config->getIdField();
     }
 
     public function __invoke(Record $record): bool
     {
-        return !in_array($record->getColumnValue($this->skuField), $this->existingSkus, true);
+        return !in_array($record->getColumnValue($this->idField), $this->existingSkus, true);
     }
 }
