@@ -6,6 +6,7 @@ namespace Jh\Import\Source;
 
 use Countable;
 use Exception;
+use Jh\Import\Flag\PagingManager;
 use Jh\Import\Report\Report;
 use Jh\Import\Source\Webapi\CountResponseHandlerInterface;
 use Jh\Import\Source\Webapi\DataRequest\FilterDecoratorInterface;
@@ -19,6 +20,7 @@ class Webapi implements Source, Countable
     private ?int $totalNumberOfItems = null;
     private string $idField;
     private string $sourceId;
+    private PagingManager $pagingManager;
     private RequestFactoryInterface $countRequestFactory;
     private CountResponseHandlerInterface $countResponseHandler;
     private RequestFactoryInterface $dataRequestFactory;
@@ -31,6 +33,7 @@ class Webapi implements Source, Countable
     public function __construct(
         string $idField,
         string $sourceId,
+        PagingManager $pagingManager,
         RequestFactoryInterface $countRequestFactory,
         CountResponseHandlerInterface $countResponseHandler,
         RequestFactoryInterface $dataRequestFactory,
@@ -42,6 +45,7 @@ class Webapi implements Source, Countable
     ) {
         $this->idField = $idField;
         $this->sourceId = $sourceId;
+        $this->pagingManager = $pagingManager;
         $this->countRequestFactory = $countRequestFactory;
         $this->countResponseHandler = $countResponseHandler;
         $this->dataRequestFactory = $dataRequestFactory;
@@ -68,11 +72,19 @@ class Webapi implements Source, Countable
             $totalNumberOfItems = $this->count();
             $pagesAmount = ceil($totalNumberOfItems / $this->dataRequestPageSize);
 
-            for ($currentPage = 1; $currentPage <= $pagesAmount; $currentPage++) {
+            for (
+                $currentPage = $this->pagingManager->getValue() === null ? 1 : (int) $this->pagingManager->getValue();
+                $currentPage <= $pagesAmount;
+                $currentPage++
+            ) {
                 foreach ($this->queryData($currentPage) as $row) {
                     $onSuccess($row[$this->idField], $row);
                 }
+
+                $this->pagingManager->setValue($currentPage + 1);
             }
+
+            $this->pagingManager->reset();
         } catch (Exception $exception) {
             $report->addError($exception->getMessage());
             $onError(null);
