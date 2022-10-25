@@ -55,6 +55,13 @@ class Converter implements ConverterInterface
         ]
     ];
 
+    private AppConfigProvider $appConfigProvider;
+
+    public function __construct(AppConfigProvider $appConfigProvider)
+    {
+        $this->appConfigProvider = $appConfigProvider;
+    }
+
     public function convert($source): array
     {
         $names = collect(static::$importTypesWithRequiredFields)
@@ -91,24 +98,26 @@ class Converter implements ConverterInterface
                 /** @var \DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
 
+                // load default value from app config
+                $value = $this->appConfigProvider->getImportTypeOptionDefaultValue($importType, $requiredField);
+
+                // override by import config
                 if ($elements->length > 0) {
                     $value = $elements->item(0)->nodeValue;
+                }
 
+                if ($value !== null) {
                     switch ($spec['type']) {
                         case 'bool':
                             return $this->castBool($value);
+                        case 'int':
+                            return $this->castInt($value);
                         case 'string':
                             return $this->castString($value);
                     }
-
-                    return $value;
                 }
 
-                if (isset($spec['default'])) {
-                    return $spec['default'];
-                }
-
-                return null;
+                return $value ?? $spec['default'] ?? null;
             });
 
         //parse required indexers
@@ -143,6 +152,11 @@ class Converter implements ConverterInterface
     private function castString($value): string
     {
         return (string) $value;
+    }
+
+    private function castInt($value): int
+    {
+        return (int) $value;
     }
 
     private function castBool($value): bool
