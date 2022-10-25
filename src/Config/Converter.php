@@ -24,6 +24,8 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default'],
             'archive_old_files' => ['type' => 'bool', 'default' => false],
             'delete_old_files' => ['type' => 'bool', 'default' => false],
+            'archive_date_format' => ['type' => 'string', 'default' => 'dmYhis'],
+            'directory_permissions' => ['type' => 'int', 'default' => 0777],
         ],
         'db' => [
             'connection_name' => ['type' => 'string'],

@@ -131,16 +131,16 @@ class CsvArchiver implements Archiver
     private function ensureDirectoryExists(string $directory)
     {
         if (!$this->filesystem->isExists($directory)) {
-            $this->filesystem->createDirectory($directory, 0777);
+            $this->filesystem->createDirectory($directory, $this->config->get('directory_permissions'));
         }
     }
 
-    private function newName(\SplFileObject $file): string
+    protected function newName(\SplFileObject $file): string
     {
         return sprintf(
             '%s-%s.%s',
             $file->getBasename('.' . $file->getExtension()),
-            $this->getDateTime()->format('dmYhis'),
+            $this->getDateTime()->format($this->config->get('archive_date_format')),
             $file->getExtension()
         );
     }
