@@ -12,7 +12,7 @@ class Converter implements ConverterInterface
      */
     private static $importTypesWithRequiredFields = [
         'files' => [
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Csv::class],
             'incoming_directory' => ['type' => 'string', 'default' => 'jh_import/incoming'],
             'archived_directory' => ['type' => 'string', 'default' => 'jh_import/archived'],
             'failed_directory' => ['type' => 'string', 'default' => 'jh_import/failed'],
@@ -29,7 +29,7 @@ class Converter implements ConverterInterface
         ],
         'db' => [
             'connection_name' => ['type' => 'string'],
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Db::class],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
             'id_field' => ['type' => 'string'],
@@ -40,7 +40,7 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default']
         ],
         'webapi' => [
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Webapi::class],
             'source_id' => ['type' => 'string'],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
