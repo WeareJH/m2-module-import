@@ -60,7 +60,9 @@ class Webapi implements Source, Countable
     {
         if (!$this->totalNumberOfItems) {
             $response = $this->httpClient->sendRequest($this->countRequestFactory->create());
-            $this->totalNumberOfItems = $this->countResponseHandler->handle($response);
+            $this->pagingManager->getValue() !== null
+                ? $this->totalNumberOfItems = $this->countResponseHandler->handle($response) - $this->calculateItemsAlreadyProcessed()
+                : $this->totalNumberOfItems = $this->countResponseHandler->handle($response);
         }
 
         return $this->totalNumberOfItems;
@@ -73,7 +75,7 @@ class Webapi implements Source, Countable
             $pagesAmount = ceil($totalNumberOfItems / $this->dataRequestPageSize);
 
             for (
-                $currentPage = $this->pagingManager->getValue() === null ? 1 : (int) $this->pagingManager->getValue();
+                $currentPage = $this->getPageToStartFrom();
                 $currentPage <= $pagesAmount;
                 $currentPage++
             ) {
@@ -94,6 +96,18 @@ class Webapi implements Source, Countable
     public function getSourceId(): string
     {
         return $this->sourceId;
+    }
+
+    private function getPageToStartFrom(): int
+    {
+        return $this->pagingManager->getValue() === null ? 1 : (int) $this->pagingManager->getValue();
+    }
+
+    private function calculateItemsAlreadyProcessed(): int
+    {
+        $pageToStartFrom = (int) $this->pagingManager->getValue();
+        $itemsAlreadyProcessed = ($pageToStartFrom - 1) * $this->dataRequestPageSize;
+        return max($itemsAlreadyProcessed, 0);
     }
 
     private function queryData(int $page): iterable
