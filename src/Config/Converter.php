@@ -163,6 +163,10 @@ class Converter implements ConverterInterface
 
     private function castBool($value): bool
     {
+        if (is_bool($value)) {
+            return $value;
+        }
+
         return $value === 'true' || $value === '1';
     }
 }
