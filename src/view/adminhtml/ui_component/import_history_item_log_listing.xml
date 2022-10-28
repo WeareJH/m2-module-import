@@ -59,6 +59,7 @@
             </filterSelect>
         </filters>
         <paging name="listing_paging"/>
+        <exportButton name="export_button"/>
     </listingToolbar>
 
     <columns name="log_columns" class="Magento\Ui\Component\Listing\Columns">
