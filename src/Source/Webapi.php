@@ -44,7 +44,7 @@ class Webapi implements Source, Countable
         ?FilterDecoratorInterface $dataRequestFilterDecorator = null
     ) {
         $this->idField = $idField;
-        $this->sourceId = $sourceId;
+        $this->sourceId = sprintf('%s_%s', $sourceId, date('Y_m_d H:i:s'));
         $this->pagingManager = $pagingManager;
         $this->countRequestFactory = $countRequestFactory;
         $this->countResponseHandler = $countResponseHandler;
@@ -71,7 +71,7 @@ class Webapi implements Source, Countable
     public function traverse(callable $onSuccess, callable $onError, Report $report): void
     {
         try {
-            $totalNumberOfItems = $this->count();
+            $totalNumberOfItems = $this->countAll();
             $pagesAmount = ceil($totalNumberOfItems / $this->dataRequestPageSize);
 
             for (
@@ -96,6 +96,12 @@ class Webapi implements Source, Countable
     public function getSourceId(): string
     {
         return $this->sourceId;
+    }
+
+    private function countAll(): int
+    {
+        $response = $this->httpClient->sendRequest($this->countRequestFactory->create());
+        return $this->countResponseHandler->handle($response);
     }
 
     private function getPageToStartFrom(): int
