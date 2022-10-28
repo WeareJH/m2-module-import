@@ -3,6 +3,7 @@
 namespace Jh\Import\Import;
 
 use Countable;
+use Exception;
 use Jh\Import\Archiver\Factory as ArchiverFactory;
 use Jh\Import\Config;
 use Jh\Import\Locker\ImportLockedException;
@@ -16,6 +17,7 @@ use Jh\Import\Report\ReportItem;
 use Jh\Import\Source\Source;
 use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
+use Magento\Framework\Exception\AggregateExceptionInterface;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -142,13 +144,13 @@ class Importer
 
         try {
             $this->traverseSource($config, $report);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $report->addError(sprintf('Could not read data from source. Error: "%s"', $e->getMessage()));
         }
 
         try {
             $this->finish($config, $report);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $report->addError(sprintf(
                 'An error occurred when performing post processing tasks (cleanup, indexing, etc) . Error: "%s"',
                 $e->getMessage()
@@ -158,7 +160,7 @@ class Importer
         try {
             $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
             $report->isSuccessful() ? $archiver->successful() : $archiver->failed();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $report->addError(sprintf(
                 'An error occurred when archiving the import source . Error: "%s"',
                 $e->getMessage()
@@ -241,8 +243,12 @@ class Importer
 
                 $this->processTransformers($record, $reportItem);
                 $this->writer->write($record, $reportItem);
-            } catch (\Exception $e) {
-                $reportItem->addError($e->getMessage());
+            } catch (AggregateExceptionInterface $aggregateException) {
+                foreach ($aggregateException->getErrors() as $exception) {
+                    $reportItem->addError($exception->getMessage());
+                }
+            } catch (Exception $exception) {
+                $reportItem->addError($exception->getMessage());
             }
 
             $this->progress->advance();
