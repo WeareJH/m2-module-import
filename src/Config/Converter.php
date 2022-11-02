@@ -25,7 +25,7 @@ class Converter implements ConverterInterface
             'archive_old_files' => ['type' => 'bool', 'default' => false],
             'delete_old_files' => ['type' => 'bool', 'default' => false],
             'archive_date_format' => ['type' => 'string', 'default' => 'dmYhis'],
-            'directory_permissions' => ['type' => 'int', 'default' => 0777],
+            'directory_permissions' => ['type' => 'int', 'default' => 0755],
         ],
         'db' => [
             'connection_name' => ['type' => 'string'],
