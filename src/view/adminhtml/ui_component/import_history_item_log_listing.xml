@@ -29,6 +29,9 @@
                     <item name="filter_url_params" xsi:type="array">
                         <item name="history_id" xsi:type="string">*</item>
                     </item>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">id</item>
+                    </item>
                 </item>
             </argument>
         </argument>
