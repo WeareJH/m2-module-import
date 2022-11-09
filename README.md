@@ -663,6 +663,33 @@ class Price implements \Jh\Import\Writer\Writer
 }
 ```
 
+### Configure default options for import types
+
+All import types options can have their default values configured through `app/etc/config.php` or `app/etc/env.php`.
+
+```php
+    'system' => [
+        'default' => [
+            ...
+            'jh_import' => [
+                'default' => [
+                    'files' => [
+                        'source' => \Jh\Import\Source\Csv::class,
+                        'archive_date_format' => 'YmdHis',
+                        'directory_permissions' => 0755,
+                    ],
+                    'db' => [
+                        'connection_name' => 'default',
+                    ],
+                ]
+            ],
+            ...
+        ],
+        ...
+    ],
+    ...
+```
+
 ## Report Handlers
 
 Report handlers deal with debug information and errors that happen during the import process. By default the only report handler

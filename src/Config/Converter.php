@@ -12,7 +12,7 @@ class Converter implements ConverterInterface
      */
     private static $importTypesWithRequiredFields = [
         'files' => [
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Csv::class],
             'incoming_directory' => ['type' => 'string', 'default' => 'jh_import/incoming'],
             'archived_directory' => ['type' => 'string', 'default' => 'jh_import/archived'],
             'failed_directory' => ['type' => 'string', 'default' => 'jh_import/failed'],
@@ -24,10 +24,12 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default'],
             'archive_old_files' => ['type' => 'bool', 'default' => false],
             'delete_old_files' => ['type' => 'bool', 'default' => false],
+            'archive_date_format' => ['type' => 'string', 'default' => 'dmYhis'],
+            'directory_permissions' => ['type' => 'int', 'default' => 0755],
         ],
         'db' => [
             'connection_name' => ['type' => 'string'],
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Db::class],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
             'id_field' => ['type' => 'string'],
@@ -38,7 +40,7 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default']
         ],
         'webapi' => [
-            'source' => ['type' => 'string'],
+            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Webapi::class],
             'source_id' => ['type' => 'string'],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
@@ -54,6 +56,13 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default']
         ]
     ];
+
+    private AppConfigProvider $appConfigProvider;
+
+    public function __construct(AppConfigProvider $appConfigProvider)
+    {
+        $this->appConfigProvider = $appConfigProvider;
+    }
 
     public function convert($source): array
     {
@@ -91,24 +100,26 @@ class Converter implements ConverterInterface
                 /** @var \DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
 
+                // load default value from app config
+                $value = $this->appConfigProvider->getImportTypeOptionDefaultValue($importType, $requiredField);
+
+                // override by import config
                 if ($elements->length > 0) {
                     $value = $elements->item(0)->nodeValue;
+                }
 
+                if ($value !== null) {
                     switch ($spec['type']) {
                         case 'bool':
                             return $this->castBool($value);
+                        case 'int':
+                            return $this->castInt($value);
                         case 'string':
                             return $this->castString($value);
                     }
-
-                    return $value;
                 }
 
-                if (isset($spec['default'])) {
-                    return $spec['default'];
-                }
-
-                return null;
+                return $value ?? $spec['default'] ?? null;
             });
 
         //parse required indexers
@@ -145,8 +156,17 @@ class Converter implements ConverterInterface
         return (string) $value;
     }
 
+    private function castInt($value): int
+    {
+        return (int) $value;
+    }
+
     private function castBool($value): bool
     {
+        if (is_bool($value)) {
+            return $value;
+        }
+
         return $value === 'true' || $value === '1';
     }
 }
