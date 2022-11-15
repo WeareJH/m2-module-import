@@ -147,6 +147,8 @@ Optional values are:
  * incoming_directory  - default: `jh_import/incoming`
  * archived_directory  - default: `jh_import/archived`
  * failed_directory  - default: `jh_import/failed`
+ * archive_already_imported_files - default: `false`
+ * process_only_last_file - default: `false`
  
 The above directories will be created in the `var` directory of the magento instance if they do not already exist.
 
@@ -217,6 +219,17 @@ The finished config my look like:
     </files>
 </config>
 ```
+
+#### archive_already_imported_files
+
+By enabling this option all files reported as already imported will be moved into `failed_directory` 
+ instead of being left in `incoming_directory`. 
+
+#### process_only_last_file
+
+This option enabled will process only last file from matched batch of files. Useful when you have multiple files of same content 
+ and you want to save your processing time by importing data only from last one of them. Other matched files from batch 
+ will be moved into `failed_directory`.
 
 ### DB import type
 
