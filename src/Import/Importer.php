@@ -4,6 +4,7 @@ namespace Jh\Import\Import;
 
 use Countable;
 use Exception;
+use Jh\Import\Archiver\Archiver;
 use Jh\Import\Archiver\Factory as ArchiverFactory;
 use Jh\Import\Config;
 use Jh\Import\Locker\ImportLockedException;
@@ -107,10 +108,13 @@ class Importer
         $this->transformers[] = $transform;
     }
 
-    private function canImport(string $importName, Report $report): bool
+    private function canImport(Config $config, Report $report, Archiver $archiver): bool
     {
         if ($this->history->isImported($this->source)) {
             $report->addError('This import source has already been imported.');
+            if ($config->get('archive_already_imported_files')) {
+                $archiver->failed();
+            }
             return false;
         }
 
@@ -121,7 +125,7 @@ class Importer
 
         try {
             //check if an import by this name is already running
-            $this->locker->lock($importName);
+            $this->locker->lock($config->getImportName());
         } catch (ImportLockedException $e) {
             $report->addError($e->getMessage());
             return false;
@@ -133,9 +137,11 @@ class Importer
     public function process(Config $config): void
     {
         $report = $this->reportFactory->createFromSourceAndConfig($this->source, $config);
+        $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
+
         $report->start();
 
-        if (!$this->canImport($config->getImportName(), $report)) {
+        if (!$this->canImport($config, $report, $archiver)) {
             $this->endReport($report);
             return;
         }
@@ -158,7 +164,6 @@ class Importer
         }
 
         try {
-            $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
             $report->isSuccessful() ? $archiver->successful() : $archiver->failed();
         } catch (Exception $e) {
             $report->addError(sprintf(
@@ -170,6 +175,12 @@ class Importer
         $this->locker->release($config->getImportName());
 
         $this->endReport($report);
+    }
+
+    public function skip(Config $config)
+    {
+        $archiver = $this->archiverFactory->getArchiverForSource($this->source, $config);
+        $archiver->failed();
     }
 
     private function endReport(Report $report): void

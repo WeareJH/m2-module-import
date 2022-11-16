@@ -60,14 +60,19 @@ class Files implements Type
         $specification = $this->objectManager->get($config->getSpecificationService());
         $writer        = $this->objectManager->get($config->getWriterService());
 
-        $filesToProcess->each(function ($file) use ($config, $specification, $writer) {
+        $lastFileIndex = $filesToProcess->count() - 1;
+        $filesToProcess->each(function ($file, $index) use ($config, $specification, $writer, $lastFileIndex) {
             $source = $this->objectManager->create($config->getSourceService(), [
                 'file' => $file
             ]);
 
-            $this->importerFactory
-                ->create($source, $specification, $writer)
-                ->process($config);
+            $importer = $this->importerFactory->create($source, $specification, $writer);
+
+            if ($config->get('process_only_last_file') && $index < $lastFileIndex) {
+                $importer->skip($config);
+            } else {
+                $importer->process($config);
+            }
         });
     }
 
