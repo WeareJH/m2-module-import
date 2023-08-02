@@ -5,6 +5,7 @@ namespace Jh\Import\Command;
 use Jh\Import\Config\Data;
 use Jh\Import\Locker\Locker;
 use Magento\Cron\Model\Config;
+use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -78,5 +79,7 @@ class ListImportsCommand extends Command
             ->render();
 
         $output->writeln('');
+
+        return Cli::RETURN_SUCCESS;
     }
 }
