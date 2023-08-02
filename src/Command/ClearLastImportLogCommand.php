@@ -5,6 +5,7 @@ namespace Jh\Import\Command;
 use Jh\Import\Config\Data;
 use Jh\Import\Entity\ImportHistoryResource;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory;
 use Symfony\Component\Console\Command\Command;
@@ -84,5 +85,7 @@ class ClearLastImportLogCommand extends Command
                 $importName
             )
         );
+
+        return Cli::RETURN_SUCCESS;
     }
 }

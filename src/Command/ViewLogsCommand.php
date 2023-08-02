@@ -3,6 +3,7 @@
 namespace Jh\Import\Command;
 
 use Jh\Import\Config\Data;
+use Magento\Framework\Console\Cli;
 use Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -122,5 +123,7 @@ class ViewLogsCommand extends Command
                 ];
             }, $itemLogCollection->getItems()))
             ->render();
+        
+        return Cli::RETURN_SUCCESS;
     }
 }

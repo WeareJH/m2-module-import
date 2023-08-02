@@ -4,6 +4,7 @@ namespace Jh\Import\Command;
 
 use Jh\Import\Config\Data;
 use Jh\Import\Locker\Locker;
+use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,5 +55,7 @@ class UnlockImportCommand extends Command
 
         $this->locker->release($importName);
         $output->writeln(sprintf('<info>The lock for import: "%s" has been released</info>', $importName));
+
+        return Cli::RETURN_SUCCESS;
     }
 }
