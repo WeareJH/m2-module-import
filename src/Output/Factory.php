@@ -16,6 +16,8 @@ class Factory
      */
     private $appState;
 
+    private $output;
+
     public function __construct(State $appState, OutputInterface $output)
     {
         $this->appState = $appState;
