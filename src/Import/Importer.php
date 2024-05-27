@@ -61,11 +61,6 @@ class Importer
     private $locker;
 
     /**
-     * @var History
-     */
-    private $history;
-
-    /**
      * @var ArchiverFactory
      */
     private $archiverFactory;
@@ -82,7 +77,6 @@ class Importer
         ReportFactory $reportFactory,
         ArchiverFactory $archiverFactory,
         Locker $locker,
-        History $history,
         Indexer $indexer,
         Progress $progress
     ) {
@@ -92,7 +86,6 @@ class Importer
         $this->archiverFactory = $archiverFactory;
         $this->reportFactory = $reportFactory;
         $this->locker = $locker;
-        $this->history = $history;
         $this->indexer = $indexer;
 
         $importSpecification->configure($this);
@@ -110,14 +103,6 @@ class Importer
 
     private function canImport(Config $config, Report $report, Archiver $archiver): bool
     {
-        if ($this->history->isImported($this->source)) {
-            $report->addError('This import source has already been imported.');
-            if ($config->get('archive_already_imported_files')) {
-                $archiver->failed();
-            }
-            return false;
-        }
-
         if ($this->source instanceof Countable && $this->source->count() === 0) {
             $report->addError('Source is empty - no data to be imported.');
             return false;

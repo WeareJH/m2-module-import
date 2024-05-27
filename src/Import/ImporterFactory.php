@@ -40,11 +40,6 @@ class ImporterFactory
     private $locker;
 
     /**
-     * @var History
-     */
-    private $history;
-
-    /**
      * @var IndexerRegistry
      */
     private $indexerRegistry;
@@ -64,7 +59,6 @@ class ImporterFactory
         Factory $archiverFactory,
         State $appState,
         Locker $locker,
-        History $history,
         IndexerRegistry $indexerRegistry,
         ProgressFactory $progressFactory,
         OutputFactory $outputFactory
@@ -73,7 +67,6 @@ class ImporterFactory
         $this->archiverFactory = $archiverFactory;
         $this->appState = $appState;
         $this->locker = $locker;
-        $this->history = $history;
         $this->indexerRegistry = $indexerRegistry;
         $this->progressFactory = $progressFactory;
         $this->outputFactory = $outputFactory;
@@ -88,7 +81,6 @@ class ImporterFactory
             $this->reportFactory,
             $this->archiverFactory,
             $this->locker,
-            $this->history,
             new Indexer($this->indexerRegistry, $this->outputFactory->get()),
             $this->progressFactory->get()
         );
