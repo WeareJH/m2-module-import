@@ -72,7 +72,6 @@ class CliProgress implements Progress
     {
         $this->output->writeln($this->formatterHelper->formatBlock($message, strtolower($severity)));
         $this->totalLogCount++;
-        $this->logger->log($severity, $message);
     }
 
     public function finish(Source $source): void
