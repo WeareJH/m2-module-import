@@ -2,9 +2,11 @@
 
 namespace Jh\Import\Command;
 
+use Jh\Import\Config as ImportConfig;
 use Jh\Import\Config\Data;
 use Jh\Import\Locker\Locker;
 use Magento\Cron\Model\Config;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -31,12 +33,18 @@ class ListImportsCommand extends Command
      */
     private $locker;
 
-    public function __construct(Data $importConfig, Config $cronConfig, Locker $locker)
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    public function __construct(Data $importConfig, Config $cronConfig, Locker $locker, ScopeConfigInterface $scopeConfig)
     {
+        parent::__construct();
         $this->importConfig = $importConfig;
         $this->cronConfig = $cronConfig;
         $this->locker = $locker;
-        parent::__construct();
+        $this->scopeConfig = $scopeConfig;
     }
 
     protected function configure()
@@ -60,19 +68,14 @@ class ListImportsCommand extends Command
             ->setHeaders(['Name', 'Type', 'Match Files', 'Incoming Directory', 'Cron Expr', 'Locked?'])
             ->setRows(array_map(function ($import) use ($jobs) {
                 $config = $this->importConfig->getImportConfigByName($import);
-
-                if ($config->hasCron() && isset($jobs[$config->getCronGroup()][$config->getCron()])) {
-                    $cron = $jobs[$config->getCronGroup()][$config->getCron()]['schedule'];
-                } else {
-                    $cron = 'N/A';
-                }
+                $schedule = $this->resolveSchedule($jobs, $config);
 
                 return [
                     $config->getImportName(),
                     $config->getType(),
                     $config->get('match_files'),
                     $config->get('incoming_directory'),
-                    $cron,
+                    $schedule,
                     $this->locker->locked($import) ? '<error>Yes</error>' : 'No'
                 ];
             }, $this->importConfig->getAllImportNames()))
@@ -81,5 +84,26 @@ class ListImportsCommand extends Command
         $output->writeln('');
 
         return Cli::RETURN_SUCCESS;
+    }
+
+    private function resolveSchedule(array $jobs, ImportConfig $importConfig): string
+    {
+        $unknownSchedule = 'N/A';
+
+        if (!$importConfig->hasCron() || !isset($jobs[$importConfig->getCronGroup()][$importConfig->getCron()])) {
+            return $unknownSchedule;
+        }
+
+        $cronConfiguration = $jobs[$importConfig->getCronGroup()][$importConfig->getCron()];
+
+        if (isset($cronConfiguration['schedule'])) {
+            return $cronConfiguration['schedule'];
+        }
+
+        if (isset($cronConfiguration['config_path'])) {
+            return (string) $this->scopeConfig->getValue($cronConfiguration['config_path']);
+        }
+
+        return $unknownSchedule;
     }
 }
