@@ -2,10 +2,13 @@
 
 namespace Jh\Import\Setup;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
+
+use function array_key_exists;
 
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
@@ -303,6 +306,39 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 );
 
             $setup->getConnection()->createTable($csvArchiveTable);
+        }
+
+        if (version_compare($context->getVersion(), '2.5.6', '<')) {
+            $connection = $setup->getConnection();
+            $tableName = $setup->getTable('jh_import_history');
+            $fieldName = 'import_name';
+            $indexName = $setup->getIdxName($tableName, $fieldName, AdapterInterface::INDEX_TYPE_INDEX);
+
+            $indexesList = $connection->getIndexList($tableName);
+
+            if (!array_key_exists($indexName, $indexesList)) {
+                $connection->addIndex(
+                    $tableName,
+                    $indexName,
+                    [$fieldName],
+                    AdapterInterface::INDEX_TYPE_INDEX
+                );
+            }
+
+            $tableName = $setup->getTable('jh_import_history_item_log');
+            $fieldName = 'id_value';
+            $indexName = $setup->getIdxName($tableName, $fieldName, AdapterInterface::INDEX_TYPE_INDEX);
+
+            $indexesList = $connection->getIndexList($tableName);
+
+            if (!array_key_exists($indexName, $indexesList)) {
+                $connection->addIndex(
+                    $tableName,
+                    $indexName,
+                    [$fieldName],
+                    AdapterInterface::INDEX_TYPE_INDEX
+                );
+            }
         }
 
         $setup->endSetup();
