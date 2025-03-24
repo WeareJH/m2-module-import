@@ -215,8 +215,8 @@ class AttributeProcessor
             'source_model'            => null,
             'backend_model'           => null,
             'is_user_defined'         => 1,
-            'is_filterable'           => 1,
-            'is_filterable_in_search' => 1,
+            'is_filterable'           => 0,
+            'is_filterable_in_search' => 0,
             'apply_to'                => null,
             'user_defined'            => 1,
         ]);
