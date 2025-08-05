@@ -105,6 +105,7 @@ class Importer
     {
         if ($this->source instanceof Countable && $this->source->count() === 0) {
             $report->addError('Source is empty - no data to be imported.');
+            $archiver->failed();
             return false;
         }
 
