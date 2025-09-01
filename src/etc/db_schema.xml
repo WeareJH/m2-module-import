@@ -1,18 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
 
-    <table name="import_lock" resource="default" engine="innodb" comment="JH Lock">
-        <column xsi:type="text" name="import_name" nullable="false" comment="Import name"/>
+    <table name="jh_import_lock" resource="default" engine="innodb" comment="Import Lock">
+        <column xsi:type="text" name="import_name" nullable="true" comment="Import Name"/>
     </table>
 
-    <table name="jh_import_history" resource="default" engine="innodb" comment="JH Import History">
-        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="Id"/>
-        <column xsi:type="varchar" name="source_id" length="64" comment="Source Id"/>
-        <column xsi:type="varchar" name="import_name" length="64" comment="Import Name"/>
-        <column xsi:type="datetime" name="started" comment="Started At"/>
-        <column xsi:type="datetime" name="finished" comment="Finished At"/>
-        <column xsi:type="varchar" name="memory_usage" nullable="false" length="64" comment="Memory Usage"/>
+    <table name="jh_import_history" resource="default" engine="innodb" comment="Import History">
+        <column xsi:type="int" name="id" identity="true" unsigned="true" nullable="false" comment="ID"/>
+        <column xsi:type="varchar" name="source_id" length="64" nullable="true" comment="Source ID"/>
+        <column xsi:type="datetime" name="started" nullable="true" comment="Started"/>
+        <column xsi:type="datetime" name="finished" nullable="true" comment="Finished"/>
+        <column xsi:type="varchar" name="import_name" length="64" nullable="true" comment="Import Name"/>
+        <column xsi:type="varchar" name="memory_usage" length="64" nullable="true" comment="Memory Usage"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
@@ -21,39 +21,18 @@
         <index referenceId="JH_IMPORT_HISTORY_IMPORT_NAME">
             <column name="import_name"/>
         </index>
-        <index referenceId="JH_IMPORT_HISTORY_SOURCE_ID">
-            <column name="source_id"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_STARTED">
-            <column name="started"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_FINISHED">
-            <column name="finished"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_IMPORTNAME_STARTED">
-            <column name="import_name"/>
-            <column name="started"/>
-        </index>
     </table>
 
-    <table name="jh_import_history_log" resource="default" engine="innodb" comment="JH Import History">
-        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="Id"/>
-        <column xsi:type="int" name="history_id" unsigned="true" nullable="false" comment="History Id"/>
-        <column xsi:type="text" name="message" nullable="false" comment="History Message"/>
+    <table name="jh_import_history_log" resource="default" engine="innodb" comment="Import History Log">
+        <column xsi:type="int" name="id" identity="true" unsigned="true" nullable="false" comment="ID"/>
+        <column xsi:type="int" name="history_id" unsigned="true" nullable="false" comment="History ID"/>
+        <column xsi:type="text" name="message" nullable="false" comment="Message"/>
+        <column xsi:type="varchar" name="log_level" length="64" nullable="true" comment="Log Level"/>
         <column xsi:type="datetime" name="created" nullable="false" comment="Created At"/>
-        <column xsi:type="varchar" name="log_level" length="64" comment="Log level"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
         </constraint>
-
-        <index referenceId="JH_IMPORT_HISTORY_LOG_HISTORY_ID">
-            <column name="history_id"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_LOG_HISTORY_CREATED">
-            <column name="history_id"/>
-            <column name="created"/>
-        </index>
 
         <constraint xsi:type="foreign"
                     referenceId="JH_IMPORT_HISTORY_LOG_HISTORY_ID_JH_IMPORT_HISTORY_ID"
@@ -64,31 +43,19 @@
                     onDelete="CASCADE"/>
     </table>
 
-    <table name="jh_import_history_item_log" resource="default" engine="innodb" comment="JH Import History">
-        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="Id"/>
-        <column xsi:type="int" name="history_id" unsigned="true" nullable="false" comment="History Id"/>
-        <column xsi:type="int" name="reference_line" nullable="true" unsigned="true" comment="Reference Line"/>
-        <column xsi:type="varchar" name="id_field" length="64" nullable="true" comment="Id field"/>
-        <column xsi:type="varchar" name="id_value" length="64" nullable="true" comment="Id Value"/>
-        <column xsi:type="datetime" name="created" nullable="false" comment="Created at"/>
-        <column xsi:type="varchar" name="message" nullable="false" length="512" comment="History Message"/>
-        <column xsi:type="varchar" name="log_level" length="64" comment="Log level"/>
+    <table name="jh_import_history_item_log" resource="default" engine="innodb" comment="Import History Item Log">
+        <column xsi:type="int" name="id" identity="true" unsigned="true" nullable="false" comment="ID"/>
+        <column xsi:type="int" name="history_id" unsigned="true" nullable="false" comment="History ID"/>
+        <column xsi:type="int" name="reference_line" unsigned="true" nullable="true" comment="Reference Line"/>
+        <column xsi:type="varchar" name="id_field" length="64" nullable="true" comment="ID Field"/>
+        <column xsi:type="varchar" name="id_value" length="64" nullable="true" comment="ID Value"/>
+        <column xsi:type="datetime" name="created" nullable="false" comment="Created At"/>
+        <column xsi:type="text" name="message" nullable="false" comment="Message"/>
+        <column xsi:type="varchar" name="log_level" length="64" nullable="true" comment="Log Level"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
         </constraint>
-
-        <index referenceId="JH_IMPORT_HISTORY_ITEM_LOG_HISTORY_ID">
-            <column name="history_id"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_ITEM_LOG_HISTORY_CREATED">
-            <column name="history_id"/>
-            <column name="created"/>
-        </index>
-        <index referenceId="JH_IMPORT_HISTORY_ITEM_LOG_IDFIELD_IDVALUE">
-            <column name="id_field"/>
-            <column name="id_value"/>
-        </index>
 
         <constraint xsi:type="foreign"
                     referenceId="JH_IMPORT_HISTORY_ITEM_LOG_HISTORY_ID_JH_IMPORT_HISTORY_ID"
@@ -97,29 +64,22 @@
                     referenceTable="jh_import_history"
                     referenceColumn="id"
                     onDelete="CASCADE"/>
+
+        <index referenceId="JH_IMPORT_HISTORY_ITEM_LOG_ID_VALUE">
+            <column name="id_value"/>
+        </index>
     </table>
 
-    <table name="jh_import_archive_csv" resource="default" engine="innodb" comment="JH Import History">
-        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="Id"/>
-        <column xsi:type="varchar" name="source_id" length="64" comment="Source Id"/>
-        <column xsi:type="text" name="file_location" comment="File location"/>
-        <column xsi:type="boolean" name="deleted" default="0" comment="Deleted"/>
-        <column xsi:type="boolean" name="archived" default="0" comment="Archived"/>
-        <column xsi:type="varchar" name="archive_location" nullable="true" length="512" comment="Archived Location"/>
+    <table name="jh_import_archive_csv" resource="default" engine="innodb" comment="Import CSV Archive">
+        <column xsi:type="int" name="id" identity="true" unsigned="true" nullable="false" comment="ID"/>
+        <column xsi:type="varchar" name="source_id" length="64" nullable="true" comment="Source ID"/>
+        <column xsi:type="text" name="file_location" nullable="false" comment="File Location"/>
+        <column xsi:type="boolean" name="deleted" default="0" nullable="false" comment="Deleted"/>
+        <column xsi:type="boolean" name="archived" default="0" nullable="false" comment="Archived"/>
+        <column xsi:type="text" name="archive_location" nullable="true" comment="Archive Location"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
         </constraint>
-
-        <index referenceId="JH_IMPORT_ARCHIVE_CSV_SOURCE_ID">
-            <column name="source_id"/>
-        </index>
-        <index referenceId="JH_IMPORT_ARCHIVE_CSV_FLAGS">
-            <column name="archived"/>
-            <column name="deleted"/>
-        </index>
-        <index referenceId="JH_IMPORT_ARCHIVE_CSV_FILE_LOCATION">
-            <column name="file_location"/>
-        </index>
     </table>
 </schema>
