@@ -7,6 +7,9 @@ use Jh\Import\Config\Data;
 use Jh\Import\Locker\Locker;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
+use Magento\Cron\Model\Config as CronConfig;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
@@ -25,10 +28,8 @@ class Info extends Template
         'files' => TypeFiles::class
     ];
 
-    /**
-     * @var \Magento\Cron\Model\Config
-     */
-    private $cronConfig;
+    /** @var CronConfig $cronConfig */
+    private CronConfig $cronConfig;
 
     /**
      * @var Locker
@@ -38,14 +39,16 @@ class Info extends Template
     public function __construct(
         Context $context,
         Data $config,
-        \Magento\Cron\Model\Config $cronConfig,
-        Locker $locker
+        CronConfig $cronConfig,
+        Locker $locker,
+        ScopeConfigInterface $scopeConfig
     ) {
         parent::__construct($context);
 
         $this->config = $config;
         $this->cronConfig = $cronConfig;
         $this->locker = $locker;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function getImport(): Config
@@ -90,9 +93,17 @@ class Info extends Template
         }
 
         $cronCode = $this->getImport()->getCron();
+        $group = $this->getImport()->getCronGroup();
 
-        if (isset($jobs[$this->getImport()->getCronGroup()][$cronCode])) {
-            return $jobs[$this->getImport()->getCronGroup()][$cronCode]['schedule'];
+        if (isset($jobs[$group][$cronCode])) {
+            if (isset($jobs[$group][$cronCode]['schedule'])) {
+                return $jobs[$this->getImport()->getCronGroup()][$cronCode]['schedule'];
+            } else if (isset($jobs[$group][$cronCode]['config_path'])) {
+                return $this->scopeConfig->getValue(
+                    $jobs[$group][$cronCode]['config_path'],
+                    ScopeInterface::SCOPE_STORE
+                );
+            }
         }
 
         throw new \RuntimeException('Import\'s cron job does not exist');
