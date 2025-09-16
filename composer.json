@@ -1,6 +1,6 @@
 {
-    "name": "pbritka/m2-module-import",
-    "description": "Import module for Magento 2 - provides commands, utilities and abstractions for building imports for Magento 2 projects. Forked from WeareJH/Import.",
+    "name": "wearejh/m2-module-import",
+    "description": "Import module for Magento 2 - provides commands, utilities and abstractions for building imports for Magento 2 projects",
     "type": "magento2-module",
     "require": {
         "php": ">=7.4",

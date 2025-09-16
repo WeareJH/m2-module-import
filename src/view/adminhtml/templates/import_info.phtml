@@ -1,28 +1,28 @@
 <div class="dashboard-container row">
     <div class="dashboard-secondary col-m-3">
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Import Name') ?></div>
-            <?= $this->getImport()->getImportName() ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Import Name')) ?></div>
+            <?= $escaper->escapeHtml($this->getImport()->getImportName()) ?>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Import Type') ?></div>
-            <?= $this->getImport()->getType() ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Import Type')) ?></div>
+            <?= $escaper->escapeHtml($this->getImport()->getType()) ?>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Lock Status') ?></div>
-            <?= $this->getLockStatus() ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Lock Status')) ?></div>
+            <?= $escaper->escapeHtml($this->getLockStatus()) ?>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Indexers') ?></div>
-            <?= implode(",\n", $this->getImport()->getIndexers()) ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Indexers')) ?></div>
+            <?= $escaper->escapeHtml(implode(",\n", $this->getImport()->getIndexers())) ?>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Report Handlers') ?></div>
-            <?= implode(",\n", $this->getImport()->getReportHandlers()) ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Report Handlers')) ?></div>
+            <?= $escaper->escapeHtml(implode(",\n", $this->getImport()->getReportHandlers())) ?>
         </div>
         <?php if ($this->hasCron()): ?>
             <div class="dashboard-item">
-                <div class="dashboard-item-title"><?=  __('Cron') ?></div>
+                <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Cron')) ?></div>
                 <div class="dashboard-item-content">
                     <table class="admin__table-primary">
                         <tbody>
@@ -30,17 +30,17 @@
                             <?php $expression = $this->getCronExpression() ?>
                             <td style="">Expression</td>
                             <td style="" class="last">
-                                <?= $expression ?>
-                                <br><small><a target="_blank" href="https://crontab.guru/#<?= str_replace(' ', '_', $expression) ?>">What does that mean?</a></small>
+                                <?= $escaper->escapeHtml($expression) ?>
+                                <br><small><a target="_blank" href="https://crontab.guru/#<?= $escaper->escapeHtml(str_replace(' ', '_', $expression)) ?>">What does that mean?</a></small>
                             </td>
                         </tr>
                         <tr>
                             <td style="">Cron group</td>
-                            <td style="" class="last"><?= $this->getCronGroup() ?></td>
+                            <td style="" class="last"><?= $escaper->escapeHtml($this->getCronGroup()) ?></td>
                         </tr>
                         <tr>
                             <td style="">Cron code</td>
-                            <td style="" class="last"><?= $this->getCronCode() ?></td>
+                            <td style="" class="last"><?= $escaper->escapeHtml($this->getCronCode()) ?></td>
                         </tr>
                         </tbody>
                     </table>
