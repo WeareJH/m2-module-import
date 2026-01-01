@@ -25,6 +25,7 @@
             <argument name="cacheId" xsi:type="string">jh_import_config_cache</argument>
         </arguments>
     </type>
+    <preference for="Symfony\Component\Console\Output\OutputInterface" type="Symfony\Component\Console\Output\ConsoleOutput" />
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
