@@ -5,7 +5,7 @@ namespace Jh\Import\Import;
 class Record
 {
     /**
-     * @var int
+     * @var int|string
      */
     private $rowNumber;
 
@@ -14,13 +14,20 @@ class Record
      */
     private $data;
 
-    public function __construct(int $rowNumber, array $data = [])
+    /**
+     * @param int|string $rowNumber
+     * @param array $data
+     */
+    public function __construct($rowNumber, array $data = [])
     {
         $this->rowNumber = $rowNumber;
         $this->data = $data;
     }
 
-    public function getRowNumber(): int
+    /**
+     * @return int|string
+     */
+    public function getRowNumber()
     {
         return $this->rowNumber;
     }
