@@ -2,10 +2,12 @@
 
 namespace Jh\Import\Import;
 
+use RuntimeException;
+
 class Record
 {
     /**
-     * @var int
+     * @var int|string
      */
     private $rowNumber;
 
@@ -14,13 +16,26 @@ class Record
      */
     private $data;
 
-    public function __construct(int $rowNumber, array $data = [])
+    /**
+     * @param int|string $rowNumber
+     * @param array $data
+     */
+    public function __construct($rowNumber, array $data = [])
     {
+        if (!is_int($rowNumber) && !is_string($rowNumber)) {
+            throw new RuntimeException(
+                sprintf('Argument #1 $rowNumber must be of type int or string, %s given', gettype($rowNumber))
+            );
+        }
+
         $this->rowNumber = $rowNumber;
         $this->data = $data;
     }
 
-    public function getRowNumber(): int
+    /**
+     * @return int|string
+     */
+    public function getRowNumber()
     {
         return $this->rowNumber;
     }
@@ -57,7 +72,7 @@ class Record
         $value = $this->data[$columnName] ?? $default;
 
         if ($dataType && gettype($value) !== $dataType) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Value of "%s" data type: "%s" does not match expected: "%s"',
                     $columnName,
