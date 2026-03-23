@@ -1,20 +1,20 @@
 <div class="dashboard-container row">
     <div class="dashboard-secondary col-m-3">
         <div class="dashboard-item" style="word-break: break-all">
-            <div class="dashboard-item-title"><?=  __('Incoming directory') ?></div>
-            <span><?= $this->incomingDirectory() ?></span>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Incoming directory')) ?></div>
+            <span><?= $escaper->escapeHtml($this->incomingDirectory()) ?></span>
         </div>
         <div class="dashboard-item" style="word-break: break-all">
-            <div class="dashboard-item-title"><?=  __('Archived directory') ?></div>
-            <span><?= $this->archivedDirectory() ?></span>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Archived directory')) ?></div>
+            <span><?= $escaper->escapeHtml($this->archivedDirectory()) ?></span>
         </div>
         <div class="dashboard-item" style="word-break: break-all">
-            <div class="dashboard-item-title"><?=  __('Failed directory: ') ?></div>
-            <span><?= $this->failedDirectory() ?></span>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Failed directory: ')) ?></div>
+            <span><?= $escaper->escapeHtml($this->failedDirectory()) ?></span>
         </div>
         <div class="dashboard-item">
-            <div class="dashboard-item-title"><?=  __('Files Match') ?></div>
-            <?= $this->getImport()->get('match_files') ?>
+            <div class="dashboard-item-title"><?=  $escaper->escapeHtml(__('Files Match')) ?></div>
+            <?= $escaper->escapeHtml($this->getImport()->get('match_files')) ?>
         </div>
     </div>
     <div class="dashboard-secondary col-m-7">
@@ -33,8 +33,10 @@
                             <?php foreach ($this->filesNew() as $file) : ?>
                                 <tr>
                                     <td style="width:70%">
-                                        <a href="<?= $this->getDeleteUrl($file, 'incoming_directory') ?>" class="action-delete"></a>
-                                        <a href="<?= $this->getDownloadUrl($file, 'incoming_directory') ?>"><?= $file->getRealPath() ?></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDeleteUrl($file, 'incoming_directory')) ?>" class="action-delete"></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDownloadUrl($file, 'incoming_directory')) ?>">
+                                            <?= $escaper->escapeHtml($file->getRealPath()) ?>
+                                        </a>
                                     </td>
                                     <td style="text-align:right;color:<?= $this->fileWillBeProcessed($file) ? 'green' : 'red' ?>"class="last" ><?= $this->fileWillBeProcessed($file) ? '✔' : '✘' ?></td>
                                 </tr>
@@ -61,10 +63,12 @@
                             <?php foreach ($files as $file) : ?>
                                 <tr>
                                     <td style="width:70%">
-                                        <a href="<?= $this->getDeleteUrl($file, 'archived_directory') ?>" class="action-delete"></a>
-                                        <a href="<?= $this->getDownloadUrl($file, 'archived_directory') ?>"><?= $file->getRealPath() ?></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDeleteUrl($file, 'archived_directory')) ?>" class="action-delete"></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDownloadUrl($file, 'archived_directory')) ?>">
+                                            <?= $escaper->escapeHtml($file->getRealPath()) ?>
+                                        </a>
                                     </td>
-                                    <td style="text-align:right" class="last"><?= $this->getChangeTime($file) ?></td>
+                                    <td style="text-align:right" class="last"><?= $escaper->escapeHtml($this->getChangeTime($file)) ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
@@ -90,10 +94,12 @@
                                 <?php /** @var $file \SplFileInfo */ ?>
                                 <tr>
                                     <td style="width:70%">
-                                        <a href="<?= $this->getDeleteUrl($file, 'failed_directory') ?>" class="action-delete"></a>
-                                        <a href="<?= $this->getDownloadUrl($file, 'failed_directory') ?>"><?= $file->getRealPath() ?></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDeleteUrl($file, 'failed_directory')) ?>" class="action-delete"></a>
+                                        <a href="<?= $escaper->escapeUrl($this->getDownloadUrl($file, 'failed_directory')) ?>">
+                                            <?= $escaper->escapeHtml($file->getRealPath()) ?>
+                                        </a>
                                     </td>
-                                    <td style="text-align:right" class="last"><?= $this->getChangeTime($file) ?></td>
+                                    <td style="text-align:right" class="last"><?= $escaper->escapeHtml($this->getChangeTime($file)) ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>

@@ -138,6 +138,6 @@ class SkipUnchangedRecordsFromLastImport implements RequiresPreparation
 
     private function hashRecord(Record $record): string
     {
-        return md5(json_encode($record->asArray(), JSON_THROW_ON_ERROR));
+        return hash('sha256', json_encode($record->asArray(), JSON_THROW_ON_ERROR));
     }
 }
