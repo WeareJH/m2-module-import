@@ -1,0 +1,21 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Jh_Import:etc/imports.xsd">
+    <!--
+    Reads every file matching "*.csv" from a remote directory over SFTP, one connection shared
+    across all matched files in a run. `source` defaults to Jh\Import\Source\SftpCsv, so it can be
+    omitted unless a different remote file format needs its own Source class.
+
+    `location_config_provider` is an *unbound* virtual type name - it names an interface, not a
+    concrete class. It only exists at runtime because di.xml binds it to a real implementation
+    (see LocationConfigProvider below). This is what makes the SFTP host/credentials/paths
+    swappable per-environment (or per-website) without touching this file.
+    -->
+    <sftpfiles name="test">
+        <location_config_provider>MyVendor\Import\Sftp\LocationConfigProvider</location_config_provider>
+        <specification>MyVendor\Import\Specification\Test</specification>
+        <writer>MyVendor\Import\Writer\Test</writer>
+        <id_field>id</id_field>
+        <cron>myvendor_import_test</cron>
+        <cron_group>default</cron_group>
+        <process_only_last_file>false</process_only_last_file>
+    </sftpfiles>
+</config>

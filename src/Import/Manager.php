@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Jh\Import\Config\Data;
 use Jh\Import\Type\Db;
 use Jh\Import\Type\Files;
+use Jh\Import\Type\SftpFiles;
 use Jh\Import\Type\Type;
 use Jh\Import\Type\Webapi;
 use Magento\Framework\ObjectManagerInterface;
@@ -36,7 +37,8 @@ class Manager
     private array $types = [
         'files' => Files::class,
         'db' => Db::class,
-        'webapi' => Webapi::class
+        'webapi' => Webapi::class,
+        'sftpfiles' => SftpFiles::class
     ];
 
     public function __construct(Data $config, ObjectManagerInterface $objectManager)

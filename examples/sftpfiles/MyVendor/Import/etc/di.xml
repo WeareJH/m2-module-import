@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    Swap these for your real SFTP host/credentials/paths - or replace this whole <type> block
+    with a provider that reads them from ScopeConfigInterface instead (recommended for anything
+    beyond a throwaway example, so a host/password change doesn't need a deployment).
+    -->
+    <type name="MyVendor\Import\Sftp\LocationConfigProvider">
+        <arguments>
+            <argument name="host" xsi:type="string">sftp.example.com</argument>
+            <argument name="port" xsi:type="number">22</argument>
+            <argument name="username" xsi:type="string">myvendor</argument>
+            <argument name="password" xsi:type="string">changeme</argument>
+            <argument name="privateKey" xsi:type="null"/>
+            <argument name="remotePath" xsi:type="string">/outgoing/test</argument>
+            <argument name="matchPattern" xsi:type="string">*.csv</argument>
+            <argument name="archivePath" xsi:type="string">/outgoing/test/archive</argument>
+            <argument name="deleteAfterImport" xsi:type="boolean">false</argument>
+            <argument name="hostKeyFingerprint" xsi:type="null"/>
+        </arguments>
+    </type>
+</config>
