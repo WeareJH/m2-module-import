@@ -26,11 +26,16 @@ class Factory
 
     public function get(): Progress
     {
-        if ($this->appState->getMode() === State::MODE_DEVELOPER || posix_isatty(STDOUT)) {
+        if ($this->appState->getMode() === State::MODE_DEVELOPER || $this->isInteractiveCliOutput()) {
             return $this->getCliProgress();
         }
 
         return new NullProgress();
+    }
+
+    private function isInteractiveCliOutput(): bool
+    {
+        return function_exists('posix_isatty') && posix_isatty(STDOUT);
     }
 
     public function getCliProgress(): CliProgress
