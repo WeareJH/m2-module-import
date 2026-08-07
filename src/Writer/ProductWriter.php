@@ -221,7 +221,6 @@ class ProductWriter implements Writer
         $this->pluginList->getNext(ProductResource::class, 'save');
 
         $r = new \ReflectionProperty(PluginList::class, '_processed');
-        $r->setAccessible(true);
 
         $processed     = $r->getValue($this->pluginList);
         $methodKey     = sprintf('%s_save___self', ProductResource::class);

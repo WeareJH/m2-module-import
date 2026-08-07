@@ -17,7 +17,7 @@ class UnexpectedResponseException extends LocalizedException implements ClientEx
     public function __construct(
         Phrase $phrase,
         ResponseInterface $response,
-        Exception $cause = null,
+        ?Exception $cause = null,
         $code = 0
     ) {
         parent::__construct($phrase, $cause, $code);

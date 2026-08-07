@@ -39,7 +39,7 @@ class UnlockImportCommand extends Command
             ->addArgument('import_name', InputArgument::REQUIRED, 'The import to run as defined in imports.xml');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $importName = $input->getArgument('import_name');
 

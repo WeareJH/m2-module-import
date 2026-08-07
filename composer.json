@@ -3,7 +3,7 @@
     "description": "Import module for Magento 2 - provides commands, utilities and abstractions for building imports for Magento 2 projects",
     "type": "magento2-module",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": ">=8.1",
         "ext-json": "*",
         "ext-pdo": "*",
         "guzzlehttp/guzzle": "^7.4",
@@ -13,8 +13,8 @@
         "magento/module-configurable-product": ">=100.4",
         "psr/http-client": "*",
         "psr/http-message": "*",
-        "symfony/console": "^3.0 || ^4.0 || ^5.0 || ^6.0",
-        "tightenco/collect": "^8.0 || ^9.0"
+        "symfony/console": "^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
+        "illuminate/collections": "^10.0 || ^11.0 || ^12.0"
     },
     "require-dev": {
         "monolog/monolog": "^1.22 || ^2.1",

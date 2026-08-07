@@ -35,7 +35,7 @@ class ViewLocksCommand extends Command
             ->setDescription('Show current locks');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $locks = array_map(
             function (string $importName) {
@@ -51,7 +51,7 @@ class ViewLocksCommand extends Command
 
         if (empty($locks)) {
             $output->writeln(['', '<comment>No import is locked</comment>', '']);
-            return;
+            return Cli::RETURN_SUCCESS;
         }
 
         $output->writeln('');

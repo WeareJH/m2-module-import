@@ -48,8 +48,8 @@ class ImportSearchResult extends AbstractCollection implements SearchResultInter
         LoggerInterface $logger,
         FetchStrategyInterface $fetchStrategy,
         ManagerInterface $eventManager,
-        AdapterInterface $connection = null,
-        AbstractDb $resource = null
+        ?AdapterInterface $connection = null,
+        ?AbstractDb $resource = null
     ) {
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
         $this->setItemObjectClass(Document::class);
@@ -79,7 +79,7 @@ class ImportSearchResult extends AbstractCollection implements SearchResultInter
      * @param DocumentInterface[] $items
      * @return $this
      */
-    public function setItems(array $items = null): self
+    public function setItems(?array $items = null): self
     {
         if (!$items) {
             return $this;

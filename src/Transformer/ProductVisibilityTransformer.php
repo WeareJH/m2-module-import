@@ -27,7 +27,7 @@ class ProductVisibilityTransformer
      */
     private $defaultVisibilityId;
 
-    public function __construct(string $column, int $defaultVisibilityId = null)
+    public function __construct(string $column, ?int $defaultVisibilityId = null)
     {
         $this->column  = $column;
         $this->options = collect(Visibility::getOptionArray())

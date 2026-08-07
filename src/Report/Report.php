@@ -57,7 +57,7 @@ class Report
         $this->handlers[] = $handler;
     }
 
-    public function start(\DateTime $startTime = null)
+    public function start(?\DateTime $startTime = null)
     {
         $startTime = $startTime ?: new \DateTime();
         foreach ($this->handlers as $handler) {
@@ -115,7 +115,7 @@ class Report
         }
     }
 
-    public function finish(\DateTime $finishTime = null, int $memoryUsage = null): void
+    public function finish(?\DateTime $finishTime = null, ?int $memoryUsage = null): void
     {
         $finishTime  = $finishTime ?: new \DateTime();
         $memoryUsage = $memoryUsage ?: memory_get_usage(true);

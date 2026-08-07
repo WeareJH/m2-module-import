@@ -24,7 +24,7 @@ class Message
      */
     private $dateTime;
 
-    public function __construct(string $logLevel, string $message, \DateTime $dateTime = null)
+    public function __construct(string $logLevel, string $message, ?\DateTime $dateTime = null)
     {
         $this->logLevel = $logLevel;
         $this->message = $message;

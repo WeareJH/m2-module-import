@@ -50,7 +50,7 @@ class CsvArchiver implements Archiver
         DirectoryList $directoryList,
         File $filesystem,
         ResourceConnection $resourceConnection,
-        DateTime $date = null
+        ?DateTime $date = null
     ) {
         $this->source = $source;
         $this->config = $config;
