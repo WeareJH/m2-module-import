@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    Shows the "one SFTP connection, many imports" pattern: a shared connection virtual type
+    (host/credentials, see etc/adminhtml/system.xml for the admin fields) plus a per-import
+    location virtual type, own prefix. A second sftpfiles entity reusing this connection just
+    needs another LocationConfigProvider virtual type pointed at it, no new PHP.
+    -->
+    <virtualType name="MyVendor\Import\Sftp\ConnectionConfigProvider" type="Jh\Import\Source\Sftp\ConnectionConfigProvider">
+        <arguments>
+            <argument name="connectionConfigPathPrefix" xsi:type="string">myvendor_import/sftp_connection</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MyVendor\Import\Sftp\TestLocationConfigProvider" type="Jh\Import\Source\Sftp\LocationConfigProvider">
+        <arguments>
+            <argument name="connectionConfigProvider" xsi:type="object">MyVendor\Import\Sftp\ConnectionConfigProvider</argument>
+            <argument name="locationConfigPathPrefix" xsi:type="string">myvendor_import/test_location</argument>
+        </arguments>
+    </virtualType>
+</config>

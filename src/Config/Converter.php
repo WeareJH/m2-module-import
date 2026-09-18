@@ -2,8 +2,17 @@
 
 namespace Jh\Import\Config;
 
+use DOMElement;
+use DOMNodeList;
 use Illuminate\Support\Collection;
+use Jh\Import\Config\AppConfigProvider;
+use Jh\Import\Source\Csv;
+use Jh\Import\Source\Db;
+use Jh\Import\Source\SftpCsv;
+use Jh\Import\Source\Webapi;
 use Magento\Framework\Config\ConverterInterface;
+
+use function is_bool;
 
 class Converter implements ConverterInterface
 {
@@ -12,7 +21,7 @@ class Converter implements ConverterInterface
      */
     private static $importTypesWithRequiredFields = [
         'files' => [
-            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Csv::class],
+            'source' => ['type' => 'string', 'default' => Csv::class],
             'incoming_directory' => ['type' => 'string', 'default' => 'jh_import/incoming'],
             'archived_directory' => ['type' => 'string', 'default' => 'jh_import/archived'],
             'failed_directory' => ['type' => 'string', 'default' => 'jh_import/failed'],
@@ -31,7 +40,7 @@ class Converter implements ConverterInterface
         ],
         'db' => [
             'connection_name' => ['type' => 'string'],
-            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Db::class],
+            'source' => ['type' => 'string', 'default' => Db::class],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
             'id_field' => ['type' => 'string'],
@@ -42,7 +51,7 @@ class Converter implements ConverterInterface
             'cron_group' => ['type' => 'string', 'default' => 'default']
         ],
         'webapi' => [
-            'source' => ['type' => 'string', 'default' => \Jh\Import\Source\Webapi::class],
+            'source' => ['type' => 'string', 'default' => Webapi::class],
             'source_id' => ['type' => 'string'],
             'specification' => ['type' => 'string'],
             'writer' => ['type' => 'string'],
@@ -56,6 +65,17 @@ class Converter implements ConverterInterface
             'data_response_handler' => ['type' => 'string'],
             'cron' => ['type' => 'string'],
             'cron_group' => ['type' => 'string', 'default' => 'default']
+        ],
+        'sftpfiles' => [
+            'source' => ['type' => 'string', 'default' => SftpCsv::class],
+            'location_config_provider' => ['type' => 'string'],
+            'specification' => ['type' => 'string'],
+            'writer' => ['type' => 'string'],
+            'id_field' => ['type' => 'string'],
+            'cron' => ['type' => 'string'],
+            'cron_group' => ['type' => 'string', 'default' => 'default'],
+            'process_only_last_file' => ['type' => 'bool', 'default' => false],
+            'archive_date_format' => ['type' => 'string', 'default' => 'dmYhis'],
         ]
     ];
 
@@ -71,22 +91,22 @@ class Converter implements ConverterInterface
         $names = collect(static::$importTypesWithRequiredFields)
             ->keys()
             ->flatMap(function ($importType) use ($source) {
-                /** @var \DOMNodeList $imports */
+                /** @var DOMNodeList $imports */
                 $imports = $source->getElementsByTagName($importType);
 
                 return collect($imports)
-                    ->map(function (\DOMElement $import) {
+                    ->map(function (DOMElement $import) {
                         return $import->getAttribute('name');
                     });
             });
 
         $importData = collect(static::$importTypesWithRequiredFields)
             ->flatMap(function (array $requiredFields, $importType) use ($source) {
-                /** @var \DOMNodeList $imports */
+                /** @var DOMNodeList $imports */
                 $imports = $source->getElementsByTagName($importType);
 
                 return collect($imports)
-                    ->map(function (\DOMElement $import) use ($importType, $requiredFields) {
+                    ->map(function (DOMElement $import) use ($importType, $requiredFields) {
                         return $this->getOptions($import, $requiredFields, $importType)
                             ->put('type', $importType);
                     });
@@ -95,11 +115,11 @@ class Converter implements ConverterInterface
         return $names->combine($importData)->toArray();
     }
 
-    private function getOptions(\DOMElement $import, array $requiredFields, string $importType): Collection
+    private function getOptions(DOMElement $import, array $requiredFields, string $importType): Collection
     {
         $options = collect($requiredFields)
             ->map(function (array $spec, string $requiredField) use ($import, $importType) {
-                /** @var \DOMNodeList $elements */
+                /** @var DOMNodeList $elements */
                 $elements = $import->getElementsByTagName($requiredField);
 
                 // load default value from app config
@@ -129,7 +149,7 @@ class Converter implements ConverterInterface
         $indexers = [];
         if ($indexersElement->length > 0) {
             $indexers = collect($indexersElement->item(0)->getElementsByTagName('indexer'))
-                ->map(function (\DOMElement $indexer) {
+                ->map(function (DOMElement $indexer) {
                     return $indexer->nodeValue;
                 })
                 ->all();
@@ -140,7 +160,7 @@ class Converter implements ConverterInterface
         $reportHandlers = [];
         if ($reportHandlersElement->length > 0) {
             $reportHandlers = collect($reportHandlersElement->item(0)->getElementsByTagName('report_handler'))
-                ->map(function (\DOMElement $reportHandler) {
+                ->map(function (DOMElement $reportHandler) {
                     return $reportHandler->nodeValue;
                 })
                 ->all();

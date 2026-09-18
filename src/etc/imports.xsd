@@ -6,6 +6,7 @@
                 <xs:element name="files" type="filesType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="db" type="dbType" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="webapi" type="webapiType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="sftpfiles" type="sftpfilesType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
@@ -64,6 +65,44 @@
             <xs:element name="count_sql" minOccurs="1" maxOccurs="1" type="xs:string"/>
             <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="cron_group" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="indexers" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="indexer" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="report_handlers" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="report_handler" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="sftpfilesType" >
+        <xs:annotation>
+            <xs:documentation>
+                An import who's source is a remote SFTP directory. Deliberately has no
+                match_files/remote_path/archive_path/credential elements - those are supplied at
+                runtime by whatever location_config_provider (an unbound virtual type name)
+                resolves to, via Jh\Import\Source\Sftp\LocationConfigProviderInterface. This keeps
+                knowledge of where a feed physically lives out of the entity import module that
+                consumes it.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="source" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="location_config_provider" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="specification" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="writer" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="id_field" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="cron_group" minOccurs="0" maxOccurs="1" type="xs:string"/>
+            <xs:element name="process_only_last_file" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="archive_date_format" minOccurs="0" maxOccurs="1" type="xs:string"/>
             <xs:element name="indexers" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
