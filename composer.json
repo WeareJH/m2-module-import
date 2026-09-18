@@ -4,8 +4,10 @@
     "type": "magento2-module",
     "require": {
         "php": "^8.1",
+        "ext-dom": "*",
         "ext-json": "*",
         "ext-pdo": "*",
+        "ext-xmlreader": "*",
         "guzzlehttp/guzzle": "^7.4",
         "magento/framework": ">=103",
         "magento/module-catalog": ">=104",

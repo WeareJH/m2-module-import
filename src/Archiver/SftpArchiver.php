@@ -5,14 +5,14 @@ namespace Jh\Import\Archiver;
 
 use DateTime;
 use Jh\Import\Config;
-use Jh\Import\Source\SftpCsv;
+use Jh\Import\Source\Sftp\RemoteFileSource;
 
 use function sprintf;
 
 class SftpArchiver implements Archiver
 {
     public function __construct(
-        private readonly SftpCsv $source,
+        private readonly RemoteFileSource $source,
         private readonly Config $config,
         private readonly ?DateTime $date = null
     ) {

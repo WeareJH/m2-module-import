@@ -11,45 +11,38 @@ use Magento\Framework\Filesystem\Driver\File;
 use RuntimeException;
 
 /**
- * Downloads the remote file to a local temp file and hands off all the actual row-parsing to Csv
- * (composition, not duplication). A future feed needing a different remote file format should be
- * a new sibling Source class reusing the same Sftp\Client/LocationConfig transport (see SftpXml),
- * not a reason to grow this one.
+ * XML equivalent of SftpCsv - downloads the remote file to a local temp file and hands off all
+ * the actual row-parsing to Xml. See SftpCsv's own docblock for the composition reasoning; this
+ * class exists so an SFTP feed can be pointed at XML instead of CSV purely via imports.xml's
+ * `<source>` (or a di.xml override for `recordElement`), no new PHP required.
  */
-class SftpCsv implements Source, Countable, RemoteFileSource
+class SftpXml implements Source, Countable, RemoteFileSource
 {
-    private ?Csv $csv = null;
+    private ?Xml $xml = null;
     private ?string $localTempFile = null;
 
     public function __construct(
         private readonly Client $client,
         private readonly string $remoteFile,
-        private readonly CsvFactory $csvFactory,
+        private readonly XmlFactory $xmlFactory,
         private readonly File $fileDriver,
-        private readonly string $delimiter = ',',
-        private readonly string $enclosure = '"',
-        private readonly string $escape = '\\',
-        private readonly int $headerRowNum = 0
+        private readonly string $recordElement = 'item'
     ) {
     }
 
     public function traverse(callable $onSuccess, callable $onError, Report $report): void
     {
-        $this->csv()->traverse($onSuccess, $onError, $report);
+        $this->xml()->traverse($onSuccess, $onError, $report);
     }
 
-    /**
-     * Delegates to Csv, which hashes the downloaded file's content, so the same content is
-     * always detected as a duplicate/already-imported regardless of its remote filename.
-     */
     public function getSourceId(): string
     {
-        return $this->csv()->getSourceId();
+        return $this->xml()->getSourceId();
     }
 
     public function count(): int
     {
-        return $this->csv()->count();
+        return $this->xml()->count();
     }
 
     public function getClient(): Client
@@ -63,13 +56,13 @@ class SftpCsv implements Source, Countable, RemoteFileSource
     }
 
     /**
-     * Downloaded and wrapped on first use rather than eagerly in the constructor, so just
-     * instantiating this class never costs a download we might not end up needing.
+     * Downloaded and wrapped on first use rather than eagerly in the constructor - see SftpCsv's
+     * own csv() for why.
      */
-    private function csv(): Csv
+    private function xml(): Xml
     {
-        if ($this->csv !== null) {
-            return $this->csv;
+        if ($this->xml !== null) {
+            return $this->xml;
         }
 
         $localTempFile = tempnam(sys_get_temp_dir(), 'jh_import_sftp_');
@@ -81,12 +74,9 @@ class SftpCsv implements Source, Countable, RemoteFileSource
         $this->localTempFile = $localTempFile;
         $this->client->get($this->remoteFile, $this->localTempFile);
 
-        return $this->csv = $this->csvFactory->create([
+        return $this->xml = $this->xmlFactory->create([
             'file' => $this->localTempFile,
-            'delimiter' => $this->delimiter,
-            'enclosure' => $this->enclosure,
-            'escape' => $this->escape,
-            'headerRowNum' => $this->headerRowNum,
+            'recordElement' => $this->recordElement,
         ]);
     }
 
