@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="myvendor_import" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>MyVendor Import (SFTP example)</label>
+            <resource>Jh_Import::import_config</resource>
+
+            <!--
+            Read by the shared ConnectionConfigProvider virtual type (di.xml) - one set of fields
+            for every sftpfiles entity sharing this SFTP account.
+            -->
+            <group id="sftp_connection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>SFTP Connection</label>
+                <field id="host" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Host</label>
+                </field>
+                <field id="port" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Port</label>
+                </field>
+                <field id="username" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Username</label>
+                </field>
+                <field id="password" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Password</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>Leave empty when authenticating via private key instead.</comment>
+                </field>
+                <field id="private_key" translate="label" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Private Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>PEM contents. Leave empty when authenticating via password instead.</comment>
+                </field>
+                <field id="host_key_fingerprint" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Host Key Fingerprint</label>
+                    <comment>Optional - pins the server's host key. Leave empty to skip verification.</comment>
+                </field>
+            </group>
+
+            <!--
+            Read by TestLocationConfigProvider (di.xml), specific to the "test" entity in
+            imports.xml. A second entity sharing the connection above would just get its own
+            group here and its own virtual type.
+            -->
+            <group id="test_location" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Test Import - Location</label>
+                <field id="remote_path" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Remote Path</label>
+                    <comment>e.g. /outgoing/test</comment>
+                </field>
+                <field id="match_pattern" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Match Pattern</label>
+                    <comment>"*" for everything, a leading "/" for a regex, otherwise an exact filename.</comment>
+                </field>
+                <field id="archive_path" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Archive Path</label>
+                    <comment>Leave empty to leave successfully-imported files in place instead of archiving them.</comment>
+                </field>
+                <field id="delete_after_import" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Delete After Import</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Takes precedence over Archive Path when enabled.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

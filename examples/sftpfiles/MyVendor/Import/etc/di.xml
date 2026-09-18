@@ -2,22 +2,21 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!--
-    Swap these for your real SFTP host/credentials/paths - or replace this whole <type> block
-    with a provider that reads them from ScopeConfigInterface instead (recommended for anything
-    beyond a throwaway example, so a host/password change doesn't need a deployment).
+    Shows the "one SFTP connection, many imports" pattern: a shared connection virtual type
+    (host/credentials, see etc/adminhtml/system.xml for the admin fields) plus a per-import
+    location virtual type, own prefix. A second sftpfiles entity reusing this connection just
+    needs another LocationConfigProvider virtual type pointed at it, no new PHP.
     -->
-    <type name="MyVendor\Import\Sftp\LocationConfigProvider">
+    <virtualType name="MyVendor\Import\Sftp\ConnectionConfigProvider" type="Jh\Import\Source\Sftp\ConnectionConfigProvider">
         <arguments>
-            <argument name="host" xsi:type="string">sftp.example.com</argument>
-            <argument name="port" xsi:type="number">22</argument>
-            <argument name="username" xsi:type="string">myvendor</argument>
-            <argument name="password" xsi:type="string">changeme</argument>
-            <argument name="privateKey" xsi:type="null"/>
-            <argument name="remotePath" xsi:type="string">/outgoing/test</argument>
-            <argument name="matchPattern" xsi:type="string">*.csv</argument>
-            <argument name="archivePath" xsi:type="string">/outgoing/test/archive</argument>
-            <argument name="deleteAfterImport" xsi:type="boolean">false</argument>
-            <argument name="hostKeyFingerprint" xsi:type="null"/>
+            <argument name="connectionConfigPathPrefix" xsi:type="string">myvendor_import/sftp_connection</argument>
         </arguments>
-    </type>
+    </virtualType>
+
+    <virtualType name="MyVendor\Import\Sftp\TestLocationConfigProvider" type="Jh\Import\Source\Sftp\LocationConfigProvider">
+        <arguments>
+            <argument name="connectionConfigProvider" xsi:type="object">MyVendor\Import\Sftp\ConnectionConfigProvider</argument>
+            <argument name="locationConfigPathPrefix" xsi:type="string">myvendor_import/test_location</argument>
+        </arguments>
+    </virtualType>
 </config>

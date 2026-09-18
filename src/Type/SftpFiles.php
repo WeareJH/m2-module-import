@@ -6,23 +6,27 @@ namespace Jh\Import\Type;
 use Jh\Import\Config;
 use Jh\Import\Import\ImporterFactory;
 use Jh\Import\Source\Sftp\ClientFactory;
-use Jh\Import\Source\Sftp\LocationConfigProviderInterface;
-use Magento\Framework\ObjectManagerInterface;
+use Jh\Import\Source\Sftp\LocationConfigProviderFactory;
+use Jh\Import\Source\SourceFactory;
+use Jh\Import\Specification\SpecificationFactory;
+use Jh\Import\Writer\WriterFactory;
 
 class SftpFiles implements Type
 {
     public function __construct(
-        private readonly ObjectManagerInterface $objectManager,
         private readonly ImporterFactory $importerFactory,
         private readonly ClientFactory $clientFactory,
-        private readonly FileMatcher $fileMatcher
+        private readonly SourceFactory $sourceFactory,
+        private readonly FileMatcher $fileMatcher,
+        private readonly LocationConfigProviderFactory $locationConfigProviderFactory,
+        private readonly SpecificationFactory $specificationFactory,
+        private readonly WriterFactory $writerFactory
     ) {
     }
 
     public function run(Config $config)
     {
-        /** @var LocationConfigProviderInterface $locationConfigProvider */
-        $locationConfigProvider = $this->objectManager->get($config->getRequired('location_config_provider'));
+        $locationConfigProvider = $this->locationConfigProviderFactory->create($config->getRequired('location_config_provider'));
         $locationConfig = $locationConfigProvider->getLocationConfig();
 
         // One connection per import run, shared across every matched file - not one per file.
@@ -30,12 +34,12 @@ class SftpFiles implements Type
 
         $filesToProcess = $this->fileMatcher->matched($locationConfig->getMatchPattern(), $client->listFiles());
 
-        $specification = $this->objectManager->get($config->getSpecificationService());
-        $writer        = $this->objectManager->get($config->getWriterService());
+        $specification = $this->specificationFactory->create($config->getSpecificationService());
+        $writer = $this->writerFactory->create($config->getWriterService());
 
         $lastFileIndex = $filesToProcess->count() - 1;
         $filesToProcess->each(function ($file, $index) use ($config, $specification, $writer, $lastFileIndex, $client) {
-            $source = $this->objectManager->create($config->getSourceService(), [
+            $source = $this->sourceFactory->create($config, [
                 'client' => $client,
                 'remoteFile' => $file,
             ]);

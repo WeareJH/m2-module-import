@@ -6,27 +6,61 @@ namespace Jh\Import\Source;
 use Countable;
 use Jh\Import\Report\Report;
 use Jh\Import\Source\Sftp\Client;
+use Magento\Framework\Filesystem\Driver\File;
 use RuntimeException;
 
 /**
- * Downloads the remote file to a local temp file and delegates all actual row-parsing/validation
- * to Csv (composition, not duplication). If a future feed needs a different remote file format
- * over SFTP, that's a new sibling Source class reusing the same Sftp\Client/LocationConfig
- * transport helpers - not something this class needs to grow to cover.
+ * Downloads the remote file to a local temp file and hands off all the actual row-parsing to Csv
+ * (composition, not duplication). A future feed needing a different remote file format should be
+ * a new sibling Source class reusing the same Sftp\Client/LocationConfig transport, not a reason
+ * to grow this one.
  */
 class SftpCsv implements Source, Countable
 {
-    private readonly Csv $csv;
-    private readonly string $localTempFile;
+    private ?Csv $csv = null;
+    private ?string $localTempFile = null;
 
     public function __construct(
         private readonly Client $client,
         private readonly string $remoteFile,
-        string $delimiter = ',',
-        string $enclosure = '"',
-        string $escape = '\\',
-        int $headerRowNum = 0
+        private readonly CsvFactory $csvFactory,
+        private readonly File $fileDriver,
+        private readonly string $delimiter = ',',
+        private readonly string $enclosure = '"',
+        private readonly string $escape = '\\',
+        private readonly int $headerRowNum = 0
     ) {
+    }
+
+    public function traverse(callable $onSuccess, callable $onError, Report $report): void
+    {
+        $this->csv()->traverse($onSuccess, $onError, $report);
+    }
+
+    /**
+     * Delegates to Csv, which hashes the downloaded file's content, so the same content is
+     * always detected as a duplicate/already-imported regardless of its remote filename.
+     */
+    public function getSourceId(): string
+    {
+        return $this->csv()->getSourceId();
+    }
+
+    public function count(): int
+    {
+        return $this->csv()->count();
+    }
+
+    /**
+     * Downloaded and wrapped on first use rather than eagerly in the constructor, so just
+     * instantiating this class never costs a download we might not end up needing.
+     */
+    private function csv(): Csv
+    {
+        if ($this->csv !== null) {
+            return $this->csv;
+        }
+
         $localTempFile = tempnam(sys_get_temp_dir(), 'jh_import_sftp_');
 
         if ($localTempFile === false) {
@@ -35,33 +69,20 @@ class SftpCsv implements Source, Countable
 
         $this->localTempFile = $localTempFile;
         $this->client->get($this->remoteFile, $this->localTempFile);
-        $this->csv = new Csv($this->localTempFile, $delimiter, $enclosure, $escape, $headerRowNum);
-    }
 
-    public function traverse(callable $onSuccess, callable $onError, Report $report): void
-    {
-        $this->csv->traverse($onSuccess, $onError, $report);
-    }
-
-    /**
-     * Delegates to Csv, which hashes the downloaded file's content - so the same remote file
-     * content is always detected as a duplicate/already-imported, regardless of its remote
-     * filename
-     */
-    public function getSourceId(): string
-    {
-        return $this->csv->getSourceId();
-    }
-
-    public function count(): int
-    {
-        return $this->csv->count();
+        return $this->csv = $this->csvFactory->create([
+            'file' => $this->localTempFile,
+            'delimiter' => $this->delimiter,
+            'enclosure' => $this->enclosure,
+            'escape' => $this->escape,
+            'headerRowNum' => $this->headerRowNum,
+        ]);
     }
 
     public function __destruct()
     {
-        if (is_file($this->localTempFile)) {
-            @unlink($this->localTempFile);
+        if ($this->localTempFile !== null && $this->fileDriver->isExists($this->localTempFile)) {
+            $this->fileDriver->deleteFile($this->localTempFile);
         }
     }
 }

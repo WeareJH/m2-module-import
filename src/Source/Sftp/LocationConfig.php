@@ -7,11 +7,11 @@ namespace Jh\Import\Source\Sftp;
  * Immutable value object describing everything needed to locate, authenticate against, and
  * dispose of files for a single SFTP-sourced feed.
  *
- * Deliberately covers *both* connection detail (host/credentials) and location/pattern/archival
- * detail (remote path/match pattern/archive path) - a filename pattern or a directory is just as
- * much a property of "where this particular feed lives" as the hostname is. Entity import modules
- * never construct this directly; it is built by whatever implements `LocationConfigProviderInterface`
- * for a given import, resolved dynamically per import run (see `Jh\Import\Type\SftpFiles`).
+ * Covers both connection detail (host/credentials) and location/pattern/archival detail (remote
+ * path/match pattern/archive path) - a match pattern is just as much part of "where this feed
+ * lives" as the hostname is. Entity import modules never construct this directly; whatever
+ * implements `LocationConfigProviderInterface` for a given import builds it, resolved dynamically
+ * per run (see `Jh\Import\Type\SftpFiles`).
  */
 class LocationConfig
 {
@@ -78,9 +78,9 @@ class LocationConfig
     }
 
     /**
-     * Remote directory a successfully-imported file should be moved into. Null means: don't
-     * archive (only relevant when deleteAfterImport is also false, in which case the file is
-     * simply left in place - not recommended for a repeatedly-polled directory).
+     * Remote directory a successfully-imported file gets moved into. Null and deleteAfterImport
+     * false means the file is just left in place - not recommended for a repeatedly-polled
+     * directory.
      */
     public function getArchivePath(): ?string
     {

@@ -5,11 +5,11 @@ namespace Jh\Import\Config;
 use DOMElement;
 use DOMNodeList;
 use Illuminate\Support\Collection;
-use JhImport\Import\Config\AppConfigProvider;
-use JhImport\Import\Source\Csv;
-use JhImport\Import\Source\Db;
-use JhImport\Import\Source\SftpCsv;
-use JhImport\Import\Source\Webapi;
+use Jh\Import\Config\AppConfigProvider;
+use Jh\Import\Source\Csv;
+use Jh\Import\Source\Db;
+use Jh\Import\Source\SftpCsv;
+use Jh\Import\Source\Webapi;
 use Magento\Framework\Config\ConverterInterface;
 
 use function is_bool;

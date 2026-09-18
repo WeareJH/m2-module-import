@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Jh\Import\Archiver;
 
 use DateTime;
-use JhImport\Import\Archiver\Archiver;
-use JhImport\Import\Config;
-use JhImport\Import\Source\SftpCsv;
+use Jh\Import\Config;
+use Jh\Import\Source\SftpCsv;
 
 use function sprintf;
 
@@ -44,6 +43,12 @@ class SftpArchiver implements Archiver
         //File left as it is for easier debugging
     }
 
+    /**
+     * Suffixes a timestamp onto the archived filename, mirroring CsvArchiver. A repeatedly-polled
+     * feed can easily deliver the same remote filename twice (fixed naming convention, a resend),
+     * and a plain SFTP rename refuses to overwrite an existing destination - without this it'd
+     * just fail.
+     */
     private function newName(string $remoteFile): string
     {
         $basename = basename($remoteFile);
