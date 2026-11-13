@@ -11,6 +11,9 @@ use Jh\Import\Source\SourceFactory;
 use Jh\Import\Specification\SpecificationFactory;
 use Jh\Import\Writer\WriterFactory;
 
+use function basename;
+use function strnatcmp;
+
 class SftpFiles implements Type
 {
     public function __construct(
@@ -32,7 +35,13 @@ class SftpFiles implements Type
         // One connection per import run, shared across every matched file - not one per file.
         $client = $this->clientFactory->create($locationConfig);
 
-        $filesToProcess = $this->fileMatcher->matched($locationConfig->getMatchPattern(), $client->listFiles());
+        // The server lists files in no guaranteed order. Delta feeds need the last file applied to be the newest one
+        // (and process_only_last_file needs "last" to mean newest), so files are processed in name order: feeds name
+        // their files with a sequence number or a timestamp.
+        $filesToProcess = $this->fileMatcher
+            ->matched($locationConfig->getMatchPattern(), $client->listFiles())
+            ->sort(static fn (string $first, string $second): int => strnatcmp(basename($first), basename($second)))
+            ->values();
 
         $specification = $this->specificationFactory->create($config->getSpecificationService());
         $writer = $this->writerFactory->create($config->getWriterService());
