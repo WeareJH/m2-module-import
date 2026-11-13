@@ -56,6 +56,10 @@
                     <label>Archive Path</label>
                     <comment>Leave empty to leave successfully-imported files in place instead of archiving them.</comment>
                 </field>
+                <field id="failed_path" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Failed Path</label>
+                    <comment>Leave empty to leave failed files in place. They will then be imported again by every later run.</comment>
+                </field>
                 <field id="delete_after_import" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Delete After Import</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

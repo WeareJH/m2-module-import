@@ -16,8 +16,8 @@ use function sprintf;
  * type in di.xml pointing this class at a different `locationConfigPathPrefix`, plus the matching
  * system.xml fields.
  *
- * Reads {prefix}/remote_path, {prefix}/match_pattern, {prefix}/archive_path and
- * {prefix}/delete_after_import.
+ * Reads {prefix}/remote_path, {prefix}/match_pattern, {prefix}/archive_path,
+ * {prefix}/failed_path and {prefix}/delete_after_import.
  *
  * If one entity's connection really does need to differ (a different SFTP account, not just a
  * different directory), give it its own ConnectionConfigProviderInterface instead - this class
@@ -28,6 +28,7 @@ class LocationConfigProvider implements LocationConfigProviderInterface
     private const FIELD_REMOTE_PATH = 'remote_path';
     private const FIELD_MATCH_PATTERN = 'match_pattern';
     private const FIELD_ARCHIVE_PATH = 'archive_path';
+    private const FIELD_FAILED_PATH = 'failed_path';
     private const FIELD_DELETE_AFTER_IMPORT = 'delete_after_import';
 
     public function __construct(
@@ -47,15 +48,16 @@ class LocationConfigProvider implements LocationConfigProviderInterface
             privateKey: $this->connectionConfigProvider->getPrivateKey(),
             remotePath: (string) $this->scopeConfig->getValue($this->fieldPath(self::FIELD_REMOTE_PATH)),
             matchPattern: (string) $this->scopeConfig->getValue($this->fieldPath(self::FIELD_MATCH_PATTERN)),
-            archivePath: $this->getArchivePath(),
+            archivePath: $this->getOptionalPath(self::FIELD_ARCHIVE_PATH),
+            failedPath: $this->getOptionalPath(self::FIELD_FAILED_PATH),
             deleteAfterImport: $this->scopeConfig->isSetFlag($this->fieldPath(self::FIELD_DELETE_AFTER_IMPORT)),
             hostKeyFingerprint: $this->connectionConfigProvider->getHostKeyFingerprint()
         );
     }
 
-    private function getArchivePath(): ?string
+    private function getOptionalPath(string $field): ?string
     {
-        $value = $this->scopeConfig->getValue($this->fieldPath(self::FIELD_ARCHIVE_PATH));
+        $value = $this->scopeConfig->getValue($this->fieldPath($field));
 
         return $value !== null && $value !== '' ? (string) $value : null;
     }

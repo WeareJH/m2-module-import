@@ -8,8 +8,8 @@ namespace Jh\Import\Source\Sftp;
  * dispose of files for a single SFTP-sourced feed.
  *
  * Covers both connection detail (host/credentials) and location/pattern/archival detail (remote
- * path/match pattern/archive path) - a match pattern is just as much part of "where this feed
- * lives" as the hostname is. Entity import modules never construct this directly; whatever
+ * path/match pattern/archive path/failed path) - a match pattern is just as much part of "where
+ * this feed lives" as the hostname is. Entity import modules never construct this directly; whatever
  * implements `LocationConfigProviderInterface` for a given import builds it, resolved dynamically
  * per run (see `Jh\Import\Type\SftpFiles`).
  */
@@ -24,6 +24,7 @@ class LocationConfig
         private readonly string $remotePath,
         private readonly string $matchPattern,
         private readonly ?string $archivePath = null,
+        private readonly ?string $failedPath = null,
         private readonly bool $deleteAfterImport = false,
         private readonly ?string $hostKeyFingerprint = null
     ) {
@@ -85,6 +86,17 @@ class LocationConfig
     public function getArchivePath(): ?string
     {
         return $this->archivePath;
+    }
+
+    /**
+     * Remote directory a failed file gets moved into, so the next run does not import it again, like
+     * failed_directory for local files. Files skipped by process_only_last_file go there too. Null means a failed
+     * file is left in place for debugging, and every later run picks it up again. A file whose import was locked is
+     * never moved: it is left for the next run.
+     */
+    public function getFailedPath(): ?string
+    {
+        return $this->failedPath;
     }
 
     /**

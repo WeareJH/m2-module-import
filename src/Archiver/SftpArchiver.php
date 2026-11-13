@@ -29,18 +29,29 @@ class SftpArchiver implements Archiver
             return;
         }
 
-        $archivePath = $locationConfig->getArchivePath();
+        $this->moveTo($locationConfig->getArchivePath());
+    }
 
-        if ($archivePath === null) {
+    /**
+     * Moved to the failed path when one is configured: left in place, a failed file is imported again by every later
+     * run. Without a failed path it is left as it is for easier debugging.
+     */
+    public function failed(): void
+    {
+        $this->moveTo($this->source->getClient()->getLocationConfig()->getFailedPath());
+    }
+
+    private function moveTo(?string $remoteDirectory): void
+    {
+        if ($remoteDirectory === null) {
             return;
         }
 
-        $client->rename($remoteFile, rtrim($archivePath, '/') . '/' . $this->newName($remoteFile));
-    }
-
-    public function failed(): void
-    {
-        //File left as it is for easier debugging
+        $remoteFile = $this->source->getRemoteFile();
+        $this->source->getClient()->rename(
+            $remoteFile,
+            rtrim($remoteDirectory, '/') . '/' . $this->newName($remoteFile)
+        );
     }
 
     /**
