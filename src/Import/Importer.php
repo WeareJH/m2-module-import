@@ -15,6 +15,7 @@ use Jh\Import\Report\ConsoleLoggingReportDecorator;
 use Jh\Import\Report\Report;
 use Jh\Import\Report\ReportFactory;
 use Jh\Import\Report\ReportItem;
+use Jh\Import\Source\Sftp\RemoteFileSource;
 use Jh\Import\Source\Source;
 use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
@@ -108,6 +109,10 @@ class Importer
         if ($this->source instanceof Countable && $this->source->count() === 0) {
             $report->addError('Source is empty - no data to be imported.');
 
+            if ($this->sourceMayStillBeUploading()) {
+                return false;
+            }
+
             try {
                 $archiver->failed();
             } catch (Exception $exception) {
@@ -129,6 +134,13 @@ class Importer
         }
 
         return true;
+    }
+
+    private function sourceMayStillBeUploading(): bool
+    {
+        // TODO: add a setting, available for every file type, to leave empty
+        // TODO: files in place, and use it here instead of only checking for a remote source.
+        return $this->source instanceof RemoteFileSource;
     }
 
     public function process(Config $config): void
