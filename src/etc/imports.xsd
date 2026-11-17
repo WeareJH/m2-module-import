@@ -91,6 +91,9 @@
                 resolves to, via Jh\Import\Source\Sftp\LocationConfigProviderInterface. This keeps
                 knowledge of where a feed physically lives out of the entity import module that
                 consumes it.
+
+                Only the files directly inside the remote path are read. Subdirectories are not
+                scanned and are never imported.
             </xs:documentation>
         </xs:annotation>
         <xs:all>

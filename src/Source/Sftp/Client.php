@@ -17,6 +17,9 @@ use function sprintf;
  */
 class Client
 {
+    // File type phpseclib reports for a directory in a listing (SFTP v3 attribute type 2).
+    private const TYPE_DIRECTORY = 2;
+
     private ?SFTP $connection = null;
 
     public function __construct(
@@ -31,22 +34,30 @@ class Client
     }
 
     /**
-     * Contains 1st level files absolute paths
+     * Contains 1st level files absolute paths. Subdirectories are not read: a folder next to the feeds (an archive or
+     * failed folder inside the remote path, say) is left alone, not downloaded as if it were a file.
      * @return string[]
      */
     public function listFiles(): array
     {
         $remotePath = rtrim($this->locationConfig->getRemotePath(), DIRECTORY_SEPARATOR);
-        $listing = $this->connection()->nlist($remotePath);
+        $listing = $this->connection()->rawlist($remotePath);
 
         if ($listing === false) {
             throw new RuntimeException(sprintf('Could not list remote path "%s"', $remotePath));
         }
 
-        return array_values(array_filter(array_map(
-            static fn (string $file): string => $remotePath . DIRECTORY_SEPARATOR . $file,
-            $listing
-        ), $this->isSafeListingEntry(...)));
+        $files = [];
+
+        foreach ($listing as $name => $attributes) {
+            $name = (string) $name;
+
+            if ($this->isSafeListingEntry($name) && !$this->isDirectory($attributes)) {
+                $files[] = $remotePath . DIRECTORY_SEPARATOR . $name;
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -58,6 +69,14 @@ class Client
         $basename = basename($file);
 
         return $basename !== '.' && $basename !== '..';
+    }
+
+    /**
+     * @param array<string, mixed> $attributes A listing entry's attributes, as returned by rawlist()
+     */
+    private function isDirectory(array $attributes): bool
+    {
+        return ($attributes['type'] ?? null) === self::TYPE_DIRECTORY;
     }
 
     public function get(string $remoteFile, string $localFile): void
