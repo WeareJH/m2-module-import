@@ -20,6 +20,8 @@ use Jh\Import\Specification\ImportSpecification;
 use Jh\Import\Writer\Writer;
 use Magento\Framework\Exception\AggregateExceptionInterface;
 
+use function sprintf;
+
 /**
  * @author Aydin Hassan <aydin@wearejh.com>
  */
@@ -105,7 +107,16 @@ class Importer
     {
         if ($this->source instanceof Countable && $this->source->count() === 0) {
             $report->addError('Source is empty - no data to be imported.');
-            $archiver->failed();
+
+            try {
+                $archiver->failed();
+            } catch (Exception $exception) {
+                $report->addError(sprintf(
+                    'An error occurred when archiving the import source . Error: "%s"',
+                    $exception->getMessage()
+                ));
+            }
+
             return false;
         }
 

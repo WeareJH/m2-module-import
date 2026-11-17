@@ -99,6 +99,19 @@ class Client
         }
     }
 
+    /**
+     * Creates the remote directory, parents included, when it is missing. A rename into a directory that does not
+     * exist fails, so anything moved aside (archived or failed files) goes through this first.
+     */
+    public function ensureDirectoryExists(string $remoteDirectory): void
+    {
+        $connection = $this->connection();
+
+        if (!$connection->is_dir($remoteDirectory) && !$connection->mkdir($remoteDirectory, -1, true)) {
+            throw new RuntimeException(sprintf('Could not create remote directory "%s"', $remoteDirectory));
+        }
+    }
+
     public function delete(string $remoteFile): void
     {
         $this->assertWithinRemotePath($remoteFile);

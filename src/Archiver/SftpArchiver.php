@@ -47,11 +47,11 @@ class SftpArchiver implements Archiver
             return;
         }
 
+        $client = $this->source->getClient();
         $remoteFile = $this->source->getRemoteFile();
-        $this->source->getClient()->rename(
-            $remoteFile,
-            rtrim($remoteDirectory, '/') . '/' . $this->newName($remoteFile)
-        );
+
+        $client->ensureDirectoryExists($remoteDirectory);
+        $client->rename($remoteFile, rtrim($remoteDirectory, '/') . '/' . $this->newName($remoteFile));
     }
 
     /**

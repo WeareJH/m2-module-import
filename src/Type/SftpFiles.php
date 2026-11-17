@@ -3,15 +3,19 @@ declare(strict_types=1);
 
 namespace Jh\Import\Type;
 
+use Exception;
 use Jh\Import\Config;
+use Jh\Import\Import\Importer;
 use Jh\Import\Import\ImporterFactory;
 use Jh\Import\Source\Sftp\ClientFactory;
 use Jh\Import\Source\Sftp\LocationConfigProviderFactory;
 use Jh\Import\Source\SourceFactory;
 use Jh\Import\Specification\SpecificationFactory;
 use Jh\Import\Writer\WriterFactory;
+use Psr\Log\LoggerInterface;
 
 use function basename;
+use function sprintf;
 use function strnatcmp;
 
 class SftpFiles implements Type
@@ -23,7 +27,8 @@ class SftpFiles implements Type
         private readonly FileMatcher $fileMatcher,
         private readonly LocationConfigProviderFactory $locationConfigProviderFactory,
         private readonly SpecificationFactory $specificationFactory,
-        private readonly WriterFactory $writerFactory
+        private readonly WriterFactory $writerFactory,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -56,10 +61,26 @@ class SftpFiles implements Type
             $importer = $this->importerFactory->create($source, $specification, $writer);
 
             if ($config->get('process_only_last_file') && $index < $lastFileIndex) {
-                $importer->skip($config);
+                $this->skip($importer, $config, $file);
             } else {
                 $importer->process($config);
             }
         });
+    }
+
+    /**
+     * A skipped file is not imported, so failing to move it aside must not stop the files after it. It is logged, not
+     * reported: a report needs the source id, which downloads the file, and that fails the same way if the connection
+     * is what broke.
+     */
+    private function skip(Importer $importer, Config $config, string $file): void
+    {
+        try {
+            $importer->skip($config);
+        } catch (Exception $exception) {
+            $this->logger->error(
+                sprintf('Could not move skipped SFTP file "%s" aside: %s', $file, $exception->getMessage())
+            );
+        }
     }
 }
