@@ -4,6 +4,8 @@ namespace Jh\Import\Archiver;
 
 use Jh\Import\Config;
 use Jh\Import\Source\Csv;
+use Jh\Import\Source\SftpCsv;
+use Jh\Import\Source\SftpXml;
 use Jh\Import\Source\Source;
 use Magento\Framework\ObjectManagerInterface;
 
@@ -21,7 +23,9 @@ class Factory
      * @var array
      */
     private static $sourceToArchiverMap = [
-          Csv::class => CsvArchiver::class
+          Csv::class => CsvArchiver::class,
+          SftpCsv::class => SftpArchiver::class,
+          SftpXml::class => SftpArchiver::class
     ];
 
     public function __construct(ObjectManagerInterface $objectManager)
